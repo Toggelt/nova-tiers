@@ -113,14 +113,26 @@ h2{
     font-family: 'Bahnschrift', Arial, sans-serif;
 }
 
-.elo{
+.elo-wrap{
     display:flex;
     align-items:center;
+    gap:10px;
     padding:0 22px;
+}
+.elo{
     font-size:18px;
     font-weight:900;
     color:#a9b6ff;
     font-family: 'Arial Black', Arial, sans-serif;
+}
+.tier-badge{
+    font-size:12px;
+    font-weight:800;
+    padding:3px 9px;
+    border-radius:999px;
+    letter-spacing:0.5px;
+    border:1px solid currentColor;
+    white-space:nowrap;
 }
 
 /* Rank 1 - gold */
@@ -232,35 +244,31 @@ h2{
     margin-bottom:16px;
 }
 
-.modal-badge{
-    display:inline-flex;
-    align-items:center;
-    gap:10px;
-    background:#241f30;
-    border:1px solid #3d2f57;
-    padding:8px 18px 8px 8px;
-    border-radius:24px;
+/* Role badge (replaces old Kanal Server badge) */
+.role-badge{
+    display:inline-block;
+    padding:8px 22px;
+    border-radius:999px;
+    font-weight:800;
+    font-size:14px;
+    letter-spacing:0.6px;
     margin-bottom:26px;
+    text-transform:uppercase;
 }
-.badge-icon-circle{
-    width:30px;
-    height:30px;
-    border-radius:50%;
-    background:#000;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-    flex-shrink:0;
+.role-player{
+    color:#c9c9d1;
+    border:1px solid #5a5a64;
+    background:#202024;
 }
-.badge-icon-circle svg{
-    width:22px;
-    height:22px;
+.role-developer{
+    color:#ff5c5c;
+    border:1px solid #7a2323;
+    background:#241414;
 }
-.modal-badge span{
-    color:#c9a4ff;
-    font-weight:700;
-    font-size:15px;
+.role-owner{
+    color:#5be6e6;
+    border:1px solid #1f6b70;
+    background:#132628;
 }
 
 .modal-section-label{
@@ -293,6 +301,7 @@ h2{
     padding:0 14px;
     font-weight:700;
     font-size:15px;
+    flex-wrap:wrap;
 }
 .position-card .pos-info .pos-points{
     color:#8b8b96;
@@ -335,10 +344,7 @@ h2{
     <button class="modal-close" id="modalClose">✕</button>
     <div class="modal-avatar" id="modalAvatar"></div>
     <div class="modal-name" id="modalName"></div>
-    <div class="modal-badge">
-      <div class="badge-icon-circle" id="modalBadgeIcon"></div>
-      <span>Kanal Server</span>
-    </div>
+    <div class="role-badge" id="modalRoleBadge"></div>
 
     <div class="modal-section-label">Position</div>
     <div class="position-card" id="modalPositionCard"></div>
@@ -380,10 +386,10 @@ function buildHelmetIconSVG(){
         "....TTTT...."
     ];
     const colors = {
-        T: "#9c5cff", // amethyst trim
-        B: "#3a3a40", // netherite base
-        H: "#57575e", // highlight
-        E: "#0c0c10"  // eye slit
+        T: "#9c5cff",
+        B: "#3a3a40",
+        H: "#57575e",
+        E: "#0c0c10"
     };
     let rects = "";
     grid.forEach((row, y) => {
@@ -393,7 +399,6 @@ function buildHelmetIconSVG(){
             rects += `<rect x="${x}" y="${y}" width="1" height="1" fill="${colors[c]}"/>`;
         }
     });
-    // enchant glint sparkles
     const sparkles = `
         <rect x="1" y="1" width="0.6" height="0.6" fill="#f0e3ff" opacity="0.9"/>
         <rect x="10.2" y="3" width="0.6" height="0.6" fill="#f0e3ff" opacity="0.7"/>
@@ -403,9 +408,67 @@ function buildHelmetIconSVG(){
     return `<svg viewBox="0 0 13 12" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">${rects}${sparkles}</svg>`;
 }
 
-const HELMET_ICON_SVG = buildHelmetIconSVG();
-document.getElementById("titleIcon").innerHTML = HELMET_ICON_SVG;
-document.getElementById("modalBadgeIcon").innerHTML = HELMET_ICON_SVG;
+document.getElementById("titleIcon").innerHTML = buildHelmetIconSVG();
+
+/* ---------- Tier system ---------- */
+// Cumulative % subtracted from HT1 elo (=100%) to reach each tier's threshold
+const TIER_STEPS = [
+    { name: "LT1", pct: 10 },
+    { name: "HT2", pct: 10 },
+    { name: "LT2", pct: 10 },
+    { name: "HT3", pct: 10 },
+    { name: "LT3", pct: 15 },
+    { name: "HT4", pct: 15 },
+    { name: "LT4", pct: 15 },
+    { name: "HT5", pct: 15 }
+];
+const HT1_BASE = 1250;
+const LT5_FLOOR = 1000; // below this elo is always LT5, regardless of scaling
+
+const TIER_COLORS = {
+    HT1: "#ffd700",
+    LT1: "#e6c15c",
+    HT2: "#c9c9d1",
+    LT2: "#a9a9b2",
+    HT3: "#cd7f32",
+    LT3: "#b5793c",
+    HT4: "#7d8b99",
+    LT4: "#6b7480",
+    HT5: "#5a6572",
+    LT5: "#454b54"
+};
+
+function getTierThresholds(topElo){
+    const anchor = topElo >= HT1_BASE ? topElo : HT1_BASE;
+    const thresholds = { HT1: anchor };
+    let cumulativePct = 0;
+    TIER_STEPS.forEach(step => {
+        cumulativePct += step.pct;
+        thresholds[step.name] = anchor * (1 - cumulativePct / 100);
+    });
+    return thresholds;
+}
+
+function getTier(elo, thresholds){
+    if(elo < LT5_FLOOR) return "LT5";
+    if(elo >= thresholds.HT1) return "HT1";
+    if(elo >= thresholds.LT1) return "LT1";
+    if(elo >= thresholds.HT2) return "HT2";
+    if(elo >= thresholds.LT2) return "LT2";
+    if(elo >= thresholds.HT3) return "HT3";
+    if(elo >= thresholds.LT3) return "LT3";
+    if(elo >= thresholds.HT4) return "HT4";
+    if(elo >= thresholds.LT4) return "LT4";
+    if(elo >= thresholds.HT5) return "HT5";
+    return "LT5";
+}
+
+/* ---------- Roles ---------- */
+function getRole(name){
+    if(name === "TestingCheats") return { label: "Developer", cls: "role-developer" };
+    if(name === "cutekiss") return { label: "Tierlist Owner", cls: "role-owner" };
+    return { label: "Player", cls: "role-player" };
+}
 
 function rankClass(rank){
     if(rank === 1) return "rank-1";
@@ -421,9 +484,12 @@ function avatarUrl(name, size){
 function render(){
     list.innerHTML = "";
     const playersToShow = expanded ? allPlayers : allPlayers.slice(0, COLLAPSED_COUNT);
+    const topElo = allPlayers.length ? allPlayers[0].KanalServer : 0;
+    const thresholds = getTierThresholds(topElo);
 
     playersToShow.forEach((p, i) => {
         const rank = i + 1;
+        const tier = getTier(p.KanalServer, thresholds);
         const div = document.createElement("div");
         div.className = `player ${rankClass(rank)}`;
         div.innerHTML = `
@@ -434,9 +500,12 @@ function render(){
                 </div>
             </div>
             <div class="info">${p.name}</div>
-            <div class="elo">${p.KanalServer}</div>
+            <div class="elo-wrap">
+                <span class="elo">${p.KanalServer}</span>
+                <span class="tier-badge" style="color:${TIER_COLORS[tier]}">${tier}</span>
+            </div>
         `;
-        div.addEventListener("click", () => openProfile(p, rank));
+        div.addEventListener("click", () => openProfile(p, rank, tier));
         list.appendChild(div);
     });
 
@@ -458,11 +527,16 @@ const modalOverlay = document.getElementById("modalOverlay");
 const modalClose = document.getElementById("modalClose");
 const modalAvatar = document.getElementById("modalAvatar");
 const modalName = document.getElementById("modalName");
+const modalRoleBadge = document.getElementById("modalRoleBadge");
 const modalPositionCard = document.getElementById("modalPositionCard");
 
-function openProfile(player, rank){
+function openProfile(player, rank, tier){
     modalAvatar.innerHTML = `<img src="${avatarUrl(player.name, 110)}" alt="${player.name}" onerror="this.parentElement.innerHTML='?'">`;
     modalName.textContent = player.name;
+
+    const role = getRole(player.name);
+    modalRoleBadge.textContent = role.label;
+    modalRoleBadge.className = `role-badge ${role.cls}`;
 
     modalPositionCard.className = `position-card ${rankClass(rank)}`;
     modalPositionCard.innerHTML = `
@@ -471,6 +545,7 @@ function openProfile(player, rank){
         </div>
         <div class="pos-info">
             🏆 OVERALL <span class="pos-points">(${player.KanalServer} points)</span>
+            <span class="tier-badge" style="color:${TIER_COLORS[tier]}">${tier}</span>
         </div>
     `;
 
