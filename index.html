@@ -40,14 +40,21 @@ h2{
     font-family: 'Orbitron', Arial, sans-serif;
 }
 .title-icon{
-    width:30px;
-    height:30px;
+    width:42px;
+    height:42px;
     flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 .title-icon svg, .title-icon img{
     width:100%;
     height:100%;
     image-rendering: pixelated;
+}
+.title-icon .emoji-icon{
+    font-size:34px;
+    line-height:1;
 }
 
 /* ---------- Leaderboard Tab Selector ---------- */
@@ -77,11 +84,15 @@ h2{
     border-right:none;
 }
 .tab-item img{
-    width:22px;
-    height:22px;
+    width:32px;
+    height:32px;
     image-rendering: pixelated;
 }
-.tab-item span{
+.tab-item .emoji-icon{
+    font-size:28px;
+    line-height:1;
+}
+.tab-item span.tab-label{
     font-size:12px;
     font-weight:700;
     letter-spacing:0.4px;
@@ -95,7 +106,7 @@ h2{
     background:#26262e;
     color:#fff;
 }
-.tab-item.active span{
+.tab-item.active span.tab-label{
     color:#a9b6ff;
 }
 
@@ -107,9 +118,12 @@ h2{
     margin-bottom:14px;
 }
 
-/* ---------- Login ---------- */
+/* ---------- Login (fixed, outside the box, top-right of page) ---------- */
 .login-wrapper{
-    position:relative;
+    position:fixed;
+    top:26px;
+    right:34px;
+    z-index:200;
 }
 .login-btn{
     display:flex;
@@ -118,19 +132,20 @@ h2{
     background:#1c1c22;
     border:1px solid #2c2c34;
     color:#c9c9d1;
-    padding:6px 16px;
+    padding:8px 18px;
     border-radius:20px;
     font-size:13px;
     font-weight:700;
     font-family: Arial, sans-serif;
     cursor:pointer;
     transition: background 0.15s ease;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.35);
 }
 .login-btn:hover{
     background:#26262e;
 }
 .login-btn.logged-in{
-    padding:4px 14px 4px 4px;
+    padding:5px 16px 5px 5px;
 }
 .login-face{
     width:26px;
@@ -156,7 +171,7 @@ h2{
     padding:16px;
     width:220px;
     display:none;
-    z-index:60;
+    z-index:200;
     box-shadow: 0 10px 24px rgba(0,0,0,0.5);
 }
 .login-panel.active{
@@ -229,6 +244,7 @@ h2{
     color:#fff;
 }
 
+/* ---------- Info button ---------- */
 .info-btn-wrapper{
     position:relative;
 }
@@ -299,6 +315,98 @@ h2{
 }
 .info-tooltip-row span:first-child{
     font-weight:800;
+}
+
+/* ---------- Search ---------- */
+.search-btn-wrapper{
+    position:relative;
+}
+.search-btn{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    background:#1c1c22;
+    border:1px solid #2c2c34;
+    color:#c9c9d1;
+    padding:7px 16px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:700;
+    font-family: Arial, sans-serif;
+    cursor:pointer;
+    transition: background 0.15s ease;
+}
+.search-btn:hover{
+    background:#26262e;
+}
+.search-btn svg{
+    width:14px;
+    height:14px;
+    flex-shrink:0;
+}
+.search-panel{
+    position:absolute;
+    top:calc(100% + 8px);
+    right:0;
+    background:#191920;
+    border:1px solid #2c2c34;
+    border-radius:10px;
+    padding:14px;
+    width:250px;
+    display:none;
+    z-index:70;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+}
+.search-panel.active{
+    display:block;
+}
+.search-input{
+    width:100%;
+    background:#131318;
+    border:1px solid #2c2c34;
+    border-radius:7px;
+    color:#fff;
+    padding:8px 10px;
+    font-size:13px;
+    margin-bottom:10px;
+    font-family: Arial, sans-serif;
+}
+.search-input:focus{
+    outline:none;
+    border-color:#4a4a5c;
+}
+.search-results{
+    max-height:220px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+.search-result-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:6px 8px;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:600;
+}
+.search-result-item:hover{
+    background:#22222a;
+}
+.search-result-item img{
+    width:26px;
+    height:26px;
+    border-radius:5px;
+    image-rendering: pixelated;
+    background:#000;
+    flex-shrink:0;
+}
+.search-empty{
+    color:#5c5c66;
+    font-size:12px;
+    padding:6px 2px;
 }
 
 .player{
@@ -560,46 +668,98 @@ h2{
     font-size:13px;
 }
 
-.placeholder-card{
+/* ---------- Tiers section in profile modal ---------- */
+.tiers-row{
+    display:flex;
+    gap:16px;
+    justify-content:flex-start;
+    flex-wrap:wrap;
+    margin-bottom:6px;
+}
+.tier-icon-wrap{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:7px;
+}
+.tier-icon-circle{
+    width:54px;
+    height:54px;
+    border-radius:50%;
+    background:#191920;
     display:flex;
     align-items:center;
-    gap:10px;
-    background:#17171c;
-    border:1px dashed #2c2c34;
-    border-radius:10px;
-    padding:14px 16px;
-    margin-bottom:12px;
-    color:#5c5c66;
-    font-size:14px;
-    font-weight:600;
+    justify-content:center;
+    border:3px solid #454b54;
+    overflow:hidden;
+    transition: transform 0.15s ease;
 }
-.placeholder-card .ph-dot{
-    width:10px;
-    height:10px;
-    border-radius:50%;
-    background:#2c2c34;
-    flex-shrink:0;
+.tier-icon-wrap:hover .tier-icon-circle{
+    transform: scale(1.06);
+}
+.tier-icon-circle img{
+    width:30px;
+    height:30px;
+    image-rendering: pixelated;
+}
+.tier-icon-label{
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:0.4px;
+}
+.tier-elo-tip{
+    position:absolute;
+    bottom:calc(100% + 8px);
+    left:50%;
+    transform:translateX(-50%);
+    background:#0e0e12;
+    border:1px solid #2c2c34;
+    border-radius:6px;
+    padding:5px 10px;
+    font-size:12px;
+    font-weight:700;
+    white-space:nowrap;
+    display:none;
+    z-index:10;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.5);
+}
+.tier-icon-wrap:hover .tier-elo-tip{
+    display:block;
 }
 </style>
 </head>
 <body>
+
+<!-- Login (outside the box, top-right of page) -->
+<div class="login-wrapper" id="loginWrapper">
+  <button class="login-btn" id="loginBtn">Log in</button>
+  <div class="login-panel" id="loginPanel"></div>
+</div>
+
 <div class="container">
 
 <!-- Leaderboard Tab Selector -->
 <div class="tab-menu" id="tabMenu"></div>
 
 <div class="top-bar">
-  <div class="login-wrapper" id="loginWrapper">
-    <button class="login-btn" id="loginBtn">Log in</button>
-    <div class="login-panel" id="loginPanel"></div>
-  </div>
   <div class="info-btn-wrapper">
     <button class="info-btn" id="infoBtn"><span class="info-icon">i</span>Info</button>
     <div class="info-tooltip" id="infoTooltip">Loading...</div>
   </div>
+  <div class="search-btn-wrapper" id="searchWrapper">
+    <button class="search-btn" id="searchBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+        Search
+    </button>
+    <div class="search-panel" id="searchPanel">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search player...">
+        <div class="search-results" id="searchResults"></div>
+    </div>
+  </div>
 </div>
 
-<h2><span class="title-icon" id="titleIcon"></span><span id="titleText">Kanal Server Leaderboard</span></h2>
+<h2><span class="title-icon" id="titleIcon"></span><span id="titleText">Overall Leaderboard</span></h2>
 <div id="list">Loading...</div>
 <button id="toggleBtn" class="toggle-btn" style="display:none;">Show all</button>
 </div>
@@ -615,9 +775,8 @@ h2{
     <div class="modal-section-label">Position</div>
     <div class="position-card" id="modalPositionCard"></div>
 
-    <div class="modal-section-label">Other Leaderboards</div>
-    <div class="placeholder-card"><div class="ph-dot"></div>Coming soon</div>
-    <div class="placeholder-card"><div class="ph-dot"></div>Coming soon</div>
+    <div class="modal-section-label">Tiers</div>
+    <div class="tiers-row" id="tiersRow"></div>
   </div>
 </div>
 
@@ -632,12 +791,20 @@ const COLLAPSED_COUNT = 5; // how many players to show before "Show all"
 let allPlayers = [];
 let expanded = false;
 
-/* ---------- Icons (embedded as data URIs) ---------- */
-const HELMET_ICON = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAMAAAC8EZcfAAAAGFBMVEX///8kHyBNSU0XERFHPj81LS1dVl12anY7r+2yAAAAtUlEQVR4nO3Yuw6DMBBFQV5J/v+P6bwprqwgUBTiOS0sO51lpkmSJEmSJEkaqPlEgICAgIDjAmvJ1lo+7NFaW4CAgICAYwD7rFfr2UrAmr2cCggICAh4G2Ba3G/rBggICAg4LnAOpaMuvQcICAgICPi+uJYsoXoKCAgICAiYL02JmqqJL/9+AwQEBAT8IWAdUseBNQsICAgIOBowUY9/OqEvYgECAgIC3gYoSZIkSZIkSZL0Z+3Dykz1fnGxNQAAAABJRU5ErkJggg==";
-const MACE_ICON = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAMAAAC8EZcfAAAAJ1BMVEX///9CR1IeIimZoa4uMztVXGl8hJG/zudQY5AjQmlmbHp6gsS1pcoCWs1uAAABKUlEQVR4nO3aQVKDQBBA0SRqNOr9z+uue9M1ZdKArb6/ZIB5sKEYOJ1261y032wPBNgNsBtgN8BuQ4GJeYpeo4r6Eh1yIYCAgICAI4EVKyeuqJfoOcptgICAgID/A7hm5cTXaE3diAUICAgIOBy4ZuXompX75bEbUQEBAQEBfw3wPbouq1hVG1EBAQEBAYcDv0vNB1yFSUK+XFWjgICAgIB/GZjlCZM6gAUICAgIOBz4Fn1Ea8LB9w0QEBAQcCSwYt2i3G9NPfi+AQICAgL+ODBZn1HFqroUbcQCBAQEBBwO7LAOCbAbYDfAboDdhgKHsjLAboDdALsBdhsFPBetl9UAAQEBAQFrYP4WtuMq3v0BdgPsBtgNsNt4YPWRBfCeALsBdgPsBtjsC6XtoblKSRRDAAAAAElFTkSuQmCC";
+/* ---------- Icons (embedded as data URIs, transparent backgrounds) ---------- */
+const HELMET_ICON = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAYAAACLz2ctAAACvUlEQVR4nO3dMWsUQRiAYU/ERox4VbokSIoI1mLhv7cQW8EUIkkkkBRyxAQbm/MHCDKYCe+SPE897M4lL9N87O5qu90+gsrjegM8bAIkJUBSAiQlQFICJCVAUgIkJUBSAiQlQFICJCVAUgIkJUBSAiQlQFICJCVAUgIkJUBSAiQlQFICJCVAUgIkJUBSAiQlQFJP6g3Mcrh/8KBe8/X19GRV72EGJyApAZISICkBkhIgKQGSEiApAZISIKnFT0JGJxyv9vaGrvf02c6t9nPXLs9Ph9btrtdDf5fLzWbRExMnICkBkhIgKQGSEiApAZISICkBkhIgqWwSUk04jg6OhtZd/LgYWnd1czW0btT65Xrq9ZY+MXECkhIgKQGSEiApAZISICkBkhIgKQGSWvwzIbOf4Tg+OZ56vVG/f11Pvd7oxOT7+fnU+87mBCQlQFICJCVAUgIkJUBSAiQlQFICJLX4Scio4y+fp17v3dv3Q+tGnwn5dnZ2i938bfRZmaVzApISICkBkhIgKQGSEiApAZISICkBkro3k5BRN9c/h9bNfuvV6H2f77yYet+lcwKSEiApAZISICkBkhIgKQGSEiApAZK6N5OQo9dvhtaNPjvy6eOH22znv43+jtEvqy+dE5CUAEkJkJQASQmQlABJCZCUAEkJkNTiJyGj39eY/T2RyuzviSydE5CUAEkJkJQASQmQlABJCZCUAEkJkNRqu93We/inw/2DoQ2Ovn3qcrNZ3WpDd2x3vZ76D1n673UCkhIgKQGSEiApAZISICkBkhIgKQGSWvwkhPvNCUhKgKQESEqApARISoCkBEhKgKQESEqApARISoCkBEhKgKQESEqApARISoCkBEhKgKQESEqApARISoCkBEhKgKQESEqApARISoCkBEhKgKQESEqApARISoCkBEhKgKQESOoPrENWaPnTpagAAAAASUVORK5CYII=";
+const MACE_ICON = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAYAAACLz2ctAAADgklEQVR4nO3dO4tdZRSA4RnxB3iJl2YMaKJjwE5QR0QZC4NdVBREsXEaBQs7CysLawvtxAijENBeiJFUgaA2FkbJWFiK8fIPxt4LLMnWdzLneerFPmeGl69ZfPus7+/vr/Hfe/zk04v+o8999un6ks+rXFd/AVabAEkJkJQASQmQlABJCZCUAEkJkNT19Re41k03HM89/8LoeXff99CinzvdmDz74iuj5/3y80+TsfHnOgFJCZCUAEkJkJQASQmQlABJCZCUAEnZhPyDpTccn589e1Xf58/efPvd0dzRu06M/o4bbrxp9Lzff/t1NDflBCQlQFICJCVAUgIkJUBSAiQlQFICJLVym5Bqw/H9pW9Gc/dsbo7mpj785IvR3EvPbI/mfvzh20XfyuUEJCVAUgIkJUBSAiQlQFICJCVAUgIktX5Yfiek2nBM3xa19cijo7mNjY3R3PQtWm+98epo7uZbbhvNXbxwfjQ33Zg4AUkJkJQASQmQlABJCZCUAEkJkJQASa3cnZCvv/xqNDe+m7HwHY6lNxxT043OA1uPjeamb+VyApISICkBkhIgKQGSEiApAZISICkBkjo0d0KmpndHjh2fbThuvX12l2J61+PMx7ujuam9y5dGc9PfCTlyZPb3Tj/XCUhKgKQESEqApARISoCkBEhKgKQESGrlNiFT0zsNJ588NXre3uXvrur7/PV5B3vD4e1YXBMESEqApARISoCkBEhKgKQESEqApFZuE3Lq5XdGf/CJo/ePnrd7emc0t/RG4sqV2dusqg3HlBOQlABJCZCUAEkJkJQASQmQlABJCZDUofmdkKU3HGfOfzSam24GpndMpg76hmPKCUhKgKQESEqApARISoCkBEhKgKQESOrA3wmZbjh2trdGz3vt/Q9Gc3vn3ks2A0tvTKoNx5QTkJQASQmQlABJCZCUAEkJkJQASQmQVLYJWbUNB3/PCUhKgKQESEqApARISoCkBEhKgKQESGrxt2PZcPBvOAFJCZCUAEkJkJQASQmQlABJCZCUAEmtbz/x1KKXQh58+PXR3PR3OGw4DjcnICkBkhIgKQGSEiApAZISICkBkhIgqfGdkGPHN0dzu6d3RnMH/fcr+H84AUkJkJQASQmQlABJCZCUAEkJkJQASa3fcee9yQ+F2ISwtuYEJCZAUgIkJUBSAiQlQFICJCVAUgIk9Qd+Rbay1Q9IEQAAAABJRU5ErkJggg==";
 
 /* ---------- Leaderboards ---------- */
 const LEADERBOARDS = {
+    Overall: {
+        key: "Overall",
+        field: "__total",
+        label: "Overall",
+        title: "Overall Leaderboard",
+        icon: null,
+        emoji: "💎"
+    },
     KanalServer: {
         key: "KanalServer",
         field: "KanalServer",
@@ -653,7 +820,8 @@ const LEADERBOARDS = {
         icon: MACE_ICON
     }
 };
-let currentBoard = "KanalServer";
+const SUB_BOARDS = ["KanalServer", "LowblockMace"]; // leaderboards shown in the profile Tiers row
+let currentBoard = "Overall";
 
 const list = document.getElementById("list");
 const toggleBtn = document.getElementById("toggleBtn");
@@ -661,23 +829,33 @@ const tabMenu = document.getElementById("tabMenu");
 const titleIcon = document.getElementById("titleIcon");
 const titleText = document.getElementById("titleText");
 
+function iconMarkup(board){
+    return board.icon
+        ? `<img src="${board.icon}" alt="${board.label}">`
+        : `<span class="emoji-icon">${board.emoji}</span>`;
+}
+
 function renderTabMenu(){
     tabMenu.innerHTML = "";
     Object.values(LEADERBOARDS).forEach(board => {
         const el = document.createElement("div");
         el.className = "tab-item" + (board.key === currentBoard ? " active" : "");
-        el.innerHTML = `<img src="${board.icon}" alt="${board.label}"><span>${board.label}</span>`;
+        el.innerHTML = `${iconMarkup(board)}<span class="tab-label">${board.label}</span>`;
         el.addEventListener("click", () => switchBoard(board.key));
         tabMenu.appendChild(el);
     });
+}
+
+function setTitle(key){
+    titleIcon.innerHTML = iconMarkup(LEADERBOARDS[key]);
+    titleText.textContent = LEADERBOARDS[key].title;
 }
 
 function switchBoard(key){
     if(currentBoard === key) return;
     currentBoard = key;
     expanded = false;
-    titleIcon.innerHTML = `<img src="${LEADERBOARDS[key].icon}" alt="">`;
-    titleText.textContent = LEADERBOARDS[key].title;
+    setTitle(key);
     renderTabMenu();
     render();
 }
@@ -808,7 +986,7 @@ function render(){
                 <span class="tier-badge" style="color:${TIER_COLORS[tier]}">${tier}</span>
             </div>
         `;
-        div.addEventListener("click", () => openProfile(p, rank, tier, field));
+        div.addEventListener("click", () => openProfile(p));
         list.appendChild(div);
     });
 
@@ -832,8 +1010,36 @@ const modalAvatar = document.getElementById("modalAvatar");
 const modalName = document.getElementById("modalName");
 const modalRoleBadge = document.getElementById("modalRoleBadge");
 const modalPositionCard = document.getElementById("modalPositionCard");
+const tiersRow = document.getElementById("tiersRow");
 
-function openProfile(player, rank, tier, field){
+function renderTierIcons(player){
+    let html = "";
+    SUB_BOARDS.forEach(key => {
+        const board = LEADERBOARDS[key];
+        const sorted = getSortedPlayers(board.field);
+        const topElo = sorted.length ? sorted[0][board.field] : 0;
+        const thresholds = getTierThresholds(topElo);
+        const hasValue = player[board.field] !== null && player[board.field] !== undefined;
+        const elo = hasValue ? player[board.field] : null;
+        const tier = hasValue ? getTier(elo, thresholds) : null;
+        const color = tier ? TIER_COLORS[tier] : "#3a3a44";
+        const tierLabel = tier || "—";
+        const tipText = hasValue ? `Elo: ${elo}` : "No data";
+
+        html += `
+            <div class="tier-icon-wrap">
+                <div class="tier-icon-circle" style="border-color:${color}">
+                    <img src="${board.icon}" alt="${board.label}">
+                </div>
+                <div class="tier-icon-label" style="color:${color}">${tierLabel}</div>
+                <div class="tier-elo-tip">${tipText}</div>
+            </div>
+        `;
+    });
+    tiersRow.innerHTML = html;
+}
+
+function openProfile(player){
     modalAvatar.innerHTML = `<img src="${avatarUrl(player.name, 110)}" alt="${player.name}" onerror="this.parentElement.innerHTML='?'">`;
     modalName.textContent = player.name;
 
@@ -841,16 +1047,21 @@ function openProfile(player, rank, tier, field){
     modalRoleBadge.textContent = role.label;
     modalRoleBadge.className = `role-badge ${role.cls}`;
 
-    modalPositionCard.className = `position-card ${rankClass(rank)}`;
+    const overallSorted = getSortedPlayers("__total");
+    const overallRank = overallSorted.findIndex(p => p.name === player.name) + 1;
+    const overallTotal = player.__total;
+
+    modalPositionCard.className = `position-card ${rankClass(overallRank)}`;
     modalPositionCard.innerHTML = `
         <div class="rank-flag">
-            <span class="rank-num">${rank}.</span>
+            <span class="rank-num">${overallRank}.</span>
         </div>
         <div class="pos-info">
-            🏆 ${LEADERBOARDS[currentBoard].label.toUpperCase()} <span class="pos-points">(${player[field]} points)</span>
-            <span class="tier-badge" style="color:${TIER_COLORS[tier]}">${tier}</span>
+            💎 OVERALL <span class="pos-points">(${overallTotal} total elo)</span>
         </div>
     `;
+
+    renderTierIcons(player);
 
     modalOverlay.classList.add("active");
 }
@@ -863,6 +1074,49 @@ modalClose.addEventListener("click", closeProfile);
 modalOverlay.addEventListener("click", (e) => {
     if(e.target === modalOverlay) closeProfile();
 });
+
+/* ---------- Search ---------- */
+const searchBtn = document.getElementById("searchBtn");
+const searchPanel = document.getElementById("searchPanel");
+const searchWrapper = document.getElementById("searchWrapper");
+const searchInput = document.getElementById("searchInput");
+const searchResults = document.getElementById("searchResults");
+
+function renderSearchResults(query){
+    const q = query.trim().toLowerCase();
+    const source = q ? allPlayers.filter(p => p.name.toLowerCase().includes(q)) : allPlayers;
+    const matches = source.slice(0, 8);
+
+    if(matches.length === 0){
+        searchResults.innerHTML = `<div class="search-empty">No players found</div>`;
+        return;
+    }
+
+    searchResults.innerHTML = "";
+    matches.forEach(p => {
+        const row = document.createElement("div");
+        row.className = "search-result-item";
+        row.innerHTML = `<img src="${avatarUrl(p.name, 26)}" alt="" onerror="this.style.display='none'"><span>${p.name}</span>`;
+        row.addEventListener("click", () => {
+            searchPanel.classList.remove("active");
+            openProfile(p);
+        });
+        searchResults.appendChild(row);
+    });
+}
+
+searchBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const willOpen = !searchPanel.classList.contains("active");
+    searchPanel.classList.toggle("active");
+    if(willOpen){
+        searchInput.value = "";
+        renderSearchResults("");
+        setTimeout(() => searchInput.focus(), 30);
+    }
+});
+searchInput.addEventListener("input", () => renderSearchResults(searchInput.value));
+searchInput.addEventListener("click", (e) => e.stopPropagation());
 
 /* ---------- Login ---------- */
 const loginBtn = document.getElementById("loginBtn");
@@ -945,14 +1199,16 @@ document.addEventListener("click", (e) => {
     if(!loginWrapper.contains(e.target)){
         loginPanel.classList.remove("active");
     }
+    if(!searchWrapper.contains(e.target)){
+        searchPanel.classList.remove("active");
+    }
 });
 
 renderLoggedOutPanel();
 
 /* ---------- Init ---------- */
 renderTabMenu();
-titleIcon.innerHTML = `<img src="${LEADERBOARDS[currentBoard].icon}" alt="">`;
-titleText.textContent = LEADERBOARDS[currentBoard].title;
+setTitle(currentBoard);
 
 async function loadPlayers(){
     const { data, error } = await supabase
@@ -965,7 +1221,10 @@ async function loadPlayers(){
         return;
     }
 
-    allPlayers = data;
+    allPlayers = data.map(p => ({
+        ...p,
+        __total: (Number(p.KanalServer) || 0) + (Number(p.LowblockMace) || 0)
+    }));
     render();
 
     // keep logged-in user's data fresh (e.g. elo updates) without logging them out
