@@ -13,7 +13,7 @@ body{
     padding:30px;
 }
 .container{
-    width:400px;
+    width:420px;
     background:#18181b;
     padding:20px;
     border-radius:12px;
@@ -26,12 +26,54 @@ h2{
 .player{
     display:flex;
     justify-content:space-between;
-    padding:10px;
-    margin:6px 0;
+    align-items:center;
+    padding:14px 16px;
+    margin:8px 0;
     background:#111113;
-    border-radius:8px;
+    border-radius:12px;
+    border:1px solid #2a2a2e;
     font-family: monospace;
+    font-size:15px;
+    transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 }
+.player:hover{
+    background:#1e1e22;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+}
+
+/* Top 3 get bigger boxes */
+.rank-1, .rank-2, .rank-3{
+    padding:20px 18px;
+    font-size:17px;
+    font-weight:bold;
+    border:none;
+}
+
+.rank-1{
+    background: linear-gradient(135deg, #ffd700, #a8860a);
+    color:#1a1a1a;
+}
+.rank-1:hover{
+    background: linear-gradient(135deg, #ffe14d, #c49c14);
+}
+
+.rank-2{
+    background: linear-gradient(135deg, #d9d9d9, #8c8c8c);
+    color:#1a1a1a;
+}
+.rank-2:hover{
+    background: linear-gradient(135deg, #ebebeb, #a3a3a3);
+}
+
+.rank-3{
+    background: linear-gradient(135deg, #cd7f32, #8a5322);
+    color:#f5f0e6;
+}
+.rank-3:hover{
+    background: linear-gradient(135deg, #e0975a, #a3652c);
+}
+
 .toggle-btn{
     display:block;
     width:100%;
@@ -71,15 +113,23 @@ let expanded = false;
 const list = document.getElementById("list");
 const toggleBtn = document.getElementById("toggleBtn");
 
+function rankClass(rank){
+    if(rank === 1) return "rank-1";
+    if(rank === 2) return "rank-2";
+    if(rank === 3) return "rank-3";
+    return "";
+}
+
 function render(){
     list.innerHTML = "";
     const playersToShow = expanded ? allPlayers : allPlayers.slice(0, COLLAPSED_COUNT);
 
     playersToShow.forEach((p, i) => {
+        const rank = i + 1;
         const div = document.createElement("div");
-        div.className = "player";
+        div.className = `player ${rankClass(rank)}`;
         div.innerHTML = `
-            <span>${i+1}. ${p.name}</span>
+            <span>${rank}. ${p.name}</span>
             <span>${p.KanalServer}</span>
         `;
         list.appendChild(div);
