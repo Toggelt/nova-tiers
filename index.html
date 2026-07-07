@@ -2,13 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Elo Leaderboard</title>
+<title>Kanal Server Leaderboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 *{
     box-sizing:border-box;
 }
 body{
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-family: 'Rajdhani', 'Segoe UI', Arial, sans-serif;
     background:#0b0b0e;
     color:#fff;
     display:flex;
@@ -26,7 +29,9 @@ h2{
     text-align:center;
     margin-top:4px;
     margin-bottom:18px;
-    letter-spacing:1px;
+    letter-spacing:2px;
+    font-weight:700;
+    text-transform:uppercase;
 }
 .player{
     display:flex;
@@ -54,7 +59,7 @@ h2{
 }
 .rank-num{
     font-size:26px;
-    font-weight:800;
+    font-weight:700;
     font-style:italic;
     color:#c7c7ce;
     width:26px;
@@ -70,6 +75,13 @@ h2{
     font-size:18px;
     color:#666;
     flex-shrink:0;
+    overflow:hidden;
+    image-rendering: pixelated;
+}
+.avatar img{
+    width:100%;
+    height:100%;
+    image-rendering: pixelated;
 }
 
 .info{
@@ -77,18 +89,18 @@ h2{
     display:flex;
     align-items:center;
     padding:0 16px;
-    font-size:19px;
+    font-size:21px;
     font-weight:700;
+    letter-spacing:0.3px;
 }
 
 .elo{
     display:flex;
     align-items:center;
     padding:0 22px;
-    font-size:17px;
+    font-size:18px;
     font-weight:700;
     color:#a9b6ff;
-    font-family: monospace;
 }
 
 /* Rank 1 - gold */
@@ -118,7 +130,10 @@ h2{
     color:#fff;
     border:none;
     border-radius:8px;
-    font-size:14px;
+    font-family:'Rajdhani', Arial, sans-serif;
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:0.5px;
     cursor:pointer;
     transition: background 0.2s;
 }
@@ -129,7 +144,7 @@ h2{
 </head>
 <body>
 <div class="container">
-<h2>🏆 ELO LEADERBOARD</h2>
+<h2>🏆 Kanal Server Leaderboard</h2>
 <div id="list">Loading...</div>
 <button id="toggleBtn" class="toggle-btn" style="display:none;">Show all</button>
 </div>
@@ -165,7 +180,9 @@ function render(){
         div.innerHTML = `
             <div class="rank-flag">
                 <span class="rank-num">${rank}.</span>
-                <div class="avatar">?</div>
+                <div class="avatar">
+                    <img src="https://mc-heads.net/avatar/${encodeURIComponent(p.name)}/38" alt="${p.name}" onerror="this.parentElement.innerHTML='?'">
+                </div>
             </div>
             <div class="info">${p.name}</div>
             <div class="elo">${p.KanalServer}</div>
