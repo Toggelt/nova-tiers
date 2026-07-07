@@ -4,92 +4,126 @@
 <meta charset="UTF-8">
 <title>Elo Leaderboard</title>
 <style>
+*{
+    box-sizing:border-box;
+}
 body{
-    font-family: Arial;
-    background:#0e0e10;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background:#0b0b0e;
     color:#fff;
     display:flex;
     justify-content:center;
     padding:30px;
 }
 .container{
-    width:420px;
-    background:#18181b;
-    padding:20px;
-    border-radius:12px;
-    border:1px solid #2a2a2e;
+    width:520px;
+    background:#131318;
+    padding:18px;
+    border-radius:14px;
+    border:1px solid #232329;
 }
 h2{
     text-align:center;
-    margin-top:0;
+    margin-top:4px;
+    margin-bottom:18px;
+    letter-spacing:1px;
 }
 .player{
     display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:14px 16px;
-    margin:8px 0;
-    background:#111113;
-    border-radius:12px;
-    border:1px solid #2a2a2e;
-    font-family: monospace;
-    font-size:15px;
-    transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    align-items:stretch;
+    background:#191920;
+    border-radius:10px;
+    margin:10px 0;
+    overflow:hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .player:hover{
-    background:#1e1e22;
     transform: translateY(-2px);
-    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.45);
 }
 
-/* Top 3 get bigger boxes */
-.rank-1, .rank-2, .rank-3{
-    padding:20px 18px;
+.rank-flag{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 26px 14px 16px;
+    background:#22222a;
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+    min-width:120px;
+}
+.rank-num{
+    font-size:26px;
+    font-weight:800;
+    font-style:italic;
+    color:#c7c7ce;
+    width:26px;
+}
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:6px;
+    background:#000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    color:#666;
+    flex-shrink:0;
+}
+
+.info{
+    flex:1;
+    display:flex;
+    align-items:center;
+    padding:0 16px;
+    font-size:19px;
+    font-weight:700;
+}
+
+.elo{
+    display:flex;
+    align-items:center;
+    padding:0 22px;
     font-size:17px;
-    font-weight:bold;
-    border:none;
+    font-weight:700;
+    color:#a9b6ff;
+    font-family: monospace;
 }
 
-.rank-1{
-    background: linear-gradient(135deg, #ffd700, #a8860a);
-    color:#1a1a1a;
+/* Rank 1 - gold */
+.rank-1 .rank-flag{
+    background: linear-gradient(100deg, #f4c744, #c99a1e);
 }
-.rank-1:hover{
-    background: linear-gradient(135deg, #ffe14d, #c49c14);
-}
+.rank-1 .rank-num{ color:#3a2c00; }
 
-.rank-2{
-    background: linear-gradient(135deg, #d9d9d9, #8c8c8c);
-    color:#1a1a1a;
+/* Rank 2 - silver */
+.rank-2 .rank-flag{
+    background: linear-gradient(100deg, #d6d9dd, #9ea3aa);
 }
-.rank-2:hover{
-    background: linear-gradient(135deg, #ebebeb, #a3a3a3);
-}
+.rank-2 .rank-num{ color:#2b2e33; }
 
-.rank-3{
-    background: linear-gradient(135deg, #cd7f32, #8a5322);
-    color:#f5f0e6;
+/* Rank 3 - bronze */
+.rank-3 .rank-flag{
+    background: linear-gradient(100deg, #d98b45, #a85f24);
 }
-.rank-3:hover{
-    background: linear-gradient(135deg, #e0975a, #a3652c);
-}
+.rank-3 .rank-num{ color:#3a2000; }
 
 .toggle-btn{
     display:block;
     width:100%;
     margin-top:10px;
     padding:10px;
-    background:#2a2a2e;
+    background:#22222a;
     color:#fff;
     border:none;
     border-radius:8px;
-    font-family: Arial;
     font-size:14px;
     cursor:pointer;
     transition: background 0.2s;
 }
 .toggle-btn:hover{
-    background:#3a3a3e;
+    background:#2e2e38;
 }
 </style>
 </head>
@@ -129,8 +163,12 @@ function render(){
         const div = document.createElement("div");
         div.className = `player ${rankClass(rank)}`;
         div.innerHTML = `
-            <span>${rank}. ${p.name}</span>
-            <span>${p.KanalServer}</span>
+            <div class="rank-flag">
+                <span class="rank-num">${rank}.</span>
+                <div class="avatar">?</div>
+            </div>
+            <div class="info">${p.name}</div>
+            <div class="elo">${p.KanalServer}</div>
         `;
         list.appendChild(div);
     });
