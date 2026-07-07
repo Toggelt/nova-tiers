@@ -24,6 +24,7 @@ body {
     padding: 20px;
     border-radius: 14px;
     border: 1px solid #232329;
+    overflow: visible;
 }
 h2 {
     display: flex;
@@ -292,9 +293,9 @@ h2 {
     border: 1px solid #2c2c34;
     border-radius: 10px;
     padding: 12px 16px;
-    min-width: auto; /* let content size it */
+    min-width: auto;
     display: none;
-    z-index: 50;
+    z-index: 9999;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
     white-space: nowrap;
 }
@@ -317,11 +318,11 @@ h2 {
     font-family: monospace;
 }
 .info-tooltip-tier {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 800;
 }
 .info-tooltip-elo {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 400;
     color: #c9c9d1;
 }
@@ -424,7 +425,7 @@ h2 {
     background: #191920;
     border-radius: 10px;
     margin: 10px 0;
-    overflow: hidden;
+    overflow: visible;
     cursor: pointer;
     transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
@@ -487,6 +488,8 @@ h2 {
     align-items: center;
     gap: 10px;
     padding: 0 22px;
+    position: relative;
+    overflow: visible;
 }
 .elo {
     font-size: 18px;
@@ -502,6 +505,7 @@ h2 {
     letter-spacing: 0.5px;
     border: 1px solid currentColor;
     white-space: nowrap;
+    position: relative;
 }
 
 /* Rank 1 - gold */
@@ -568,11 +572,12 @@ h2 {
     padding: 30px;
     width: 360px;
     max-width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
     position: relative;
     text-align: center;
     border: 1px solid #232329;
     font-family: Arial, sans-serif;
-    overflow: visible; /* allow tooltip to break out */
 }
 .modal-close {
     position: absolute;
@@ -590,6 +595,7 @@ h2 {
     align-items: center;
     justify-content: center;
     transition: background 0.2s;
+    z-index: 10;
 }
 .modal-close:hover {
     background: #2e2e38;
@@ -615,7 +621,15 @@ h2 {
     font-family: 'Bahnschrift', Arial, sans-serif;
     font-size: 26px;
     font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.modal-title-display {
+    font-size: 16px;
+    font-weight: 700;
+    color: #c9c9d1;
     margin-bottom: 16px;
+    text-align: center;
 }
 
 .role-badge {
@@ -670,7 +684,7 @@ h2 {
     flex: 1;
     display: flex;
     align-items: center;
-    justify-content: center; /* center text */
+    justify-content: center;
     gap: 8px;
     padding: 0 14px;
     font-weight: 700;
@@ -679,7 +693,7 @@ h2 {
     text-align: center;
 }
 .position-card .pos-info .pos-points {
-    color: #a9b6ff; /* same blue as elo numbers */
+    color: #a9b6ff;
     font-weight: 600;
     font-size: 13px;
 }
@@ -691,8 +705,6 @@ h2 {
     justify-content: flex-start;
     flex-wrap: wrap;
     margin-bottom: 6px;
-    position: relative;
-    z-index: auto;
 }
 .tier-icon-wrap {
     position: relative;
@@ -700,7 +712,6 @@ h2 {
     flex-direction: column;
     align-items: center;
     gap: 7px;
-    overflow: visible; /* allow tooltip to break out */
 }
 .tier-icon-circle {
     width: 54px;
@@ -744,6 +755,25 @@ h2 {
     pointer-events: none;
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
 }
+
+/* Tooltip for tier badges on leaderboard */
+.tier-tooltip-leaderboard {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0e0e12;
+    border: 1px solid #2c2c34;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    display: none;
+    z-index: 9999;
+    pointer-events: none;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+}
 </style>
 </head>
 <body>
@@ -754,7 +784,7 @@ h2 {
   <div class="login-panel" id="loginPanel"></div>
 </div>
 
-<!-- Global tooltip for tier elo (so it can overflow the modal) -->
+<!-- Global tooltip for tier elo -->
 <div id="globalTierTooltip" class="global-tier-tooltip"></div>
 
 <div class="container">
@@ -790,6 +820,7 @@ h2 {
     <button class="modal-close" id="modalClose">✕</button>
     <div class="modal-avatar" id="modalAvatar"></div>
     <div class="modal-name" id="modalName"></div>
+    <div class="modal-title-display" id="modalTitleDisplay"></div>
     <div class="role-badge" id="modalRoleBadge"></div>
 
     <div class="modal-section-label">Position</div>
@@ -812,9 +843,7 @@ let allPlayers = [];
 let expanded = false;
 
 /* ---------- Icons (data URIs, transparent) ---------- */
-// Helmet icon: replaced with a clean 32x32 pixel iron helmet (no background)
 const HELMET_ICON = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADTklEQVR4nO2XS2hTQRSG/5tcmqZpa1pL7aMVrYoPxGe1dlHaimi1qLhSK7hQcSUu3NQHKIrgwt6F4MLqIigookIVCiqo0aIWfCBeLVqt2pqmaZukNzebMfM4M5nk0iaNRneWfjCHee///jnDnUAYhhFGGKFlWCZ0CkIItdftBaH5AsbjIoNiRNMGLphSITtIoXrFlmZMrOVGFKoacMUAQgimGEFEDkAjDCAUnIEGwJBrC9AFkYdAEIpxNILBYuF5k2IMIQsg+DRBAJH4QCFH1C8ZkBh4FNJ0u0AxkKf00BAYlBRK7hUAkUAK8BLA0AdiCGYfCEB4Yx0BDAEmi6CqwYAghkYcvmqB0fGI7uXfAZyHDQEDCFLdM/0b4r2CwoikrkgNjAIoPT8K0TxogAEmx/9BtIoUQoBYbIAQkXofAxzN+/sCbEmXUhkNLHBqO/5c3/pvAoRL1U2NpiJAMQELgHl+DCBxBQDx+cA2wGY5hgnY4wUmw2KMb6e8Hq73KwGYd2c3AFwfGd2UKL9X7M4SQ0d7Ogu5ncKdN4BjBOQaMBbe3SCWAJv9W1a3eM0eBMq2k4PtNSv2dxy7+LVygI2X+Lb5ao64dfqDEb27dXsOQAe3GoWIrSzuGcAOn/awC7sWTJrxWPOF1hafq7wP8O03nW8y/p+N5AYE2HfDLoNNS/4K04BEdAxkwEoy6AA7AYz8g8BcD9hs4H68VHYk+wDIBQacgMc5/DCjQ3a/78FmBx5gxXGkGBQ8g+W1DU3c+3i6AJQAWM1lwZCSj53YdMjtdeZ7C2i5l7LmV/MHmjfCpxNArwQFx/ohLYMUNZFsB4BTTFYbrYplFmvWmHcxL6nGBo4EQIqBZ0vOggYeBwAOD11oB7C5o4Mne7uzjS1RNivrLFWr55rq21aW11dAQM2dVbDpmqsmHGuB/Unh8Rr6x0SQSdqYcW2sYHc7M7X3+jjc0jrZRcU+7fhwz/5rQmMvuM/BnJqQd3y+o60rE6sK9UKf7RMf1j0ow18ZFu1t4efj03PHBxa5Sjj2BYC2mcFqAYSlsr9bAdyHhJ/38H8DVy4y4bSOnq4AAAAASUVORK5CYII=";
-// Mace icon: updated with a transparent pixel mace (32x32)
 const MACE_ICON = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADFklEQVR4nO2WS2gTURSG/0lm0jRNmzZp+qo1rVpbBVt3UgUpqBsXiktBhYKIujB7ceFGXLihgiAWBNGNCC4EQRERhVawVrTWh62vaWozaZq0M23SmdyM88+dy0yaTKapoCLOLznknnt/P2YAwzAMwwhr8LSaHyHSN5RjFRkQcwg4BAMDRVcVhwWrULrAyAomZBKB0hoB4BkSJiJI8n8k4KthAIIQInILAaNBE8kBma2OJEDDh0SqmMA5L2Chq9YGA8YFoAzo3E9QAfQClkFLk4BkpwJmFACr9/5WNcQJIKq0AvDPQJUaI38jwGAAIxFeADsDvRc8AYWbA42iREJmAJgCQUaMAb1oAQ2aNZZFa/GCtkiJSBEczkFGVnBKCwnYdAJUbmz/Zn7TkUiEMNAZ4Ee2BgoVwHugJCOxWAzM1p3eDypUFXUEBJJYnQWMJdAUCkAagAtiPwEKDDkAyTvnAwBiPpOn4A3H2gE0IGcYe08wLAmgDOw0tDmBSrAyIwR4gWSPAEaCJ40AyxgF+PX2oZQdH0YvGICjQA0cAEi5B+ACJABHkEewS12B3SdAMODQRMMC2H1KBbAfpQRYj2EmgPn8HpEPm8n2G/Z3A/sN+9j4BfBM2P+P6XgCkkQxgY0Au7jAkhCF1r7ezZ7ugPb2Tl/nlmgbC6yA2ZtgDIAxGgAEagzAyxIHAXI+y9q7+hwHFNEFdhB4yI0IGGFADwDPMVoETOFA7A5ga29xdHQMmLiT04B0TCQtAhZAEauAC5bhXjIF2MNIgbEl1bJ72LpIBNL0wE0nEhwvAoYLYixACiirAQQi2ORa4L1GAAb2F4Hd2A8EiN9QhRG2x4ZMAHQ4kUIac9ELD+7PFzxha69HD3r0dL2/r0PC6A8Ru6u7b+T4YCYQ6Nr3AVyw/TOHqGNOAkcu31zsCfx7j2UE1toCpA07d6NY2Nrp/CIfBrBrhs2AwwKEFS0DIACqAKzMY74zYAFIDwCWnifXshj/hgFAC3E3Iqhb3VfL8n8FyPgN5aRrlWh58AwAAAAASUVORK5CYII=";
 
 /* ---------- Leaderboards ---------- */
@@ -853,7 +882,7 @@ const titleText = document.getElementById("titleText");
 
 function iconMarkup(board){
     return board.icon
-        ? `<img src="${board.icon}" alt="${board.label}">`
+        ? `<img src="${board.icon}" alt="${board.label}" style="width:100%;height:100%;object-fit:contain;">`
         : `<span class="emoji-icon">${board.emoji}</span>`;
 }
 
@@ -909,6 +938,19 @@ const TIER_COLORS = {
     LT5: "#454b54"
 };
 
+const TIER_DISPLAY_NAMES = {
+    HT1: "Celestial",
+    LT1: "Nova",
+    HT2: "Diamond",
+    LT2: "Platinum",
+    HT3: "Gold",
+    LT3: "Silver",
+    HT4: "Bronze",
+    LT4: "Iron",
+    HT5: "Copper",
+    LT5: "Stone"
+};
+
 function getTierThresholds(topElo){
     const anchor = topElo >= HT1_BASE ? topElo : HT1_BASE;
     const range = anchor - LT5_FLOOR;
@@ -943,12 +985,12 @@ function renderInfoTooltip(thresholds){
     TIER_ORDER.forEach(name => {
         const val = Math.ceil(thresholds[name]);
         html += `<div class="info-tooltip-row">
-                    <span class="info-tooltip-tier" style="color:${TIER_COLORS[name]}">${name}</span>
+                    <span class="info-tooltip-tier" style="color:${TIER_COLORS[name]}">${TIER_DISPLAY_NAMES[name]}</span>
                     <span class="info-tooltip-elo">${val}+</span>
                 </div>`;
     });
     html += `<div class="info-tooltip-row">
-                <span class="info-tooltip-tier" style="color:${TIER_COLORS.LT5}">LT5</span>
+                <span class="info-tooltip-tier" style="color:${TIER_COLORS.LT5}">${TIER_DISPLAY_NAMES.LT5}</span>
                 <span class="info-tooltip-elo">&lt;${LT5_FLOOR}</span>
             </div>`;
     infoTooltip.innerHTML = html;
@@ -998,6 +1040,7 @@ function render(){
         const rank = i + 1;
         const elo = p[field];
         const tier = getTier(elo, thresholds);
+        const tierDisplay = TIER_DISPLAY_NAMES[tier];
         const div = document.createElement("div");
         div.className = `player ${rankClass(rank)}`;
         div.innerHTML = `
@@ -1009,12 +1052,26 @@ function render(){
             </div>
             <div class="info">${p.name}</div>
             <div class="elo-wrap">
-                <span class="elo">${elo}</span>
+                <span class="elo" style="color:#a9b6ff;">${elo}</span>
                 <span class="tier-badge" style="color:${TIER_COLORS[tier]}">${tier}</span>
             </div>
         `;
         div.addEventListener("click", () => openProfile(p));
         list.appendChild(div);
+
+        // Add hover tooltip for tier badge
+        const tierBadge = div.querySelector('.tier-badge');
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tier-tooltip-leaderboard';
+        tooltip.textContent = tierDisplay;
+        tierBadge.appendChild(tooltip);
+
+        tierBadge.addEventListener('mouseenter', () => {
+            tooltip.style.display = 'block';
+        });
+        tierBadge.addEventListener('mouseleave', () => {
+            tooltip.style.display = 'none';
+        });
     });
 
     if(sorted.length > COLLAPSED_COUNT){
@@ -1035,6 +1092,7 @@ const modalOverlay = document.getElementById("modalOverlay");
 const modalClose = document.getElementById("modalClose");
 const modalAvatar = document.getElementById("modalAvatar");
 const modalName = document.getElementById("modalName");
+const modalTitleDisplay = document.getElementById("modalTitleDisplay");
 const modalRoleBadge = document.getElementById("modalRoleBadge");
 const modalPositionCard = document.getElementById("modalPositionCard");
 const tiersRow = document.getElementById("tiersRow");
@@ -1065,7 +1123,6 @@ function renderTierIcons(player){
     });
     tiersRow.innerHTML = html;
 
-    // attach global tooltip hover handlers
     document.querySelectorAll('.tier-icon-wrap').forEach(wrap => {
         wrap.addEventListener('mouseenter', (e) => {
             const tip = wrap.getAttribute('data-tip');
@@ -1073,7 +1130,6 @@ function renderTierIcons(player){
             const rect = wrap.getBoundingClientRect();
             globalTooltip.style.display = 'block';
             globalTooltip.textContent = tip;
-            // position above the icon
             globalTooltip.style.left = `${rect.left + rect.width/2}px`;
             globalTooltip.style.top = `${rect.top - 8}px`;
             globalTooltip.style.transform = 'translate(-50%, -100%)';
@@ -1088,11 +1144,21 @@ function openProfile(player){
     modalAvatar.innerHTML = `<img src="${avatarUrl(player.name, 110)}" alt="${player.name}" onerror="this.parentElement.innerHTML='?'">`;
     modalName.textContent = player.name;
 
+    // Get overall tier for title display
+    const overallSorted = getSortedPlayers("__total");
+    const overallTopElo = overallSorted.length ? overallSorted[0]["__total"] : 0;
+    const overallThresholds = getTierThresholds(overallTopElo);
+    const overallTier = getTier(player.__total, overallThresholds);
+    const overallTierName = TIER_DISPLAY_NAMES[overallTier];
+    
+    // Display the tier title name centered, without the tier icon
+    modalTitleDisplay.textContent = overallTierName;
+    modalTitleDisplay.style.color = TIER_COLORS[overallTier];
+
     const role = getRole(player.name);
     modalRoleBadge.textContent = role.label;
     modalRoleBadge.className = `role-badge ${role.cls}`;
 
-    const overallSorted = getSortedPlayers("__total");
     const overallRank = overallSorted.findIndex(p => p.name === player.name) + 1;
     const overallTotal = player.__total;
 
