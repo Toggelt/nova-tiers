@@ -49,6 +49,83 @@ h2{
     height:100%;
 }
 
+.top-bar{
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom:14px;
+}
+.info-btn-wrapper{
+    position:relative;
+}
+.info-btn{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    background:#1c1c22;
+    border:1px solid #2c2c34;
+    color:#c9c9d1;
+    padding:7px 16px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:700;
+    font-family: Arial, sans-serif;
+    cursor:pointer;
+    transition: background 0.15s ease;
+}
+.info-btn:hover{
+    background:#26262e;
+}
+.info-icon{
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    background:#3a3a44;
+    color:#fff;
+    font-size:11px;
+    font-weight:800;
+    font-style:italic;
+    font-family: 'Georgia', serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+.info-tooltip{
+    position:absolute;
+    top:calc(100% + 8px);
+    right:0;
+    background:#191920;
+    border:1px solid #2c2c34;
+    border-radius:10px;
+    padding:12px 16px;
+    min-width:180px;
+    display:none;
+    z-index:50;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+}
+.info-btn-wrapper:hover .info-tooltip{
+    display:block;
+}
+.info-tooltip-title{
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:1px;
+    color:#8b8b96;
+    text-transform:uppercase;
+    margin-bottom:8px;
+}
+.info-tooltip-row{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    font-size:13px;
+    padding:3px 0;
+    font-family: monospace;
+}
+.info-tooltip-row span:first-child{
+    font-weight:800;
+}
+
 .player{
     display:flex;
     align-items:stretch;
@@ -333,6 +410,12 @@ h2{
 </head>
 <body>
 <div class="container">
+<div class="top-bar">
+  <div class="info-btn-wrapper">
+    <button class="info-btn" id="infoBtn"><span class="info-icon">i</span>Info</button>
+    <div class="info-tooltip" id="infoTooltip">Loading...</div>
+  </div>
+</div>
 <h2><span class="title-icon" id="titleIcon"></span>Kanal Server Leaderboard</h2>
 <div id="list">Loading...</div>
 <button id="toggleBtn" class="toggle-btn" style="display:none;">Show all</button>
@@ -463,6 +546,19 @@ function getTier(elo, thresholds){
     return "LT5";
 }
 
+const infoTooltip = document.getElementById("infoTooltip");
+const TIER_ORDER = ["HT1","LT1","HT2","LT2","HT3","LT3","HT4","LT4","HT5"];
+
+function renderInfoTooltip(thresholds){
+    let html = `<div class="info-tooltip-title">Elo required</div>`;
+    TIER_ORDER.forEach(name => {
+        const val = Math.ceil(thresholds[name]);
+        html += `<div class="info-tooltip-row"><span style="color:${TIER_COLORS[name]}">${name}</span><span>${val}+</span></div>`;
+    });
+    html += `<div class="info-tooltip-row"><span style="color:${TIER_COLORS.LT5}">LT5</span><span>&lt;${LT5_FLOOR}</span></div>`;
+    infoTooltip.innerHTML = html;
+}
+
 /* ---------- Roles ---------- */
 function getRole(name){
     if(name === "TestingCheats") return { label: "Developer", cls: "role-developer" };
@@ -486,6 +582,7 @@ function render(){
     const playersToShow = expanded ? allPlayers : allPlayers.slice(0, COLLAPSED_COUNT);
     const topElo = allPlayers.length ? allPlayers[0].KanalServer : 0;
     const thresholds = getTierThresholds(topElo);
+    renderInfoTooltip(thresholds);
 
     playersToShow.forEach((p, i) => {
         const rank = i + 1;
