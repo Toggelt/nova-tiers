@@ -5,13 +5,13 @@
 <title>Kanal Server Leaderboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
 <style>
 *{
     box-sizing:border-box;
 }
 body{
-    font-family: 'Rajdhani', 'Segoe UI', Arial, sans-serif;
+    font-family: Arial, sans-serif;
     background:#0b0b0e;
     color:#fff;
     display:flex;
@@ -30,8 +30,9 @@ h2{
     margin-top:4px;
     margin-bottom:18px;
     letter-spacing:2px;
-    font-weight:700;
+    font-weight:800;
     text-transform:uppercase;
+    font-family: 'Orbitron', Arial, sans-serif;
 }
 .player{
     display:flex;
@@ -40,11 +41,12 @@ h2{
     border-radius:10px;
     margin:10px 0;
     overflow:hidden;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 .player:hover{
-    transform: translateY(-2px);
+    transform: scale(1.035);
     box-shadow: 0 6px 16px rgba(0,0,0,0.45);
+    filter: brightness(1.25);
 }
 
 .rank-flag{
@@ -92,6 +94,7 @@ h2{
     font-size:21px;
     font-weight:700;
     letter-spacing:0.3px;
+    font-family: monospace;
 }
 
 .elo{
@@ -101,6 +104,7 @@ h2{
     font-size:18px;
     font-weight:700;
     color:#a9b6ff;
+    font-family: monospace;
 }
 
 /* Rank 1 - gold */
@@ -130,7 +134,7 @@ h2{
     color:#fff;
     border:none;
     border-radius:8px;
-    font-family:'Rajdhani', Arial, sans-serif;
+    font-family: Arial, sans-serif;
     font-weight:600;
     font-size:15px;
     letter-spacing:0.5px;
