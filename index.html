@@ -414,13 +414,13 @@ document.getElementById("titleIcon").innerHTML = buildHelmetIconSVG();
 // Cumulative % subtracted from HT1 elo (=100%) to reach each tier's threshold
 const TIER_STEPS = [
     { name: "LT1", pct: 10 },
-    { name: "HT2", pct: 10 },
-    { name: "LT2", pct: 10 },
-    { name: "HT3", pct: 10 },
-    { name: "LT3", pct: 15 },
-    { name: "HT4", pct: 15 },
-    { name: "LT4", pct: 15 },
-    { name: "HT5", pct: 15 }
+    { name: "HT2", pct: 20 },
+    { name: "LT2", pct: 30 },
+    { name: "HT3", pct: 40 },
+    { name: "LT3", pct: 55 },
+    { name: "HT4", pct: 70 },
+    { name: "LT4", pct: 85 },
+    { name: "HT5", pct: 100 }
 ];
 const HT1_BASE = 1250;
 const LT5_FLOOR = 1000; // below this elo is always LT5, regardless of scaling
