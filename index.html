@@ -12,7 +12,6 @@ body{
     justify-content:center;
     padding:30px;
 }
-
 .container{
     width:400px;
     background:#18181b;
@@ -20,12 +19,10 @@ body{
     border-radius:12px;
     border:1px solid #2a2a2e;
 }
-
 h2{
     text-align:center;
     margin-top:0;
 }
-
 .player{
     display:flex;
     justify-content:space-between;
@@ -35,52 +32,90 @@ h2{
     border-radius:8px;
     font-family: monospace;
 }
+.toggle-btn{
+    display:block;
+    width:100%;
+    margin-top:10px;
+    padding:10px;
+    background:#2a2a2e;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    font-family: Arial;
+    font-size:14px;
+    cursor:pointer;
+    transition: background 0.2s;
+}
+.toggle-btn:hover{
+    background:#3a3a3e;
+}
 </style>
 </head>
 <body>
-
 <div class="container">
 <h2>🏆 ELO LEADERBOARD</h2>
 <div id="list">Loading...</div>
+<button id="toggleBtn" class="toggle-btn" style="display:none;">Show all</button>
 </div>
-
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
 // 🔴 PASTE YOUR KEYS HERE
-const SUPABASE_URL = "https://fyyyjjysztzxmmdgubnb.supabase.co";
-const SUPABASE_KEY = "sb_publishable_kHwFOpox2rS81CKz832IBg_fZr5GoWH";
-
+const SUPABASE_URL = "redacted";
+const SUPABASE_KEY = "redacted";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const COLLAPSED_COUNT = 5; // how many players to show before "Show all"
+let allPlayers = [];
+let expanded = false;
+
+const list = document.getElementById("list");
+const toggleBtn = document.getElementById("toggleBtn");
+
+function render(){
+    list.innerHTML = "";
+    const playersToShow = expanded ? allPlayers : allPlayers.slice(0, COLLAPSED_COUNT);
+
+    playersToShow.forEach((p, i) => {
+        const div = document.createElement("div");
+        div.className = "player";
+        div.innerHTML = `
+            <span>${i+1}. ${p.name}</span>
+            <span>${p.KanalServer}</span>
+        `;
+        list.appendChild(div);
+    });
+
+    if(allPlayers.length > COLLAPSED_COUNT){
+        toggleBtn.style.display = "block";
+        toggleBtn.textContent = expanded ? "Show less" : `Show all (${allPlayers.length})`;
+    } else {
+        toggleBtn.style.display = "none";
+    }
+}
+
+toggleBtn.addEventListener("click", () => {
+    expanded = !expanded;
+    render();
+});
 
 async function loadPlayers(){
     const { data, error } = await supabase
         .from("players")
         .select("*")
-        .order("elo", { ascending: false });
-
-    const list = document.getElementById("list");
-    list.innerHTML = "";
+        .order("KanalServer", { ascending: false });
 
     if(error){
         list.innerHTML = "Error loading data";
+        toggleBtn.style.display = "none";
         return;
     }
 
-    data.forEach((p, i) => {
-        const div = document.createElement("div");
-        div.className = "player";
-        div.innerHTML = `
-            <span>${i+1}. ${p.name}</span>
-            <span>${p.elo}</span>
-        `;
-        list.appendChild(div);
-    });
+    allPlayers = data;
+    render();
 }
 
 loadPlayers();
 setInterval(loadPlayers, 5000); // auto refresh every 5 sec
 </script>
-
 </body>
 </html>
