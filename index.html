@@ -44,16 +44,191 @@ h2{
     height:30px;
     flex-shrink:0;
 }
-.title-icon svg{
+.title-icon svg, .title-icon img{
     width:100%;
     height:100%;
+    image-rendering: pixelated;
+}
+
+/* ---------- Leaderboard Tab Selector ---------- */
+.tab-menu{
+    display:flex;
+    background:#1c1c22;
+    border:1px solid #2c2c34;
+    border-radius:14px;
+    overflow:hidden;
+    margin-bottom:16px;
+}
+.tab-item{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:10px 8px 9px;
+    cursor:pointer;
+    color:#8b8b96;
+    border-right:1px solid #2c2c34;
+    transition: background 0.15s ease, color 0.15s ease;
+    user-select:none;
+}
+.tab-item:last-child{
+    border-right:none;
+}
+.tab-item img{
+    width:22px;
+    height:22px;
+    image-rendering: pixelated;
+}
+.tab-item span{
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.4px;
+    white-space:nowrap;
+}
+.tab-item:hover{
+    background:#22222a;
+    color:#c9c9d1;
+}
+.tab-item.active{
+    background:#26262e;
+    color:#fff;
+}
+.tab-item.active span{
+    color:#a9b6ff;
 }
 
 .top-bar{
     display:flex;
+    align-items:center;
     justify-content:flex-end;
+    gap:10px;
     margin-bottom:14px;
 }
+
+/* ---------- Login ---------- */
+.login-wrapper{
+    position:relative;
+}
+.login-btn{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    background:#1c1c22;
+    border:1px solid #2c2c34;
+    color:#c9c9d1;
+    padding:6px 16px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:700;
+    font-family: Arial, sans-serif;
+    cursor:pointer;
+    transition: background 0.15s ease;
+}
+.login-btn:hover{
+    background:#26262e;
+}
+.login-btn.logged-in{
+    padding:4px 14px 4px 4px;
+}
+.login-face{
+    width:26px;
+    height:26px;
+    border-radius:6px;
+    overflow:hidden;
+    background:#000;
+    flex-shrink:0;
+    image-rendering: pixelated;
+}
+.login-face img{
+    width:100%;
+    height:100%;
+    image-rendering: pixelated;
+}
+.login-panel{
+    position:absolute;
+    top:calc(100% + 8px);
+    right:0;
+    background:#191920;
+    border:1px solid #2c2c34;
+    border-radius:10px;
+    padding:16px;
+    width:220px;
+    display:none;
+    z-index:60;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+}
+.login-panel.active{
+    display:block;
+}
+.login-panel-title{
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:1px;
+    color:#8b8b96;
+    text-transform:uppercase;
+    margin-bottom:10px;
+}
+.login-panel input{
+    width:100%;
+    background:#131318;
+    border:1px solid #2c2c34;
+    border-radius:7px;
+    color:#fff;
+    padding:8px 10px;
+    font-size:13px;
+    margin-bottom:8px;
+    font-family: Arial, sans-serif;
+}
+.login-panel input:focus{
+    outline:none;
+    border-color:#4a4a5c;
+}
+.login-submit{
+    width:100%;
+    background:#3a3a44;
+    border:none;
+    color:#fff;
+    padding:9px;
+    border-radius:7px;
+    font-weight:700;
+    font-size:13px;
+    cursor:pointer;
+    margin-top:2px;
+    transition: background 0.15s ease;
+}
+.login-submit:hover{
+    background:#464652;
+}
+.login-error{
+    color:#ff6b6b;
+    font-size:12px;
+    margin-top:6px;
+    display:none;
+}
+.logout-btn{
+    width:100%;
+    background:#241414;
+    border:1px solid #7a2323;
+    color:#ff8a8a;
+    padding:9px;
+    border-radius:7px;
+    font-weight:700;
+    font-size:13px;
+    cursor:pointer;
+    transition: background 0.15s ease;
+}
+.logout-btn:hover{
+    background:#2e1818;
+}
+.login-panel .logged-name{
+    font-size:15px;
+    font-weight:700;
+    margin-bottom:12px;
+    color:#fff;
+}
+
 .info-btn-wrapper{
     position:relative;
 }
@@ -321,7 +496,6 @@ h2{
     margin-bottom:16px;
 }
 
-/* Role badge (replaces old Kanal Server badge) */
 .role-badge{
     display:inline-block;
     padding:8px 22px;
@@ -410,13 +584,22 @@ h2{
 </head>
 <body>
 <div class="container">
+
+<!-- Leaderboard Tab Selector -->
+<div class="tab-menu" id="tabMenu"></div>
+
 <div class="top-bar">
+  <div class="login-wrapper" id="loginWrapper">
+    <button class="login-btn" id="loginBtn">Log in</button>
+    <div class="login-panel" id="loginPanel"></div>
+  </div>
   <div class="info-btn-wrapper">
     <button class="info-btn" id="infoBtn"><span class="info-icon">i</span>Info</button>
     <div class="info-tooltip" id="infoTooltip">Loading...</div>
   </div>
 </div>
-<h2><span class="title-icon" id="titleIcon"></span>Kanal Server Leaderboard</h2>
+
+<h2><span class="title-icon" id="titleIcon"></span><span id="titleText">Kanal Server Leaderboard</span></h2>
 <div id="list">Loading...</div>
 <button id="toggleBtn" class="toggle-btn" style="display:none;">Show all</button>
 </div>
@@ -449,49 +632,55 @@ const COLLAPSED_COUNT = 5; // how many players to show before "Show all"
 let allPlayers = [];
 let expanded = false;
 
+/* ---------- Icons (embedded as data URIs) ---------- */
+const HELMET_ICON = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAMAAAC8EZcfAAAAGFBMVEX///8kHyBNSU0XERFHPj81LS1dVl12anY7r+2yAAAAtUlEQVR4nO3Yuw6DMBBFQV5J/v+P6bwprqwgUBTiOS0sO51lpkmSJEmSJEkaqPlEgICAgIDjAmvJ1lo+7NFaW4CAgICAYwD7rFfr2UrAmr2cCggICAh4G2Ba3G/rBggICAg4LnAOpaMuvQcICAgICPi+uJYsoXoKCAgICAiYL02JmqqJL/9+AwQEBAT8IWAdUseBNQsICAgIOBowUY9/OqEvYgECAgIC3gYoSZIkSZIkSZL0Z+3Dykz1fnGxNQAAAABJRU5ErkJggg==";
+const MACE_ICON = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAMAAAC8EZcfAAAAJ1BMVEX///9CR1IeIimZoa4uMztVXGl8hJG/zudQY5AjQmlmbHp6gsS1pcoCWs1uAAABKUlEQVR4nO3aQVKDQBBA0SRqNOr9z+uue9M1ZdKArb6/ZIB5sKEYOJ1261y032wPBNgNsBtgN8BuQ4GJeYpeo4r6Eh1yIYCAgICAI4EVKyeuqJfoOcptgICAgID/A7hm5cTXaE3diAUICAgIOBy4ZuXompX75bEbUQEBAQEBfw3wPbouq1hVG1EBAQEBAYcDv0vNB1yFSUK+XFWjgICAgIB/GZjlCZM6gAUICAgIOBz4Fn1Ea8LB9w0QEBAQcCSwYt2i3G9NPfi+AQICAgL+ODBZn1HFqroUbcQCBAQEBBwO7LAOCbAbYDfAboDdhgKHsjLAboDdALsBdhsFPBetl9UAAQEBAQFrYP4WtuMq3v0BdgPsBtgNsNt4YPWRBfCeALsBdgPsBtjsC6XtoblKSRRDAAAAAElFTkSuQmCC";
+
+/* ---------- Leaderboards ---------- */
+const LEADERBOARDS = {
+    KanalServer: {
+        key: "KanalServer",
+        field: "KanalServer",
+        label: "Kanal Server",
+        title: "Kanal Server Leaderboard",
+        icon: HELMET_ICON
+    },
+    LowblockMace: {
+        key: "LowblockMace",
+        field: "LowblockMace",
+        label: "Lowblock Mace",
+        title: "Lowblock Mace Leaderboard",
+        icon: MACE_ICON
+    }
+};
+let currentBoard = "KanalServer";
+
 const list = document.getElementById("list");
 const toggleBtn = document.getElementById("toggleBtn");
+const tabMenu = document.getElementById("tabMenu");
+const titleIcon = document.getElementById("titleIcon");
+const titleText = document.getElementById("titleText");
 
-/* ---------- Pixel icon: enchanted netherite helmet w/ amethyst trim ---------- */
-function buildHelmetIconSVG(){
-    const grid = [
-        "....TTTT....",
-        "...TBBBBT...",
-        "..TBBHHBBT..",
-        ".TBBHHHHBBT.",
-        "TBBHEEEEHBBT",
-        "TBBHEEEEHBBT",
-        "TBBHHHHHHBBT",
-        ".TBBBBBBBBT.",
-        ".TBBBBBBBBT.",
-        "..TBBBBBBT..",
-        "...TBBBBT...",
-        "....TTTT...."
-    ];
-    const colors = {
-        T: "#9c5cff",
-        B: "#3a3a40",
-        H: "#57575e",
-        E: "#0c0c10"
-    };
-    let rects = "";
-    grid.forEach((row, y) => {
-        for(let x = 0; x < row.length; x++){
-            const c = row[x];
-            if(c === "." ) continue;
-            rects += `<rect x="${x}" y="${y}" width="1" height="1" fill="${colors[c]}"/>`;
-        }
+function renderTabMenu(){
+    tabMenu.innerHTML = "";
+    Object.values(LEADERBOARDS).forEach(board => {
+        const el = document.createElement("div");
+        el.className = "tab-item" + (board.key === currentBoard ? " active" : "");
+        el.innerHTML = `<img src="${board.icon}" alt="${board.label}"><span>${board.label}</span>`;
+        el.addEventListener("click", () => switchBoard(board.key));
+        tabMenu.appendChild(el);
     });
-    const sparkles = `
-        <rect x="1" y="1" width="0.6" height="0.6" fill="#f0e3ff" opacity="0.9"/>
-        <rect x="10.2" y="3" width="0.6" height="0.6" fill="#f0e3ff" opacity="0.7"/>
-        <rect x="3.5" y="9.6" width="0.6" height="0.6" fill="#f0e3ff" opacity="0.8"/>
-        <rect x="8" y="10.2" width="0.6" height="0.6" fill="#f0e3ff" opacity="0.6"/>
-    `;
-    return `<svg viewBox="0 0 13 12" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">${rects}${sparkles}</svg>`;
 }
 
-document.getElementById("titleIcon").innerHTML = buildHelmetIconSVG();
+function switchBoard(key){
+    if(currentBoard === key) return;
+    currentBoard = key;
+    expanded = false;
+    titleIcon.innerHTML = `<img src="${LEADERBOARDS[key].icon}" alt="">`;
+    titleText.textContent = LEADERBOARDS[key].title;
+    renderTabMenu();
+    render();
+}
 
 /* ---------- Tier system ---------- */
 // Cumulative % subtracted from HT1 elo (=100%) to reach each tier's threshold
@@ -578,16 +767,32 @@ function avatarUrl(name, size){
     return `https://mc-heads.net/avatar/${encodeURIComponent(name)}/${size}`;
 }
 
+function getSortedPlayers(field){
+    return [...allPlayers]
+        .filter(p => p[field] !== null && p[field] !== undefined)
+        .sort((a, b) => b[field] - a[field]);
+}
+
 function render(){
+    const field = LEADERBOARDS[currentBoard].field;
+    const sorted = getSortedPlayers(field);
+
     list.innerHTML = "";
-    const playersToShow = expanded ? allPlayers : allPlayers.slice(0, COLLAPSED_COUNT);
-    const topElo = allPlayers.length ? allPlayers[0].KanalServer : 0;
+    const playersToShow = expanded ? sorted : sorted.slice(0, COLLAPSED_COUNT);
+    const topElo = sorted.length ? sorted[0][field] : 0;
     const thresholds = getTierThresholds(topElo);
     renderInfoTooltip(thresholds);
 
+    if(sorted.length === 0){
+        list.innerHTML = `<div class="placeholder-card"><div class="ph-dot"></div>No players on this leaderboard yet</div>`;
+        toggleBtn.style.display = "none";
+        return;
+    }
+
     playersToShow.forEach((p, i) => {
         const rank = i + 1;
-        const tier = getTier(p.KanalServer, thresholds);
+        const elo = p[field];
+        const tier = getTier(elo, thresholds);
         const div = document.createElement("div");
         div.className = `player ${rankClass(rank)}`;
         div.innerHTML = `
@@ -599,17 +804,17 @@ function render(){
             </div>
             <div class="info">${p.name}</div>
             <div class="elo-wrap">
-                <span class="elo">${p.KanalServer}</span>
+                <span class="elo">${elo}</span>
                 <span class="tier-badge" style="color:${TIER_COLORS[tier]}">${tier}</span>
             </div>
         `;
-        div.addEventListener("click", () => openProfile(p, rank, tier));
+        div.addEventListener("click", () => openProfile(p, rank, tier, field));
         list.appendChild(div);
     });
 
-    if(allPlayers.length > COLLAPSED_COUNT){
+    if(sorted.length > COLLAPSED_COUNT){
         toggleBtn.style.display = "block";
-        toggleBtn.textContent = expanded ? "Show less" : `Show all (${allPlayers.length})`;
+        toggleBtn.textContent = expanded ? "Show less" : `Show all (${sorted.length})`;
     } else {
         toggleBtn.style.display = "none";
     }
@@ -628,7 +833,7 @@ const modalName = document.getElementById("modalName");
 const modalRoleBadge = document.getElementById("modalRoleBadge");
 const modalPositionCard = document.getElementById("modalPositionCard");
 
-function openProfile(player, rank, tier){
+function openProfile(player, rank, tier, field){
     modalAvatar.innerHTML = `<img src="${avatarUrl(player.name, 110)}" alt="${player.name}" onerror="this.parentElement.innerHTML='?'">`;
     modalName.textContent = player.name;
 
@@ -642,7 +847,7 @@ function openProfile(player, rank, tier){
             <span class="rank-num">${rank}.</span>
         </div>
         <div class="pos-info">
-            🏆 OVERALL <span class="pos-points">(${player.KanalServer} points)</span>
+            🏆 ${LEADERBOARDS[currentBoard].label.toUpperCase()} <span class="pos-points">(${player[field]} points)</span>
             <span class="tier-badge" style="color:${TIER_COLORS[tier]}">${tier}</span>
         </div>
     `;
@@ -659,11 +864,100 @@ modalOverlay.addEventListener("click", (e) => {
     if(e.target === modalOverlay) closeProfile();
 });
 
-async function loadPlayers(){
+/* ---------- Login ---------- */
+const loginBtn = document.getElementById("loginBtn");
+const loginPanel = document.getElementById("loginPanel");
+const loginWrapper = document.getElementById("loginWrapper");
+let currentUser = null; // kept in memory only, resets on page reload
+
+function renderLoggedOutPanel(){
+    loginPanel.innerHTML = `
+        <div class="login-panel-title">Player Login</div>
+        <input type="text" id="loginUsername" placeholder="Minecraft username" autocomplete="off">
+        <input type="password" id="loginPassword" placeholder="Password" autocomplete="off">
+        <button class="login-submit" id="loginSubmit">Log in</button>
+        <div class="login-error" id="loginError">Invalid username or password.</div>
+    `;
+    document.getElementById("loginSubmit").addEventListener("click", attemptLogin);
+    document.getElementById("loginPassword").addEventListener("keydown", (e) => {
+        if(e.key === "Enter") attemptLogin();
+    });
+}
+
+function renderLoggedInPanel(){
+    loginPanel.innerHTML = `
+        <div class="logged-name">${currentUser.name}</div>
+        <button class="logout-btn" id="logoutBtn">Log out</button>
+    `;
+    document.getElementById("logoutBtn").addEventListener("click", logout);
+}
+
+async function attemptLogin(){
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    const errorEl = document.getElementById("loginError");
+    errorEl.style.display = "none";
+
+    if(!username || !password) return;
+
     const { data, error } = await supabase
         .from("players")
         .select("*")
-        .order("KanalServer", { ascending: false });
+        .ilike("name", username)
+        .maybeSingle();
+
+    if(error || !data || data.password !== password){
+        errorEl.style.display = "block";
+        return;
+    }
+
+    currentUser = data;
+    updateLoginButton();
+    renderLoggedInPanel();
+}
+
+function logout(){
+    currentUser = null;
+    updateLoginButton();
+    renderLoggedOutPanel();
+    loginPanel.classList.remove("active");
+}
+
+function updateLoginButton(){
+    if(currentUser){
+        loginBtn.classList.add("logged-in");
+        loginBtn.innerHTML = `
+            <div class="login-face"><img src="${avatarUrl(currentUser.name, 26)}" alt=""></div>
+            ${currentUser.name}
+        `;
+    } else {
+        loginBtn.classList.remove("logged-in");
+        loginBtn.textContent = "Log in";
+    }
+}
+
+loginBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    loginPanel.classList.toggle("active");
+});
+
+document.addEventListener("click", (e) => {
+    if(!loginWrapper.contains(e.target)){
+        loginPanel.classList.remove("active");
+    }
+});
+
+renderLoggedOutPanel();
+
+/* ---------- Init ---------- */
+renderTabMenu();
+titleIcon.innerHTML = `<img src="${LEADERBOARDS[currentBoard].icon}" alt="">`;
+titleText.textContent = LEADERBOARDS[currentBoard].title;
+
+async function loadPlayers(){
+    const { data, error } = await supabase
+        .from("players")
+        .select("*");
 
     if(error){
         list.innerHTML = "Error loading data";
@@ -673,6 +967,12 @@ async function loadPlayers(){
 
     allPlayers = data;
     render();
+
+    // keep logged-in user's data fresh (e.g. elo updates) without logging them out
+    if(currentUser){
+        const fresh = allPlayers.find(p => p.name.toLowerCase() === currentUser.name.toLowerCase());
+        if(fresh) currentUser = fresh;
+    }
 }
 
 loadPlayers();
