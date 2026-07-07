@@ -523,11 +523,12 @@ const TIER_COLORS = {
 
 function getTierThresholds(topElo){
     const anchor = topElo >= HT1_BASE ? topElo : HT1_BASE;
+    const range = anchor - LT5_FLOOR; // 100% of the scale sits between 1000 (0%) and anchor (100%)
     const thresholds = { HT1: anchor };
     let cumulativePct = 0;
     TIER_STEPS.forEach(step => {
         cumulativePct += step.pct;
-        thresholds[step.name] = anchor * (1 - cumulativePct / 100);
+        thresholds[step.name] = LT5_FLOOR + range * (1 - cumulativePct / 100);
     });
     return thresholds;
 }
