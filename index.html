@@ -19,13 +19,18 @@ body{
     padding:30px;
 }
 .container{
-    width:520px;
+    width:640px;
     background:#131318;
-    padding:18px;
+    padding:20px;
     border-radius:14px;
     border:1px solid #232329;
 }
 h2{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    white-space:nowrap;
     text-align:center;
     margin-top:4px;
     margin-bottom:18px;
@@ -34,6 +39,16 @@ h2{
     text-transform:uppercase;
     font-family: 'Orbitron', Arial, sans-serif;
 }
+.title-icon{
+    width:30px;
+    height:30px;
+    flex-shrink:0;
+}
+.title-icon svg{
+    width:100%;
+    height:100%;
+}
+
 .player{
     display:flex;
     align-items:stretch;
@@ -41,6 +56,7 @@ h2{
     border-radius:10px;
     margin:10px 0;
     overflow:hidden;
+    cursor:pointer;
     transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 .player:hover{
@@ -94,7 +110,7 @@ h2{
     font-size:21px;
     font-weight:700;
     letter-spacing:0.3px;
-    font-family: monospace;
+    font-family: 'Bahnschrift', Arial, sans-serif;
 }
 
 .elo{
@@ -102,9 +118,9 @@ h2{
     align-items:center;
     padding:0 22px;
     font-size:18px;
-    font-weight:700;
+    font-weight:900;
     color:#a9b6ff;
-    font-family: monospace;
+    font-family: 'Arial Black', Arial, sans-serif;
 }
 
 /* Rank 1 - gold */
@@ -144,14 +160,195 @@ h2{
 .toggle-btn:hover{
     background:#2e2e38;
 }
+
+/* ---------- Profile Modal ---------- */
+.modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+    padding:20px;
+}
+.modal-overlay.active{
+    display:flex;
+}
+.modal-box{
+    background:#131318;
+    border-radius:16px;
+    padding:30px;
+    width:360px;
+    max-width:100%;
+    max-height:90vh;
+    overflow-y:auto;
+    position:relative;
+    text-align:center;
+    border:1px solid #232329;
+    font-family: Arial, sans-serif;
+}
+.modal-close{
+    position:absolute;
+    top:14px;
+    right:14px;
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:#22222a;
+    border:none;
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: background 0.2s;
+}
+.modal-close:hover{
+    background:#2e2e38;
+}
+
+.modal-avatar{
+    width:110px;
+    height:110px;
+    border-radius:16px;
+    background:#000;
+    margin:6px auto 16px;
+    overflow:hidden;
+    border:2px solid #2a2a32;
+    image-rendering: pixelated;
+}
+.modal-avatar img{
+    width:100%;
+    height:100%;
+    image-rendering: pixelated;
+}
+
+.modal-name{
+    font-family: 'Bahnschrift', Arial, sans-serif;
+    font-size:26px;
+    font-weight:700;
+    margin-bottom:16px;
+}
+
+.modal-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:#241f30;
+    border:1px solid #3d2f57;
+    padding:8px 18px 8px 8px;
+    border-radius:24px;
+    margin-bottom:26px;
+}
+.badge-icon-circle{
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:#000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    flex-shrink:0;
+}
+.badge-icon-circle svg{
+    width:22px;
+    height:22px;
+}
+.modal-badge span{
+    color:#c9a4ff;
+    font-weight:700;
+    font-size:15px;
+}
+
+.modal-section-label{
+    text-align:left;
+    color:#8b8b96;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+}
+
+.position-card{
+    display:flex;
+    align-items:stretch;
+    background:#191920;
+    border-radius:10px;
+    overflow:hidden;
+    margin-bottom:22px;
+}
+.position-card .rank-flag{
+    min-width:70px;
+    padding:12px 22px 12px 14px;
+}
+.position-card .pos-info{
+    flex:1;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:0 14px;
+    font-weight:700;
+    font-size:15px;
+}
+.position-card .pos-info .pos-points{
+    color:#8b8b96;
+    font-weight:600;
+    font-size:13px;
+}
+
+.placeholder-card{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#17171c;
+    border:1px dashed #2c2c34;
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    color:#5c5c66;
+    font-size:14px;
+    font-weight:600;
+}
+.placeholder-card .ph-dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#2c2c34;
+    flex-shrink:0;
+}
 </style>
 </head>
 <body>
 <div class="container">
-<h2>🏆 Kanal Server Leaderboard</h2>
+<h2><span class="title-icon" id="titleIcon"></span>Kanal Server Leaderboard</h2>
 <div id="list">Loading...</div>
 <button id="toggleBtn" class="toggle-btn" style="display:none;">Show all</button>
 </div>
+
+<!-- Profile Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-avatar" id="modalAvatar"></div>
+    <div class="modal-name" id="modalName"></div>
+    <div class="modal-badge">
+      <div class="badge-icon-circle" id="modalBadgeIcon"></div>
+      <span>Kanal Server</span>
+    </div>
+
+    <div class="modal-section-label">Position</div>
+    <div class="position-card" id="modalPositionCard"></div>
+
+    <div class="modal-section-label">Other Leaderboards</div>
+    <div class="placeholder-card"><div class="ph-dot"></div>Coming soon</div>
+    <div class="placeholder-card"><div class="ph-dot"></div>Coming soon</div>
+  </div>
+</div>
+
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 // 🔴 PASTE YOUR KEYS HERE
@@ -166,11 +363,59 @@ let expanded = false;
 const list = document.getElementById("list");
 const toggleBtn = document.getElementById("toggleBtn");
 
+/* ---------- Pixel icon: enchanted netherite helmet w/ amethyst trim ---------- */
+function buildHelmetIconSVG(){
+    const grid = [
+        "....TTTT....",
+        "...TBBBBT...",
+        "..TBBHHBBT..",
+        ".TBBHHHHBBT.",
+        "TBBHEEEEHBBT",
+        "TBBHEEEEHBBT",
+        "TBBHHHHHHBBT",
+        ".TBBBBBBBBT.",
+        ".TBBBBBBBBT.",
+        "..TBBBBBBT..",
+        "...TBBBBT...",
+        "....TTTT...."
+    ];
+    const colors = {
+        T: "#9c5cff", // amethyst trim
+        B: "#3a3a40", // netherite base
+        H: "#57575e", // highlight
+        E: "#0c0c10"  // eye slit
+    };
+    let rects = "";
+    grid.forEach((row, y) => {
+        for(let x = 0; x < row.length; x++){
+            const c = row[x];
+            if(c === "." ) continue;
+            rects += `<rect x="${x}" y="${y}" width="1" height="1" fill="${colors[c]}"/>`;
+        }
+    });
+    // enchant glint sparkles
+    const sparkles = `
+        <rect x="1" y="1" width="0.6" height="0.6" fill="#f0e3ff" opacity="0.9"/>
+        <rect x="10.2" y="3" width="0.6" height="0.6" fill="#f0e3ff" opacity="0.7"/>
+        <rect x="3.5" y="9.6" width="0.6" height="0.6" fill="#f0e3ff" opacity="0.8"/>
+        <rect x="8" y="10.2" width="0.6" height="0.6" fill="#f0e3ff" opacity="0.6"/>
+    `;
+    return `<svg viewBox="0 0 13 12" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">${rects}${sparkles}</svg>`;
+}
+
+const HELMET_ICON_SVG = buildHelmetIconSVG();
+document.getElementById("titleIcon").innerHTML = HELMET_ICON_SVG;
+document.getElementById("modalBadgeIcon").innerHTML = HELMET_ICON_SVG;
+
 function rankClass(rank){
     if(rank === 1) return "rank-1";
     if(rank === 2) return "rank-2";
     if(rank === 3) return "rank-3";
     return "";
+}
+
+function avatarUrl(name, size){
+    return `https://mc-heads.net/avatar/${encodeURIComponent(name)}/${size}`;
 }
 
 function render(){
@@ -185,12 +430,13 @@ function render(){
             <div class="rank-flag">
                 <span class="rank-num">${rank}.</span>
                 <div class="avatar">
-                    <img src="https://mc-heads.net/avatar/${encodeURIComponent(p.name)}/38" alt="${p.name}" onerror="this.parentElement.innerHTML='?'">
+                    <img src="${avatarUrl(p.name, 38)}" alt="${p.name}" onerror="this.parentElement.innerHTML='?'">
                 </div>
             </div>
             <div class="info">${p.name}</div>
             <div class="elo">${p.KanalServer}</div>
         `;
+        div.addEventListener("click", () => openProfile(p, rank));
         list.appendChild(div);
     });
 
@@ -205,6 +451,39 @@ function render(){
 toggleBtn.addEventListener("click", () => {
     expanded = !expanded;
     render();
+});
+
+/* ---------- Profile Modal logic ---------- */
+const modalOverlay = document.getElementById("modalOverlay");
+const modalClose = document.getElementById("modalClose");
+const modalAvatar = document.getElementById("modalAvatar");
+const modalName = document.getElementById("modalName");
+const modalPositionCard = document.getElementById("modalPositionCard");
+
+function openProfile(player, rank){
+    modalAvatar.innerHTML = `<img src="${avatarUrl(player.name, 110)}" alt="${player.name}" onerror="this.parentElement.innerHTML='?'">`;
+    modalName.textContent = player.name;
+
+    modalPositionCard.className = `position-card ${rankClass(rank)}`;
+    modalPositionCard.innerHTML = `
+        <div class="rank-flag">
+            <span class="rank-num">${rank}.</span>
+        </div>
+        <div class="pos-info">
+            🏆 OVERALL <span class="pos-points">(${player.KanalServer} points)</span>
+        </div>
+    `;
+
+    modalOverlay.classList.add("active");
+}
+
+function closeProfile(){
+    modalOverlay.classList.remove("active");
+}
+
+modalClose.addEventListener("click", closeProfile);
+modalOverlay.addEventListener("click", (e) => {
+    if(e.target === modalOverlay) closeProfile();
 });
 
 async function loadPlayers(){
