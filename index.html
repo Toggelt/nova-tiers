@@ -793,10 +793,11 @@ h2{
     image-rendering: pixelated;
 }
 .mini-tier-tip{
-    position:absolute;
-    bottom:calc(100% + 8px);
-    left:50%;
-    transform:translateX(-50%);
+    display:none;
+}
+.mini-tier-wrap{ cursor:default; }
+.global-mini-tip{
+    position:fixed;
     background:#0e0e12;
     border:1px solid #2c2c34;
     border-radius:6px;
@@ -805,11 +806,10 @@ h2{
     font-weight:700;
     white-space:nowrap;
     display:none;
-    z-index:10;
+    z-index:1000;
     box-shadow: 0 6px 14px rgba(0,0,0,0.5);
-}
-.mini-tier-wrap:hover .mini-tier-tip{
-    display:block;
+    pointer-events:none;
+    transform:translate(-50%,-100%);
 }
 .gained-badge{
     font-size:18px;
@@ -884,6 +884,9 @@ h2{
     <div class="tiers-row" id="tiersRow"></div>
   </div>
 </div>
+
+<!-- Global tooltip for mini tier icons (rendered at body level so it is never clipped by a player row) -->
+<div class="global-mini-tip" id="globalMiniTip"></div>
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -1125,11 +1128,10 @@ function renderMiniTierIcons(player){
         const color = tier ? TIER_COLORS[tier] : "#3a3a44";
         const tipText = hasValue ? `${board.label}: ${tier} (${elo})` : `${board.label}: No data`;
         html += `
-            <div class="mini-tier-wrap">
+            <div class="mini-tier-wrap" data-tip="${tipText}">
                 <div class="mini-tier-circle" style="border-color:${color}">
                     <img src="${board.icon}" alt="${board.label}">
                 </div>
-                <div class="mini-tier-tip">${tipText}</div>
             </div>
         `;
     });
@@ -1190,9 +1192,11 @@ function render(){
         if(isOverall){
             const gained = elo - 1000 * SUB_BOARDS.length;
             const gainedStr = (gained >= 0 ? "+" : "") + gained;
+            const overallTier = getTier(elo, thresholds);
+            const gainedColor = TIER_COLORS[overallTier];
             rightHtml = `
                 <div class="mini-tiers-row">${renderMiniTierIcons(p)}</div>
-                <span class="gained-badge">${gainedStr}</span>
+                <span class="gained-badge" style="color:${gainedColor}">${gainedStr}</span>
             `;
         } else {
             const tier = getTier(elo, thresholds);
@@ -1232,6 +1236,36 @@ toggleBtn.addEventListener("click", () => {
     expanded = !expanded;
     render();
 });
+
+/* ---------- Global tooltip for mini tier icons ----------
+   Rendered at body level (fixed position) so it's never clipped by a
+   player row's rounded-corner overflow:hidden. */
+const globalMiniTip = document.getElementById("globalMiniTip");
+
+function showMiniTip(wrap){
+    const tip = wrap.getAttribute("data-tip");
+    if(!tip) return;
+    globalMiniTip.textContent = tip;
+    globalMiniTip.style.display = "block";
+    const rect = wrap.getBoundingClientRect();
+    globalMiniTip.style.left = (rect.left + rect.width / 2) + "px";
+    globalMiniTip.style.top = (rect.top - 8) + "px";
+}
+
+function hideMiniTip(){
+    globalMiniTip.style.display = "none";
+}
+
+list.addEventListener("mouseover", (e) => {
+    const wrap = e.target.closest(".mini-tier-wrap");
+    if(wrap) showMiniTip(wrap);
+});
+list.addEventListener("mouseout", (e) => {
+    const wrap = e.target.closest(".mini-tier-wrap");
+    if(wrap && !wrap.contains(e.relatedTarget)) hideMiniTip();
+});
+list.addEventListener("scroll", hideMiniTip);
+window.addEventListener("scroll", hideMiniTip, true);
 
 /* ---------- Profile Modal logic ---------- */
 const modalOverlay = document.getElementById("modalOverlay");
