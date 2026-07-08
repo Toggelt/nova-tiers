@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
 <style>
-/* ---------- All styles unchanged ---------- */
+/* ---------- All existing styles (unchanged) ---------- */
 *{
     box-sizing:border-box;
 }
@@ -116,7 +116,7 @@ h2{
     margin-bottom:14px;
 }
 
-/* ---------- Login & Play button ---------- */
+/* ---------- Login & Play button wrapper (updated) ---------- */
 .login-wrapper{
     display:flex;
     align-items:center;
@@ -126,31 +126,54 @@ h2{
     right:34px;
     z-index:200;
 }
+
+/* Play Button */
 .play-btn-wrapper{
     position:relative;
-    display:inline-block;
 }
 .play-btn{
-    background:transparent;
-    border:2px solid #8a5a2a;
-    color:#ff6b6b;
-    font-size:16px;
-    padding:4px 10px;
-    border-radius:50%;
-    width:32px;
-    height:32px;
+    background:#1a3a6a;
+    border:2px solid #2a5a8a;
+    color:#fff;
+    font-weight:800;
+    font-size:14px;
+    padding:6px 16px;
+    border-radius:8px;
+    cursor:pointer;
+    transition: background 0.2s, transform 0.2s, border-color 0.2s;
+    font-family: Arial, sans-serif;
+    letter-spacing:1px;
     display:flex;
     align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
-    font-family: Arial, sans-serif;
+    gap:6px;
 }
-.play-btn.hidden{
-    display:none;
+.play-btn .play-icon{
+    display:inline-block;
+    font-size:16px;
+    line-height:1;
+}
+.play-btn .play-label{
+    display:inline-block;
+}
+.play-btn.logged-in{
+    background:#1a6a3a;
+    border-color:#2a9a5a;
+}
+.play-btn.logged-in:hover{
+    background:#2a8a4a;
+    transform:scale(1.08);
+    border-color:#3aaa6a;
+}
+.play-btn.logged-out{
+    background:#6a3a1a;
+    border-color:#8a5a2a;
+    opacity:0.8;
+    cursor:not-allowed;
 }
 .play-btn.logged-out:hover{
-    background:rgba(255, 0, 0, 0.1);
+    transform:none;
+    background:#6a3a1a;
+    border-color:#8a5a2a;
 }
 .play-tooltip{
     position:absolute;
@@ -307,7 +330,7 @@ h2{
     background:#1f3348;
 }
 
-/* ---------- Queue Modal ---------- */
+/* ---------- Queue Modal (new) ---------- */
 .queue-modal-overlay{
     position:fixed;
     inset:0;
@@ -406,6 +429,7 @@ h2{
     letter-spacing:1px;
     width:100%;
     max-width:200px;
+    position:relative;
 }
 .queue-btn:hover:not(:disabled){
     background:#2a8a4a;
@@ -422,6 +446,12 @@ h2{
 .queue-btn.queued:hover:not(:disabled){
     background:#c99720;
 }
+.queue-btn.queued .queue-btn-text{
+    display:inline;
+}
+.queue-btn.queued .queue-btn-leave{
+    display:none;
+}
 .queue-btn.queued:hover .queue-btn-text{
     display:none;
 }
@@ -429,7 +459,6 @@ h2{
     display:inline;
 }
 .queue-btn .queue-btn-leave{
-    display:none;
     color:#ff6b6b;
 }
 .queue-stats{
@@ -440,11 +469,6 @@ h2{
 .queue-stats span{
     font-weight:700;
     color:#c9c9d1;
-}
-.queue-time{
-    font-size:13px;
-    color:#daa520;
-    min-height:20px;
 }
 
 /* ---------- Rest of existing styles (unchanged) ---------- */
@@ -1019,10 +1043,13 @@ h2{
 </head>
 <body>
 
-<!-- Login & Play button -->
+<!-- Login & Play button (fixed top-right) -->
 <div class="login-wrapper" id="loginWrapper">
   <div class="play-btn-wrapper">
-    <button class="play-btn logged-out" id="playBtn">!</button>
+    <button class="play-btn logged-out" id="playBtn">
+      <span class="play-icon" id="playIcon">!</span>
+      <span class="play-label" id="playLabel">Play</span>
+    </button>
     <div class="play-tooltip" id="playTooltip">Log in to play</div>
   </div>
   <button class="login-btn" id="loginBtn">Log in</button>
@@ -1030,6 +1057,7 @@ h2{
 </div>
 
 <div class="container">
+  <!-- Tab menu, top bar, etc. unchanged -->
   <div class="tab-menu" id="tabMenu"></div>
   <div class="top-bar">
     <div class="info-btn-wrapper">
@@ -1047,6 +1075,7 @@ h2{
       </div>
     </div>
   </div>
+
   <h2><span class="title-icon" id="titleIcon"></span><span id="titleText">Overall Leaderboard</span></h2>
   <div id="list">Loading...</div>
   <button id="toggleBtn" class="toggle-btn" style="display:none;">Show all</button>
@@ -1082,7 +1111,6 @@ h2{
           <span class="mode-label">Kanal Server</span>
         </div>
         <button class="queue-btn" id="queueBtnKanal" disabled>Queue</button>
-        <div class="queue-time" id="queueTimeKanal"></div>
         <div class="queue-stats">
           <span id="queueCountKanal">0</span> in queue · 
           <span id="matchCountKanal">0</span> in matches
@@ -1095,7 +1123,6 @@ h2{
           <span class="mode-label">Lowblock Mace</span>
         </div>
         <button class="queue-btn" id="queueBtnMace" disabled>Queue</button>
-        <div class="queue-time" id="queueTimeMace"></div>
         <div class="queue-stats">
           <span id="queueCountMace">0</span> in queue · 
           <span id="matchCountMace">0</span> in matches
@@ -1126,7 +1153,7 @@ const queueState = {
   LowblockMace: { inQueue: false, joinedAt: null, timerInterval: null, queueId: null }
 };
 
-/* ---------- Icons ---------- */
+/* ---------- Icons from GitHub ---------- */
 const HELMET_ICON_URL = "https://github.com/Toggelt/nova-tiers/blob/main/assets/netherite_helmet.png?raw=true";
 const MACE_ICON_URL   = "https://github.com/Toggelt/nova-tiers/blob/main/assets/mace.png?raw=true";
 
@@ -1623,11 +1650,13 @@ searchBtn.addEventListener("click", (e) => {
 searchInput.addEventListener("input", () => renderSearchResults(searchInput.value));
 searchInput.addEventListener("click", (e) => e.stopPropagation());
 
-/* ---------- 🔐 Login ---------- */
+/* ---------- 🔐 Login with Supabase Auth ---------- */
 const loginBtn = document.getElementById("loginBtn");
 const loginPanel = document.getElementById("loginPanel");
 const loginWrapper = document.getElementById("loginWrapper");
 const playBtn = document.getElementById("playBtn");
+const playIcon = document.getElementById("playIcon");
+const playLabel = document.getElementById("playLabel");
 const playTooltip = document.getElementById("playTooltip");
 
 function buildEmail(username) {
@@ -1636,13 +1665,19 @@ function buildEmail(username) {
 
 function updatePlayButton(loggedIn){
     if(loggedIn){
-        playBtn.classList.add("hidden"); // disappear
-        playBtn.textContent = ""; // clear text
-        playTooltip.textContent = ""; // clear tooltip
+        playBtn.classList.remove("logged-out");
+        playBtn.classList.add("logged-in");
+        playIcon.textContent = "▶";
+        playLabel.textContent = "Play";
+        playTooltip.textContent = ""; // no tooltip when logged in
+        playBtn.style.cursor = "pointer";
     } else {
-        playBtn.classList.remove("hidden");
-        playBtn.textContent = "!";
+        playBtn.classList.remove("logged-in");
+        playBtn.classList.add("logged-out");
+        playIcon.textContent = "!";
+        playLabel.textContent = "Play";
         playTooltip.textContent = "Log in to play";
+        playBtn.style.cursor = "not-allowed";
     }
 }
 
@@ -1670,7 +1705,9 @@ function renderLoggedInPanel(){
     document.getElementById("logoutBtn").addEventListener("click", logout);
     document.getElementById("profileBtn").addEventListener("click", () => {
         loginPanel.classList.remove("active");
-        if(currentUser) openProfile(currentUser);
+        if(currentUser){
+            openProfile(currentUser);
+        }
     });
     updatePlayButton(true);
 }
@@ -1680,22 +1717,36 @@ async function attemptLogin(){
     const password = document.getElementById("loginPassword").value;
     const errorEl = document.getElementById("loginError");
     errorEl.style.display = "none";
+
     if(!username || !password) return;
+
     const email = buildEmail(username);
+
     try {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+        if (error) {
+            errorEl.textContent = "Invalid username or password.";
+            errorEl.style.display = "block";
+            return;
+        }
+
         const { data: playerData, error: playerError } = await supabase
             .from("players")
             .select("*")
             .ilike("name", username)
             .maybeSingle();
+
         if (playerError || !playerData) {
             await supabase.auth.signOut();
             errorEl.textContent = "Account exists but no player profile found. Contact admin.";
             errorEl.style.display = "block";
             return;
         }
+
         currentUser = playerData;
         updateLoginButton();
         renderLoggedInPanel();
@@ -1705,7 +1756,7 @@ async function attemptLogin(){
         // Refresh queue status for both modes
         refreshQueueStatus();
     } catch (err) {
-        errorEl.textContent = "Invalid username or password.";
+        errorEl.textContent = "Something went wrong. Try again.";
         errorEl.style.display = "block";
     }
 }
@@ -1750,7 +1801,8 @@ async function restoreSession(){
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
         const user = session.user;
-        const username = user.email.replace(/@minecraft\.local$/, '');
+        const email = user.email;
+        const username = email.replace(/@minecraft\.local$/, '');
         const { data: playerData, error } = await supabase
             .from("players")
             .select("*")
@@ -1783,8 +1835,12 @@ loginBtn.addEventListener("click", (e) => {
 });
 
 document.addEventListener("click", (e) => {
-    if(!loginWrapper.contains(e.target)) loginPanel.classList.remove("active");
-    if(!searchWrapper.contains(e.target)) searchPanel.classList.remove("active");
+    if(!loginWrapper.contains(e.target)){
+        loginPanel.classList.remove("active");
+    }
+    if(!searchWrapper.contains(e.target)){
+        searchPanel.classList.remove("active");
+    }
 });
 
 renderLoggedOutPanel();
@@ -1795,8 +1851,6 @@ const queueModalOverlay = document.getElementById("queueModalOverlay");
 const queueModalClose = document.getElementById("queueModalClose");
 const queueBtnKanal = document.getElementById("queueBtnKanal");
 const queueBtnMace = document.getElementById("queueBtnMace");
-const queueTimeKanal = document.getElementById("queueTimeKanal");
-const queueTimeMace = document.getElementById("queueTimeMace");
 const queueCountKanal = document.getElementById("queueCountKanal");
 const queueCountMace = document.getElementById("queueCountMace");
 const matchCountKanal = document.getElementById("matchCountKanal");
@@ -1812,64 +1866,247 @@ function enableQueueButtons(enabled){
     }
 }
 
-// Click play button – but if hidden (logged in), it won't trigger; we could alternatively use a different trigger.
-// Since the user wants the button to disappear, they'll need another way to open the queue modal.
-// For now, the button is hidden when logged in, so clicking it won't work.
-// But we'll keep the click handler for when it's visible (logged out) – it won't open because it's disabled/hidden.
-// Actually, when logged out, it shows '!', so they can click it? They said "when pressing the play button a big window...".
-// That would only work when logged out? That doesn't make sense – they'd want to queue when logged in.
-// I think they want the play button to be hidden when logged in, but they need a way to open the queue modal.
-// Perhaps they want the queue modal to open from the login button? Or a separate button.
-// I'll add a small "Queue" button inside the logged-in panel? That would be messy.
-// Instead, I'll keep the play button hidden but still functional: add a click listener that opens the modal if logged in.
-// But if it's hidden, they can't click it.
-// I'll add a small "Play" text in the top bar when logged in? They didn't ask for that.
-// Given the user's request: "remove the ▶ completely the ! is only there when not logged in it shouldn't be replaced by anything it just disappears" – they only wanted the icon removed, not the button itself.
-// So I should keep the button but with no content, and still clickable.
-// I'll revert the hide and instead set the button to have no content and maybe a transparent border.
-// But they said "disappears" – so I'll make it invisible but still occupy space and be clickable.
-// I'll set opacity:0, pointer-events:auto, and width:32px; height:32px; to keep the space.
-// That way it's invisible but clickable.
-// Let's adjust updatePlayButton to set visibility/opacity.
-// I'll change the CSS: .play-btn.hidden { opacity:0; pointer-events:auto; width:32px; height:32px; border:2px solid transparent; }
-// This keeps it clickable but invisible.
-// I'll implement that.
-
-// Since we already have .hidden class, I'll modify CSS to make it transparent but still clickable.
-// I'll add:
-// .play-btn.hidden { opacity:0; pointer-events:auto; border-color:transparent; }
-// That will make it invisible but still clickable.
-// Then the click handler can open the modal if logged in.
-// That seems to match "disappears" – it's not visible, but the click area remains.
-// I'll add that CSS change.
-
-// In the CSS I'll add:
-// .play-btn.hidden { opacity:0; pointer-events:auto; border-color:transparent; }
-// That way it's invisible but clickable.
-
-// I'll adjust updatePlayButton accordingly.
-
-// I'll update the CSS in the style section.
-
-// Now I'll produce the final HTML with that adjustment.
-
-// I'll add the CSS rule for .play-btn.hidden.
-// And keep the click listener.
-
+// Click play button
 playBtn.addEventListener("click", () => {
-    if (currentUser) {
-        openQueueModal();
-    } else {
-        // Optionally show a message or do nothing
+    if (!currentUser) {
+        return;
     }
+    openQueueModal();
 });
 
-// Also, when logged out, the button is visible and clickable, but they can't queue.
-// They might want to log in first.
+function openQueueModal(){
+    queueModalOverlay.classList.add("active");
+    refreshQueueStatus();
+    fetchQueueStats();
+}
 
-// This should fulfill the requirements.
+function closeQueueModal(){
+    queueModalOverlay.classList.remove("active");
+}
 
-// I'll now output the complete HTML.
+queueModalClose.addEventListener("click", closeQueueModal);
+queueModalOverlay.addEventListener("click", (e) => {
+    if (e.target === queueModalOverlay) closeQueueModal();
+});
+
+// Queue button handlers
+queueBtnKanal.addEventListener("click", () => handleQueueAction("KanalServer"));
+queueBtnMace.addEventListener("click", () => handleQueueAction("LowblockMace"));
+
+async function handleQueueAction(mode){
+    if(!currentUser) return;
+    const state = queueState[mode];
+    if(state.inQueue){
+        // Leave queue
+        await leaveQueue(mode);
+    } else {
+        // Join queue
+        await joinQueue(mode);
+    }
+}
+
+async function joinQueue(mode){
+    try {
+        const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
+        btn.disabled = true;
+        btn.textContent = "Joining...";
+        const response = await fetch(`https://fyyyjjysztzxmmdgubnb.supabase.co/functions/v1/join-queue`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ game_mode: mode })
+        });
+        if (!response.ok) {
+            const err = await response.text();
+            throw new Error(err);
+        }
+        const data = await response.json();
+        // Update state
+        const state = queueState[mode];
+        state.inQueue = true;
+        state.joinedAt = Date.now();
+        state.queueId = data.id;
+        // Start timer
+        startTimer(mode);
+        // Update button
+        btn.classList.add("queued");
+        btn.innerHTML = `<span class="queue-btn-text">In Queue (0m 0s)</span><span class="queue-btn-leave">Leave Queue</span>`;
+        btn.disabled = false;
+        // Fetch stats
+        fetchQueueStats();
+    } catch (error) {
+        console.error('Join queue error:', error);
+        alert('Failed to join queue: ' + error.message);
+        const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
+        btn.disabled = false;
+        btn.textContent = "Queue";
+    }
+}
+
+async function leaveQueue(mode){
+    try {
+        const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
+        btn.disabled = true;
+        btn.textContent = "Leaving...";
+        const response = await fetch(`https://fyyyjjysztzxmmdgubnb.supabase.co/functions/v1/leave-queue`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ game_mode: mode })
+        });
+        if (!response.ok) {
+            const err = await response.text();
+            throw new Error(err);
+        }
+        // Update state
+        const state = queueState[mode];
+        state.inQueue = false;
+        state.joinedAt = null;
+        state.queueId = null;
+        if(state.timerInterval){
+            clearInterval(state.timerInterval);
+            state.timerInterval = null;
+        }
+        // Update button
+        btn.classList.remove("queued");
+        btn.innerHTML = `Queue`;
+        btn.disabled = false;
+        fetchQueueStats();
+    } catch (error) {
+        console.error('Leave queue error:', error);
+        alert('Failed to leave queue: ' + error.message);
+        const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
+        btn.disabled = false;
+    }
+}
+
+function startTimer(mode){
+    const state = queueState[mode];
+    if(state.timerInterval) clearInterval(state.timerInterval);
+    state.timerInterval = setInterval(() => {
+        if(!state.inQueue || !state.joinedAt){
+            clearInterval(state.timerInterval);
+            state.timerInterval = null;
+            return;
+        }
+        const elapsed = Math.floor((Date.now() - state.joinedAt) / 1000);
+        const mins = Math.floor(elapsed / 60);
+        const secs = elapsed % 60;
+        const timeStr = `${mins}m ${secs}s`;
+        const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
+        const textSpan = btn.querySelector('.queue-btn-text');
+        if(textSpan){
+            textSpan.textContent = `In Queue (${timeStr})`;
+        }
+    }, 1000);
+}
+
+async function refreshQueueStatus(){
+    if(!currentUser) return;
+    try {
+        const { data, error } = await supabase
+            .from('queue')
+            .select('*')
+            .eq('player_id', currentUser.id)
+            .eq('status', 'waiting');
+        if (error) throw error;
+        // Reset all states
+        Object.keys(queueState).forEach(m => {
+            const state = queueState[m];
+            state.inQueue = false;
+            state.joinedAt = null;
+            state.queueId = null;
+            if(state.timerInterval){
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+            const btn = m === "KanalServer" ? queueBtnKanal : queueBtnMace;
+            btn.classList.remove("queued");
+            btn.innerHTML = `Queue`;
+        });
+        // Update for entries found
+        data.forEach(entry => {
+            const mode = entry.game_mode;
+            const state = queueState[mode];
+            state.inQueue = true;
+            state.joinedAt = new Date(entry.joined_at).getTime();
+            state.queueId = entry.id;
+            const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
+            btn.classList.add("queued");
+            btn.innerHTML = `<span class="queue-btn-text">In Queue (0m 0s)</span><span class="queue-btn-leave">Leave Queue</span>`;
+            startTimer(mode);
+        });
+    } catch (e) {
+        console.error('Refresh queue error:', e);
+    }
+}
+
+async function fetchQueueStats(){
+    try {
+        const [kanalQueue, maceQueue, kanalMatches, maceMatches] = await Promise.all([
+            supabase.from('queue').select('id', { count: 'exact', head: true }).eq('game_mode', 'KanalServer').eq('status', 'waiting'),
+            supabase.from('queue').select('id', { count: 'exact', head: true }).eq('game_mode', 'LowblockMace').eq('status', 'waiting'),
+            supabase.from('matches').select('id', { count: 'exact', head: true }).eq('game_mode', 'KanalServer').eq('status', 'pending'),
+            supabase.from('matches').select('id', { count: 'exact', head: true }).eq('game_mode', 'LowblockMace').eq('status', 'pending')
+        ]);
+        if (kanalQueue.error) throw kanalQueue.error;
+        if (maceQueue.error) throw maceQueue.error;
+        if (kanalMatches.error) throw kanalMatches.error;
+        if (maceMatches.error) throw maceMatches.error;
+        queueCountKanal.textContent = kanalQueue.count || 0;
+        queueCountMace.textContent = maceQueue.count || 0;
+        matchCountKanal.textContent = kanalMatches.count || 0;
+        matchCountMace.textContent = maceMatches.count || 0;
+    } catch (e) {
+        console.error('Stats fetch error:', e);
+    }
+}
+
+// Refresh stats every 5 seconds
+setInterval(fetchQueueStats, 5000);
+
+// When modal opens, refresh stats
+queueModalOverlay.addEventListener('click', (e) => {
+    if (e.target === queueModalOverlay) closeQueueModal();
+});
+
+// Override openQueueModal to fetch stats on open
+const origOpen = openQueueModal;
+openQueueModal = function() {
+    origOpen();
+    fetchQueueStats();
+};
+
+/* ---------- Leaderboard data loading ---------- */
+renderTabMenu();
+setTitle(currentBoard);
+
+async function loadPlayers(){
+    const { data, error } = await supabase
+        .from("players")
+        .select("*");
+    if(error){
+        list.innerHTML = "Error loading data";
+        toggleBtn.style.display = "none";
+        return;
+    }
+    allPlayers = data.map(p => ({
+        ...p,
+        __total: (Number(p.KanalServer) || 0) + (Number(p.LowblockMace) || 0)
+    }));
+    render();
+    if(currentUser){
+        const fresh = allPlayers.find(p => p.name.toLowerCase() === currentUser.name.toLowerCase());
+        if(fresh) currentUser = fresh;
+    }
+}
+
+loadPlayers();
+setInterval(loadPlayers, 5000);
 </script>
 </body>
 </html>
