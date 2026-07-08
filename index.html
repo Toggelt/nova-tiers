@@ -443,14 +443,16 @@ h2{
     background:#b8860b;
     border-color:#daa520;
 }
-.queue-btn.queued:hover:not(:disabled){
-    background:#c99720;
-}
 .queue-btn.queued .queue-btn-text{
     display:inline;
 }
 .queue-btn.queued .queue-btn-leave{
     display:none;
+}
+.queue-btn.queued:hover:not(:disabled){
+    background:#6a1a1a;
+    border-color:#8a3a3a;
+    transform:scale(1.04);
 }
 .queue-btn.queued:hover .queue-btn-text{
     display:none;
@@ -459,7 +461,8 @@ h2{
     display:inline;
 }
 .queue-btn .queue-btn-leave{
-    color:#ff6b6b;
+    color:#fff;
+    font-weight:800;
 }
 .queue-stats{
     font-size:14px;
@@ -1932,7 +1935,7 @@ async function joinQueue(mode){
         startTimer(mode);
         // Update button
         btn.classList.add("queued");
-        btn.innerHTML = `<span class="queue-btn-text">In Queue (0m 0s)</span><span class="queue-btn-leave">Leave Queue</span>`;
+        btn.innerHTML = `<span class="queue-btn-text">In Queue (0:00)</span><span class="queue-btn-leave">Leave Queue</span>`;
         btn.disabled = false;
         // Fetch stats
         fetchQueueStats();
@@ -1996,7 +1999,7 @@ function startTimer(mode){
         const elapsed = Math.floor((Date.now() - state.joinedAt) / 1000);
         const mins = Math.floor(elapsed / 60);
         const secs = elapsed % 60;
-        const timeStr = `${mins}m ${secs}s`;
+        const timeStr = `${mins}:${secs.toString().padStart(2, '0')}`;
         const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
         const textSpan = btn.querySelector('.queue-btn-text');
         if(textSpan){
@@ -2037,7 +2040,7 @@ async function refreshQueueStatus(){
             state.queueId = entry.id;
             const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
             btn.classList.add("queued");
-            btn.innerHTML = `<span class="queue-btn-text">In Queue (0m 0s)</span><span class="queue-btn-leave">Leave Queue</span>`;
+            btn.innerHTML = `<span class="queue-btn-text">In Queue (0:00)</span><span class="queue-btn-leave">Leave Queue</span>`;
             startTimer(mode);
         });
     } catch (e) {
