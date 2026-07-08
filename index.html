@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
 <style>
-/* ---------- All existing styles (unchanged) ---------- */
+/* ---------- All styles (unchanged) ---------- */
 *{
     box-sizing:border-box;
 }
@@ -2339,6 +2339,7 @@ const matchModalOverlay = document.getElementById('matchModalOverlay');
 const matchModalContent = document.getElementById('matchModalContent');
 let matchTimerInterval = null;
 let currentMatch = null;
+let lastMatchId = null;
 
 function closeMatchModal(){
     if(matchTimerInterval){
@@ -2352,6 +2353,9 @@ function closeMatchModal(){
 document.getElementById('matchModalClose').addEventListener('click', closeMatchModal);
 
 async function handleNewMatch(match){
+    // Prevent duplicate handling
+    if (lastMatchId === match.id) return;
+    lastMatchId = match.id;
     closeMatchModal();
     currentMatch = match;
     const isPlayer1 = match.player1_id === currentUser.id;
@@ -2591,6 +2595,36 @@ async function showReadyScreen(match){
         closeMatchModal();
     });
 }
+
+/* ---------- Fallback polling for matches (in case Realtime fails) ---------- */
+let pollInterval = null;
+function startPollingMatches() {
+    if (pollInterval) clearInterval(pollInterval);
+    pollInterval = setInterval(async () => {
+        if (!currentUser) return;
+        try {
+            const { data, error } = await supabase
+                .from('matches')
+                .select('*')
+                .or(`player1_id.eq.${currentUser.id},player2_id.eq.${currentUser.id}`)
+                .eq('status', 'pending')
+                .order('created_at', { ascending: false })
+                .limit(1);
+            if (error) throw error;
+            if (data && data.length > 0) {
+                const match = data[0];
+                if (lastMatchId !== match.id) {
+                    handleNewMatch(match);
+                }
+            }
+        } catch (e) {
+            // Silent fail – we don't want to spam console
+        }
+    }, 5000);
+}
+
+// Start polling after login
+startPollingMatches();
 
 /* ---------- Leaderboard data loading ---------- */
 renderTabMenu();
