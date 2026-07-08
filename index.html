@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
 <style>
-/* ---------- All styles unchanged ---------- */
+/* ---------- All existing styles ---------- */
 *{
     box-sizing:border-box;
 }
@@ -115,12 +115,65 @@ h2{
     gap:10px;
     margin-bottom:14px;
 }
+
+/* ---------- Play button (left of login) ---------- */
 .login-wrapper{
+    display:flex;
+    align-items:center;
+    gap:10px;
     position:fixed;
     top:26px;
     right:34px;
     z-index:200;
 }
+.play-btn-wrapper{
+    position:relative;
+}
+.play-btn{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:#1c1c22;
+    border:2px solid #2c2c34;
+    color:#c9c9d1;
+    font-size:16px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+.play-btn:hover{
+    background:#26262e;
+}
+.play-btn.logged-out{
+    border-color:#ff6b6b;
+    color:#ff6b6b;
+}
+.play-btn.logged-in{
+    border-color:#6bff6b;
+    color:#6bff6b;
+}
+.play-tooltip{
+    position:absolute;
+    top:calc(100% + 6px);
+    left:50%;
+    transform:translateX(-50%);
+    background:#191920;
+    border:1px solid #2c2c34;
+    border-radius:6px;
+    padding:4px 10px;
+    font-size:12px;
+    color:#c9c9d1;
+    white-space:nowrap;
+    display:none;
+    z-index:210;
+    pointer-events:none;
+}
+.play-btn-wrapper:hover .play-tooltip{
+    display:block;
+}
+
 .login-btn{
     display:flex;
     align-items:center;
@@ -239,6 +292,24 @@ h2{
     margin-bottom:12px;
     color:#fff;
 }
+.profile-btn{
+    width:100%;
+    background:#1a2a3a;
+    border:1px solid #2a4a6a;
+    color:#8ab4f8;
+    padding:9px;
+    border-radius:7px;
+    font-weight:700;
+    font-size:13px;
+    cursor:pointer;
+    transition: background 0.15s ease;
+    margin-bottom:8px;
+}
+.profile-btn:hover{
+    background:#1f3348;
+}
+
+/* ---------- Info button (unchanged) ---------- */
 .info-btn-wrapper{
     position:relative;
 }
@@ -336,6 +407,8 @@ h2{
     font-family: monospace;
     padding-left: 0;
 }
+
+/* ---------- Search (unchanged) ---------- */
 .search-btn-wrapper{
     position:relative;
 }
@@ -426,6 +499,8 @@ h2{
     font-size:12px;
     padding:6px 2px;
 }
+
+/* ---------- Player row, modal, etc. (unchanged) ---------- */
 .player{
     display:flex;
     align-items:stretch;
@@ -810,12 +885,17 @@ h2{
 </head>
 <body>
 
-<!-- Login (fixed top-right) -->
+<!-- Login & Play button (fixed top-right) -->
 <div class="login-wrapper" id="loginWrapper">
-  <button class="login-btn" id="loginBtn">Log in</button>
-  <div class="login-panel" id="loginPanel">
-    <!-- Dynamically rendered -->
+  <!-- Play button -->
+  <div class="play-btn-wrapper">
+    <button class="play-btn logged-out" id="playBtn">!</button>
+    <div class="play-tooltip" id="playTooltip">Log in to play</div>
   </div>
+  <!-- Login button -->
+  <button class="login-btn" id="loginBtn">Log in</button>
+  <!-- Login panel -->
+  <div class="login-panel" id="loginPanel"></div>
 </div>
 
 <div class="container">
@@ -1376,17 +1456,34 @@ searchInput.addEventListener("click", (e) => e.stopPropagation());
 const loginBtn = document.getElementById("loginBtn");
 const loginPanel = document.getElementById("loginPanel");
 const loginWrapper = document.getElementById("loginWrapper");
+const playBtn = document.getElementById("playBtn");
+const playTooltip = document.getElementById("playTooltip");
 
 // Helper to build fake email from username
 function buildEmail(username) {
     return username.toLowerCase() + "@minecraft.local";
 }
 
+// Update play button state
+function updatePlayButton(loggedIn){
+    if(loggedIn){
+        playBtn.classList.remove("logged-out");
+        playBtn.classList.add("logged-in");
+        playBtn.textContent = "▶";
+        playTooltip.textContent = "Play";
+    } else {
+        playBtn.classList.remove("logged-in");
+        playBtn.classList.add("logged-out");
+        playBtn.textContent = "!";
+        playTooltip.textContent = "Log in to play";
+    }
+}
+
 // Render login panel (no sign‑up, only login form)
 function renderLoggedOutPanel(){
     loginPanel.innerHTML = `
         <div class="login-panel-title">Player Login</div>
-        <input type="text" id="loginUsername" placeholder="Minecraft username" autocomplete="off">
+        <input type="text" id="loginUsername" placeholder="Username" autocomplete="off">
         <input type="password" id="loginPassword" placeholder="Password" autocomplete="off">
         <button class="login-submit" id="loginSubmit">Log in</button>
         <div class="login-error" id="loginError">Invalid username or password.</div>
@@ -1395,15 +1492,25 @@ function renderLoggedOutPanel(){
     document.getElementById("loginPassword").addEventListener("keydown", (e) => {
         if(e.key === "Enter") attemptLogin();
     });
+    updatePlayButton(false);
 }
 
-// Render logged‑in panel
+// Render logged‑in panel (with profile button)
 function renderLoggedInPanel(){
     loginPanel.innerHTML = `
         <div class="logged-name">${currentUser.name}</div>
+        <button class="profile-btn" id="profileBtn">Show Player Profile</button>
         <button class="logout-btn" id="logoutBtn">Log out</button>
     `;
     document.getElementById("logoutBtn").addEventListener("click", logout);
+    document.getElementById("profileBtn").addEventListener("click", () => {
+        // Close the login panel and open the profile modal for the logged-in user
+        loginPanel.classList.remove("active");
+        if(currentUser){
+            openProfile(currentUser);
+        }
+    });
+    updatePlayButton(true);
 }
 
 async function attemptLogin(){
@@ -1462,6 +1569,7 @@ async function logout(){
     updateLoginButton();
     renderLoggedOutPanel();
     loginPanel.classList.remove("active");
+    updatePlayButton(false);
 }
 
 function updateLoginButton(){
