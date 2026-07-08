@@ -47,6 +47,11 @@ h2{
     align-items:center;
     justify-content:center;
 }
+.title-icon img{
+    width:100%;
+    height:100%;
+    image-rendering: pixelated;
+}
 .title-icon .emoji-icon{
     font-size:34px;
     line-height:1;
@@ -77,6 +82,11 @@ h2{
 }
 .tab-item:last-child{
     border-right:none;
+}
+.tab-item img{
+    width:32px;
+    height:32px;
+    image-rendering: pixelated;
 }
 .tab-item .emoji-icon{
     font-size:28px;
@@ -631,16 +641,11 @@ h2{
     z-index:5;
 }
 
-/* ---------- Title badge (replaces old centered role badge) ---------- */
+/* ---------- Title section (centered, no image) ---------- */
 .title-section{
     display:flex;
-    align-items:center;
-    justify-content:flex-start;
+    justify-content:center;
     margin: 2px 0 28px;
-    padding-left:4px;
-}
-.title-badge-img{
-    display:none; /* remove image, use text only */
 }
 .title-text-box{
     background:#191920;
@@ -650,8 +655,6 @@ h2{
     display:flex;
     align-items:center;
     padding:0 20px;
-    position:relative;
-    z-index:1;
 }
 .title-badge-text{
     font-size:19px;
@@ -740,7 +743,11 @@ h2{
     justify-content:center;
     border:3px solid #454b54;
     overflow:hidden;
-    font-size:24px; /* for emoji */
+}
+.tier-icon-circle img{
+    width:30px;
+    height:30px;
+    image-rendering: pixelated;
 }
 .tier-icon-label{
     font-size:12px;
@@ -789,7 +796,11 @@ h2{
     justify-content:center;
     border:2px solid #454b54;
     overflow:hidden;
-    font-size:16px; /* for emoji */
+}
+.mini-tier-circle img{
+    width:16px;
+    height:16px;
+    image-rendering: pixelated;
 }
 .mini-tier-tip{
     display:none;
@@ -897,9 +908,9 @@ const COLLAPSED_COUNT = 5; // how many players to show before "Show all"
 let allPlayers = [];
 let expanded = false;
 
-/* ---------- Icons (simple emojis, no data URIs) ---------- */
-const HELMET_ICON = "⛑️";   // rescue helmet
-const MACE_ICON   = "🔨";   // hammer as mace
+/* ---------- Icons from GitHub ---------- */
+const HELMET_ICON_URL = "https://github.com/Toggelt/nova-tiers/blob/main/assets/netherite_helmet.png?raw=true";
+const MACE_ICON_URL   = "https://github.com/Toggelt/nova-tiers/blob/main/assets/mace.png?raw=true";
 
 /* ---------- Leaderboards ---------- */
 const LEADERBOARDS = {
@@ -916,16 +927,16 @@ const LEADERBOARDS = {
         field: "KanalServer",
         label: "Kanal Server",
         title: "Kanal Server Leaderboard",
-        icon: HELMET_ICON,
-        emoji: HELMET_ICON
+        icon: HELMET_ICON_URL,
+        emoji: "⛑️" // fallback
     },
     LowblockMace: {
         key: "LowblockMace",
         field: "LowblockMace",
         label: "Lowblock Mace",
         title: "Lowblock Mace Leaderboard",
-        icon: MACE_ICON,
-        emoji: MACE_ICON
+        icon: MACE_ICON_URL,
+        emoji: "🔨" // fallback
     }
 };
 const SUB_BOARDS = ["KanalServer", "LowblockMace"]; // leaderboards shown in the profile Tiers row
@@ -939,7 +950,7 @@ const titleText = document.getElementById("titleText");
 
 function iconMarkup(board){
     if(board.icon){
-        return `<span class="emoji-icon">${board.icon}</span>`;
+        return `<img src="${board.icon}" alt="${board.label}" style="width:32px;height:32px;image-rendering:pixelated;">`;
     }
     return `<span class="emoji-icon">${board.emoji}</span>`;
 }
@@ -997,6 +1008,9 @@ const TIER_COLORS = {
     LT5: "#454b54"
 };
 
+// Hierarchical order for sorting tiers (highest first)
+const TIER_ORDER = ["HT1","LT1","HT2","LT2","HT3","LT3","HT4","LT4","HT5","LT5"];
+
 function getTierThresholds(topElo){
     const anchor = topElo >= HT1_BASE ? topElo : HT1_BASE;
     const range = anchor - LT5_FLOOR; // 100% of the scale sits between 1000 (0%) and anchor (100%)
@@ -1023,12 +1037,21 @@ function getTier(elo, thresholds){
     return "LT5";
 }
 
+// Sort tiers by hierarchy
+function sortTiersByOrder(entries){
+    return entries.sort((a, b) => {
+        const idxA = TIER_ORDER.indexOf(a.tier);
+        const idxB = TIER_ORDER.indexOf(b.tier);
+        return idxA - idxB;
+    });
+}
+
 const infoTooltip = document.getElementById("infoTooltip");
-const TIER_ORDER = ["HT1","LT1","HT2","LT2","HT3","LT3","HT4","LT4","HT5"];
+const TIER_ORDER_DISPLAY = ["HT1","LT1","HT2","LT2","HT3","LT3","HT4","LT4","HT5"]; // for info tooltip
 
 function renderInfoTooltip(thresholds){
     let html = `<div class="info-tooltip-title">Elo required</div>`;
-    TIER_ORDER.forEach(name => {
+    TIER_ORDER_DISPLAY.forEach(name => {
         const val = Math.ceil(thresholds[name]);
         html += `<div class="info-tooltip-row"><span style="color:${TIER_COLORS[name]}">${name}</span><span>${val}+</span></div>`;
     });
@@ -1037,8 +1060,6 @@ function renderInfoTooltip(thresholds){
 }
 
 /* ---------- Titles (Overall tab) ---------- */
-// Sum, across every sub-leaderboard, of the elo *gain* (over the 1000 starting elo)
-// needed to reach a given tier in that leaderboard.
 function computeTitleThresholds(){
     const gainFor = (tierName) => {
         let total = 0;
@@ -1100,7 +1121,6 @@ function renderTitleInfoTooltip(){
         Novice: `0+ gained`
     };
     let html = `<div class="info-tooltip-title">Titles</div>`;
-    // Order: Nova, Divine, Celestial, Eternal, Ascendant, Novice (as in TITLE_ORDER)
     const order = ["Nova", "Divine", "Celestial", "Eternal", "Ascendant", "Novice"];
     order.forEach(name => {
         const grad = colorMap[name];
@@ -1113,11 +1133,9 @@ function renderTitleInfoTooltip(){
         `;
     });
     infoTooltip.innerHTML = html;
-    // add class for overall styling
     infoTooltip.classList.add("overall-tooltip");
 }
 
-// Reset tooltip class when switching to non-overall
 function resetTooltipClass(){
     infoTooltip.classList.remove("overall-tooltip");
 }
@@ -1137,7 +1155,7 @@ function renderMiniTierIcons(player){
         html += `
             <div class="mini-tier-wrap" data-tip="${tipText}">
                 <div class="mini-tier-circle" style="border-color:${color}">
-                    <span class="emoji-icon">${board.emoji}</span>
+                    <img src="${board.icon}" alt="${board.label}" style="width:16px;height:16px;image-rendering:pixelated;">
                 </div>
             </div>
         `;
@@ -1243,9 +1261,7 @@ toggleBtn.addEventListener("click", () => {
     render();
 });
 
-/* ---------- Global tooltip for mini tier icons ----------
-   Rendered at body level (fixed position) so it's never clipped by a
-   player row's rounded-corner overflow:hidden. */
+/* ---------- Global tooltip for mini tier icons ---------- */
 const globalMiniTip = document.getElementById("globalMiniTip");
 
 function showMiniTip(wrap){
@@ -1279,14 +1295,13 @@ const modalClose = document.getElementById("modalClose");
 const modalAvatar = document.getElementById("modalAvatar");
 const modalName = document.getElementById("modalName");
 const modalRoleBadge = document.getElementById("modalRoleBadge");
-const modalTitleBadge = document.getElementById("modalTitleBadge");
 const modalTitleText = document.getElementById("modalTitleText");
 const modalPositionCard = document.getElementById("modalPositionCard");
 const tiersRow = document.getElementById("tiersRow");
 
 function renderTierIcons(player){
-    let html = "";
-    const entries = SUB_BOARDS.map(key => {
+    let entries = [];
+    SUB_BOARDS.forEach(key => {
         const board = LEADERBOARDS[key];
         const sorted = getSortedPlayers(board.field);
         const topElo = sorted.length ? sorted[0][board.field] : 0;
@@ -1294,16 +1309,24 @@ function renderTierIcons(player){
         const hasValue = player[board.field] !== null && player[board.field] !== undefined;
         const elo = hasValue ? player[board.field] : null;
         const tier = hasValue ? getTier(elo, thresholds) : null;
-        return { board, hasValue, elo, tier };
+        entries.push({ board, hasValue, elo, tier });
     });
 
+    // Sort by tier hierarchy first, then by elo descending within same tier
     entries.sort((a, b) => {
+        if(a.tier && b.tier && a.tier !== b.tier) {
+            return TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier);
+        }
+        if(a.tier && !b.tier) return -1;
+        if(!a.tier && b.tier) return 1;
+        // both same tier or both no tier: sort by elo descending if hasValue
         if(a.hasValue && b.hasValue) return b.elo - a.elo;
         if(a.hasValue) return -1;
         if(b.hasValue) return 1;
         return 0;
     });
 
+    let html = "";
     entries.forEach(({ board, hasValue, elo, tier }) => {
         const color = tier ? TIER_COLORS[tier] : "#3a3a44";
         const tierLabel = tier || "—";
@@ -1312,7 +1335,7 @@ function renderTierIcons(player){
         html += `
             <div class="tier-icon-wrap">
                 <div class="tier-icon-circle" style="border-color:${color}">
-                    <span class="emoji-icon">${board.emoji}</span>
+                    <img src="${board.icon}" alt="${board.label}" style="width:30px;height:30px;image-rendering:pixelated;">
                 </div>
                 <div class="tier-icon-label" style="color:${color}">${tierLabel}</div>
                 <div class="tier-elo-tip">${tipText}</div>
@@ -1331,7 +1354,6 @@ function openProfile(player){
     modalRoleBadge.className = `role-badge ${role.cls}`;
 
     const title = getPlayerTitle(player);
-    // We don't have images anymore, just use gradient
     const colorMap = {
         Nova: "linear-gradient(100deg, #c190ec, #a13ca5)",
         Divine: "linear-gradient(100deg, #cbd4ec, #6468ab)",
@@ -1419,7 +1441,7 @@ searchInput.addEventListener("click", (e) => e.stopPropagation());
 const loginBtn = document.getElementById("loginBtn");
 const loginPanel = document.getElementById("loginPanel");
 const loginWrapper = document.getElementById("loginWrapper");
-let currentUser = null; // kept in memory only, resets on page reload
+let currentUser = null;
 
 function renderLoggedOutPanel(){
     loginPanel.innerHTML = `
@@ -1524,7 +1546,6 @@ async function loadPlayers(){
     }));
     render();
 
-    // keep logged-in user's data fresh (e.g. elo updates) without logging them out
     if(currentUser){
         const fresh = allPlayers.find(p => p.name.toLowerCase() === currentUser.name.toLowerCase());
         if(fresh) currentUser = fresh;
@@ -1532,7 +1553,7 @@ async function loadPlayers(){
 }
 
 loadPlayers();
-setInterval(loadPlayers, 5000); // auto refresh every 5 sec
+setInterval(loadPlayers, 5000);
 </script>
 </body>
 </html>
