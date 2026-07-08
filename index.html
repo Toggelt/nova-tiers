@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
 <style>
-/* ---------- All existing styles (unchanged) ---------- */
+/* ---------- All existing styles unchanged ---------- */
 *{
     box-sizing:border-box;
 }
@@ -116,7 +116,7 @@ h2{
     margin-bottom:14px;
 }
 
-/* ---------- Login & Play button wrapper (updated) ---------- */
+/* ---------- Login & Play button wrapper ---------- */
 .login-wrapper{
     display:flex;
     align-items:center;
@@ -126,8 +126,6 @@ h2{
     right:34px;
     z-index:200;
 }
-
-/* Play Button */
 .play-btn-wrapper{
     position:relative;
 }
@@ -330,7 +328,7 @@ h2{
     background:#1f3348;
 }
 
-/* ---------- Queue Modal (new) ---------- */
+/* ---------- Queue Modal ---------- */
 .queue-modal-overlay{
     position:fixed;
     inset:0;
@@ -472,6 +470,265 @@ h2{
 .queue-stats span{
     font-weight:700;
     color:#c9c9d1;
+}
+.queue-status{
+    font-size:14px;
+    color:#a9b6ff;
+    margin-top:6px;
+    min-height:20px;
+    font-weight:600;
+}
+
+/* ---------- Match Found Modal ---------- */
+.match-modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.85);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:2000;
+    padding:20px;
+}
+.match-modal-overlay.active{
+    display:flex;
+}
+.match-modal-box{
+    background:#131318;
+    border-radius:20px;
+    padding:40px 30px;
+    max-width:750px;
+    width:100%;
+    max-height:90vh;
+    overflow-y:auto;
+    border:2px solid #2a3a3a;
+    box-shadow: 0 0 60px rgba(0,200,0,0.15);
+    text-align:center;
+    position:relative;
+}
+.match-modal-close{
+    position:absolute;
+    top:14px;
+    right:14px;
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:#22222a;
+    border:none;
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: background 0.2s;
+}
+.match-modal-close:hover{
+    background:#3a3a4a;
+}
+.match-modal-title{
+    font-family: 'Bahnschrift', Arial, sans-serif;
+    font-size:24px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+.match-modal-subtitle{
+    font-size:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    margin-bottom:12px;
+}
+.match-modal-subtitle img{
+    width:36px;
+    height:36px;
+    image-rendering: pixelated;
+}
+.match-timer{
+    font-size:28px;
+    font-weight:800;
+    color:#ffcc00;
+    margin:6px 0 12px;
+}
+.match-kit-image{
+    margin:10px auto;
+    max-width:100%;
+    border-radius:12px;
+    border:2px solid #2a3a3a;
+}
+.match-kit-image img{
+    width:100%;
+    max-height:280px;
+    object-fit:contain;
+    display:block;
+    border-radius:12px;
+}
+.match-accept-btn{
+    background:#2a8a4a;
+    border:2px solid #4aba6a;
+    color:#fff;
+    font-weight:800;
+    font-size:22px;
+    padding:14px 40px;
+    border-radius:12px;
+    cursor:pointer;
+    transition: background 0.2s, transform 0.15s;
+    margin:16px auto 8px;
+}
+.match-accept-btn:hover:not(:disabled){
+    background:#3a9a5a;
+    transform:scale(1.04);
+}
+.match-accept-btn:disabled{
+    opacity:0.5;
+    cursor:not-allowed;
+}
+.match-status-msg{
+    font-size:18px;
+    color:#ff8a8a;
+    margin-top:12px;
+}
+.match-result-buttons{
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    margin-top:16px;
+    flex-wrap:wrap;
+}
+.match-result-btn{
+    padding:10px 28px;
+    border-radius:10px;
+    font-weight:700;
+    font-size:16px;
+    cursor:pointer;
+    transition: background 0.2s;
+    border:2px solid #3a3a4a;
+    background:#22222a;
+    color:#c9c9d1;
+}
+.match-result-btn:hover{
+    background:#2a2a3a;
+}
+.match-result-btn.requeue{
+    border-color:#2a9a5a;
+    color:#6bff6b;
+}
+.match-result-btn.requeue:hover{
+    background:#1a3a2a;
+}
+.match-result-btn.exit{
+    border-color:#8a3a3a;
+    color:#ff6b6b;
+}
+.match-result-btn.exit:hover{
+    background:#2a1a1a;
+}
+
+/* Ready screen */
+.match-ready-title{
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+}
+.match-ready-title img{
+    width:28px;
+    height:28px;
+    image-rendering: pixelated;
+}
+.match-ready-players{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:30px;
+    margin:16px 0;
+}
+.match-player-box{
+    text-align:center;
+}
+.match-player-box img{
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    border:3px solid #4a4a5a;
+    image-rendering: pixelated;
+}
+.match-player-box .name{
+    margin-top:6px;
+    font-size:16px;
+    font-weight:700;
+}
+.match-vs{
+    font-size:32px;
+    font-weight:900;
+    color:#a9b6ff;
+}
+.match-server-info{
+    font-size:15px;
+    color:#8b8b96;
+    margin:10px 0 6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+}
+.match-server-info .copy-btn{
+    background:transparent;
+    border:1px solid #4a4a5a;
+    color:#c9c9d1;
+    padding:2px 8px;
+    border-radius:4px;
+    cursor:pointer;
+    font-size:12px;
+    transition: background 0.2s;
+}
+.match-server-info .copy-btn:hover{
+    background:#2a2a3a;
+}
+.match-kit-instruction{
+    font-size:14px;
+    color:#a9b6ff;
+    margin:4px 0;
+    line-height:1.6;
+}
+.match-kit-instruction .copy-kit{
+    color:#ffcc00;
+    cursor:pointer;
+    border-bottom:1px dashed #ffcc00;
+    transition: color 0.2s;
+}
+.match-kit-instruction .copy-kit:hover{
+    color:#ffdd44;
+}
+.match-rules{
+    font-size:20px;
+    font-weight:700;
+    color:#fff;
+    margin:12px 0 4px;
+}
+.match-rules-sub{
+    font-size:15px;
+    color:#8b8b96;
+    margin-bottom:12px;
+}
+.match-finished-btn{
+    background:#2a6a3a;
+    border:2px solid #4a9a5a;
+    color:#fff;
+    font-weight:800;
+    font-size:20px;
+    padding:12px 40px;
+    border-radius:12px;
+    cursor:pointer;
+    transition: background 0.2s;
+    margin-top:12px;
+}
+.match-finished-btn:hover{
+    background:#3a7a4a;
 }
 
 /* ---------- Rest of existing styles (unchanged) ---------- */
@@ -1060,7 +1317,6 @@ h2{
 </div>
 
 <div class="container">
-  <!-- Tab menu, top bar, etc. unchanged -->
   <div class="tab-menu" id="tabMenu"></div>
   <div class="top-bar">
     <div class="info-btn-wrapper">
@@ -1118,6 +1374,7 @@ h2{
           <span id="queueCountKanal">0</span> in queue · 
           <span id="matchCountKanal">0</span> in matches
         </div>
+        <div class="queue-status" id="queueStatusKanal">No players in queue</div>
       </div>
       <!-- Lowblock Mace -->
       <div class="queue-mode-column" data-mode="LowblockMace">
@@ -1130,8 +1387,18 @@ h2{
           <span id="queueCountMace">0</span> in queue · 
           <span id="matchCountMace">0</span> in matches
         </div>
+        <div class="queue-status" id="queueStatusMace">No players in queue</div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Match Found Modal -->
+<div class="match-modal-overlay" id="matchModalOverlay">
+  <div class="match-modal-box" id="matchModalBox">
+    <button class="match-modal-close" id="matchModalClose">✕</button>
+    <!-- Dynamic content will be rendered by JavaScript -->
+    <div id="matchModalContent"></div>
   </div>
 </div>
 
@@ -1159,8 +1426,10 @@ const queueState = {
 /* ---------- Icons from GitHub ---------- */
 const HELMET_ICON_URL = "https://github.com/Toggelt/nova-tiers/blob/main/assets/netherite_helmet.png?raw=true";
 const MACE_ICON_URL   = "https://github.com/Toggelt/nova-tiers/blob/main/assets/mace.png?raw=true";
+const KANAL_KIT_IMG   = "https://github.com/Toggelt/nova-tiers/blob/main/assets/kanalserver_kit.png?raw=true";
+const LOWBLOCK_KIT_IMG = "https://github.com/Toggelt/nova-tiers/blob/main/assets/lowblockmace_kit.png?raw=true";
 
-/* ---------- Leaderboards (unchanged) ---------- */
+/* ---------- Leaderboards ---------- */
 const LEADERBOARDS = {
     Overall: {
         key: "Overall",
@@ -1228,7 +1497,7 @@ function switchBoard(key){
     render();
 }
 
-/* ---------- Tier system (unchanged) ---------- */
+/* ---------- Tier system ---------- */
 const TIER_STEPS = [
     { name: "LT1", pct: 10 },
     { name: "HT2", pct: 10 },
@@ -1653,7 +1922,7 @@ searchBtn.addEventListener("click", (e) => {
 searchInput.addEventListener("input", () => renderSearchResults(searchInput.value));
 searchInput.addEventListener("click", (e) => e.stopPropagation());
 
-/* ---------- 🔐 Login with Supabase Auth ---------- */
+/* ---------- 🔐 Login ---------- */
 const loginBtn = document.getElementById("loginBtn");
 const loginPanel = document.getElementById("loginPanel");
 const loginWrapper = document.getElementById("loginWrapper");
@@ -1672,7 +1941,7 @@ function updatePlayButton(loggedIn){
         playBtn.classList.add("logged-in");
         playIcon.textContent = "▶";
         playLabel.textContent = "Play";
-        playTooltip.textContent = ""; // no tooltip when logged in
+        playTooltip.textContent = "";
         playBtn.style.cursor = "pointer";
     } else {
         playBtn.classList.remove("logged-in");
@@ -1720,46 +1989,32 @@ async function attemptLogin(){
     const password = document.getElementById("loginPassword").value;
     const errorEl = document.getElementById("loginError");
     errorEl.style.display = "none";
-
     if(!username || !password) return;
-
     const email = buildEmail(username);
-
     try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-        });
-
-        if (error) {
-            errorEl.textContent = "Invalid username or password.";
-            errorEl.style.display = "block";
-            return;
-        }
-
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
         const { data: playerData, error: playerError } = await supabase
             .from("players")
             .select("*")
             .ilike("name", username)
             .maybeSingle();
-
         if (playerError || !playerData) {
             await supabase.auth.signOut();
             errorEl.textContent = "Account exists but no player profile found. Contact admin.";
             errorEl.style.display = "block";
             return;
         }
-
         currentUser = playerData;
         updateLoginButton();
         renderLoggedInPanel();
         loginPanel.classList.remove("active");
-        // Enable queue buttons
         enableQueueButtons(true);
-        // Refresh queue status for both modes
         refreshQueueStatus();
+        startMatchmakingPolling();
+        subscribeToMatches();
     } catch (err) {
-        errorEl.textContent = "Something went wrong. Try again.";
+        errorEl.textContent = "Invalid username or password.";
         errorEl.style.display = "block";
     }
 }
@@ -1771,9 +2026,7 @@ async function logout(){
     renderLoggedOutPanel();
     loginPanel.classList.remove("active");
     updatePlayButton(false);
-    // Disable queue buttons
     enableQueueButtons(false);
-    // Clear timers
     Object.keys(queueState).forEach(mode => {
         if(queueState[mode].timerInterval) {
             clearInterval(queueState[mode].timerInterval);
@@ -1785,6 +2038,11 @@ async function logout(){
     document.getElementById("queueBtnKanal").disabled = true;
     document.getElementById("queueBtnMace").disabled = true;
     closeQueueModal();
+    if(window.matchmakingInterval){
+        clearInterval(window.matchmakingInterval);
+        window.matchmakingInterval = null;
+    }
+    closeMatchModal();
 }
 
 function updateLoginButton(){
@@ -1804,8 +2062,7 @@ async function restoreSession(){
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
         const user = session.user;
-        const email = user.email;
-        const username = email.replace(/@minecraft\.local$/, '');
+        const username = user.email.replace(/@minecraft\.local$/, '');
         const { data: playerData, error } = await supabase
             .from("players")
             .select("*")
@@ -1817,6 +2074,8 @@ async function restoreSession(){
             renderLoggedInPanel();
             enableQueueButtons(true);
             refreshQueueStatus();
+            startMatchmakingPolling();
+            subscribeToMatches();
         } else {
             await supabase.auth.signOut();
             currentUser = null;
@@ -1838,12 +2097,8 @@ loginBtn.addEventListener("click", (e) => {
 });
 
 document.addEventListener("click", (e) => {
-    if(!loginWrapper.contains(e.target)){
-        loginPanel.classList.remove("active");
-    }
-    if(!searchWrapper.contains(e.target)){
-        searchPanel.classList.remove("active");
-    }
+    if(!loginWrapper.contains(e.target)) loginPanel.classList.remove("active");
+    if(!searchWrapper.contains(e.target)) searchPanel.classList.remove("active");
 });
 
 renderLoggedOutPanel();
@@ -1858,6 +2113,8 @@ const queueCountKanal = document.getElementById("queueCountKanal");
 const queueCountMace = document.getElementById("queueCountMace");
 const matchCountKanal = document.getElementById("matchCountKanal");
 const matchCountMace = document.getElementById("matchCountMace");
+const queueStatusKanal = document.getElementById("queueStatusKanal");
+const queueStatusMace = document.getElementById("queueStatusMace");
 
 function enableQueueButtons(enabled){
     if(enabled && currentUser){
@@ -1869,11 +2126,8 @@ function enableQueueButtons(enabled){
     }
 }
 
-// Click play button
 playBtn.addEventListener("click", () => {
-    if (!currentUser) {
-        return;
-    }
+    if (!currentUser) return;
     openQueueModal();
 });
 
@@ -1881,6 +2135,7 @@ function openQueueModal(){
     queueModalOverlay.classList.add("active");
     refreshQueueStatus();
     fetchQueueStats();
+    updateQueueStatusMessages();
 }
 
 function closeQueueModal(){
@@ -1892,7 +2147,6 @@ queueModalOverlay.addEventListener("click", (e) => {
     if (e.target === queueModalOverlay) closeQueueModal();
 });
 
-// Queue button handlers
 queueBtnKanal.addEventListener("click", () => handleQueueAction("KanalServer"));
 queueBtnMace.addEventListener("click", () => handleQueueAction("LowblockMace"));
 
@@ -1900,10 +2154,8 @@ async function handleQueueAction(mode){
     if(!currentUser) return;
     const state = queueState[mode];
     if(state.inQueue){
-        // Leave queue
         await leaveQueue(mode);
     } else {
-        // Join queue
         await joinQueue(mode);
     }
 }
@@ -1913,7 +2165,7 @@ async function joinQueue(mode){
         const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
         btn.disabled = true;
         btn.textContent = "Joining...";
-        const response = await fetch(`https://fyyyjjysztzxmmdgubnb.supabase.co/functions/v1/join-queue`, {
+        const response = await fetch(`${SUPABASE_URL}/functions/v1/join-queue`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
@@ -1921,24 +2173,18 @@ async function joinQueue(mode){
             },
             body: JSON.stringify({ game_mode: mode })
         });
-        if (!response.ok) {
-            const err = await response.text();
-            throw new Error(err);
-        }
+        if (!response.ok) throw new Error(await response.text());
         const data = await response.json();
-        // Update state
         const state = queueState[mode];
         state.inQueue = true;
         state.joinedAt = Date.now();
         state.queueId = data.id;
-        // Start timer
         startTimer(mode);
-        // Update button
         btn.classList.add("queued");
         btn.innerHTML = `<span class="queue-btn-text">In Queue (0:00)</span><span class="queue-btn-leave">Leave Queue</span>`;
         btn.disabled = false;
-        // Fetch stats
         fetchQueueStats();
+        updateQueueStatusMessages();
     } catch (error) {
         console.error('Join queue error:', error);
         alert('Failed to join queue: ' + error.message);
@@ -1953,7 +2199,7 @@ async function leaveQueue(mode){
         const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
         btn.disabled = true;
         btn.textContent = "Leaving...";
-        const response = await fetch(`https://fyyyjjysztzxmmdgubnb.supabase.co/functions/v1/leave-queue`, {
+        const response = await fetch(`${SUPABASE_URL}/functions/v1/leave-queue`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
@@ -1961,11 +2207,7 @@ async function leaveQueue(mode){
             },
             body: JSON.stringify({ game_mode: mode })
         });
-        if (!response.ok) {
-            const err = await response.text();
-            throw new Error(err);
-        }
-        // Update state
+        if (!response.ok) throw new Error(await response.text());
         const state = queueState[mode];
         state.inQueue = false;
         state.joinedAt = null;
@@ -1974,11 +2216,11 @@ async function leaveQueue(mode){
             clearInterval(state.timerInterval);
             state.timerInterval = null;
         }
-        // Update button
         btn.classList.remove("queued");
         btn.innerHTML = `Queue`;
         btn.disabled = false;
         fetchQueueStats();
+        updateQueueStatusMessages();
     } catch (error) {
         console.error('Leave queue error:', error);
         alert('Failed to leave queue: ' + error.message);
@@ -2017,7 +2259,6 @@ async function refreshQueueStatus(){
             .eq('player_id', currentUser.id)
             .eq('status', 'waiting');
         if (error) throw error;
-        // Reset all states
         Object.keys(queueState).forEach(m => {
             const state = queueState[m];
             state.inQueue = false;
@@ -2031,7 +2272,6 @@ async function refreshQueueStatus(){
             btn.classList.remove("queued");
             btn.innerHTML = `Queue`;
         });
-        // Update for entries found
         data.forEach(entry => {
             const mode = entry.game_mode;
             const state = queueState[mode];
@@ -2069,29 +2309,378 @@ async function fetchQueueStats(){
     }
 }
 
-// Refresh stats every 5 seconds
 setInterval(fetchQueueStats, 5000);
-
-// When modal opens, refresh stats
 queueModalOverlay.addEventListener('click', (e) => {
     if (e.target === queueModalOverlay) closeQueueModal();
 });
 
-// Override openQueueModal to fetch stats on open
 const origOpen = openQueueModal;
 openQueueModal = function() {
     origOpen();
     fetchQueueStats();
 };
 
+function updateQueueStatusMessages(){
+    // We'll update status based on queue counts
+    const kanalCount = parseInt(queueCountKanal.textContent);
+    const maceCount = parseInt(queueCountMace.textContent);
+    queueStatusKanal.textContent = kanalCount === 0 ? 'No players in queue' : `${kanalCount} player${kanalCount > 1 ? 's' : ''} in queue`;
+    queueStatusMace.textContent = maceCount === 0 ? 'No players in queue' : `${maceCount} player${maceCount > 1 ? 's' : ''} in queue`;
+}
+
+/* ---------- Matchmaking Polling & Realtime ---------- */
+async function callMatchmaker(){
+    try {
+        const response = await fetch(`${SUPABASE_URL}/functions/v1/matchmake`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) console.warn('Matchmaker error:', await response.text());
+    } catch (e) {
+        console.error('Matchmaker call failed:', e);
+    }
+}
+
+function startMatchmakingPolling(){
+    if(window.matchmakingInterval) clearInterval(window.matchmakingInterval);
+    window.matchmakingInterval = setInterval(callMatchmaker, 10000);
+    callMatchmaker();
+}
+
+let matchSubscription = null;
+
+function subscribeToMatches(){
+    if(matchSubscription) {
+        matchSubscription.unsubscribe();
+        matchSubscription = null;
+    }
+    if(!currentUser) return;
+    matchSubscription = supabase
+        .channel('public:matches')
+        .on('postgres_changes', {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'matches',
+            filter: `player1_id=eq.${currentUser.id},player2_id=eq.${currentUser.id}`,
+        }, (payload) => {
+            const match = payload.new;
+            if (match.status === 'pending' && (match.player1_id === currentUser.id || match.player2_id === currentUser.id)) {
+                handleNewMatch(match);
+            }
+        })
+        .subscribe();
+}
+
+/* ---------- Match Modal Logic ---------- */
+const matchModalOverlay = document.getElementById('matchModalOverlay');
+const matchModalContent = document.getElementById('matchModalContent');
+let matchTimerInterval = null;
+let matchTimeoutId = null;
+let currentMatch = null;
+let isReadyScreen = false;
+
+function closeMatchModal(){
+    if(matchTimerInterval){
+        clearInterval(matchTimerInterval);
+        matchTimerInterval = null;
+    }
+    if(matchTimeoutId){
+        clearTimeout(matchTimeoutId);
+        matchTimeoutId = null;
+    }
+    matchModalOverlay.classList.remove('active');
+    isReadyScreen = false;
+    currentMatch = null;
+}
+
+document.getElementById('matchModalClose').addEventListener('click', closeMatchModal);
+
+async function handleNewMatch(match){
+    // If a match modal is already open, close it first
+    closeMatchModal();
+    currentMatch = match;
+    const isPlayer1 = match.player1_id === currentUser.id;
+    const opponentId = isPlayer1 ? match.player2_id : match.player1_id;
+    const { data: opponent, error } = await supabase
+        .from('players')
+        .select('name')
+        .eq('id', opponentId)
+        .maybeSingle();
+    if (error || !opponent) {
+        console.error('Failed to fetch opponent:', error);
+        return;
+    }
+    const modeLabel = match.game_mode === 'KanalServer' ? 'Kanal Server' : 'Lowblock Mace';
+    const modeIcon = match.game_mode === 'KanalServer' ? HELMET_ICON_URL : MACE_ICON_URL;
+    const kitImg = match.game_mode === 'KanalServer' ? KANAL_KIT_IMG : LOWBLOCK_KIT_IMG;
+    // Show the match modal with accept screen
+    showAcceptScreen(match, opponent, modeLabel, modeIcon, kitImg);
+    // Start 30-second timer
+    startMatchTimer(30, match, opponent, modeLabel, modeIcon, kitImg);
+}
+
+function showAcceptScreen(match, opponent, modeLabel, modeIcon, kitImg){
+    const isPlayer1 = match.player1_id === currentUser.id;
+    const yourName = currentUser.name;
+    const oppName = opponent.name;
+    const html = `
+        <div class="match-modal-title">⚔️ Match found for:</div>
+        <div class="match-modal-subtitle">
+            <img src="${modeIcon}" alt="${modeLabel}"> ${modeLabel}
+        </div>
+        <div class="match-timer" id="matchTimer">30</div>
+        <div style="font-size:18px; color:#a9b6ff; margin-bottom:6px;">You have 30 seconds to accept</div>
+        <div class="match-kit-image"><img src="${kitImg}" alt="${modeLabel} Kit"></div>
+        <button class="match-accept-btn" id="matchAcceptBtn">✅ Accept</button>
+        <div class="match-status-msg" id="matchStatusMsg"></div>
+    `;
+    matchModalContent.innerHTML = html;
+    matchModalOverlay.classList.add('active');
+
+    document.getElementById('matchAcceptBtn').addEventListener('click', async () => {
+        // Disable button
+        const btn = document.getElementById('matchAcceptBtn');
+        btn.disabled = true;
+        btn.textContent = 'Accepting...';
+        try {
+            const response = await fetch(`${SUPABASE_URL}/functions/v1/accept-match`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ match_id: match.id, player_id: currentUser.id })
+            });
+            if (!response.ok) throw new Error(await response.text());
+            const data = await response.json();
+            if (data.success) {
+                btn.textContent = '✅ Accepted!';
+                // Wait for opponent to accept or timeout
+                // We'll listen to match updates via Realtime
+            } else {
+                btn.textContent = '❌ Failed';
+                btn.disabled = false;
+            }
+        } catch (err) {
+            console.error('Accept error:', err);
+            btn.textContent = '❌ Error';
+            btn.disabled = false;
+        }
+    });
+}
+
+function startMatchTimer(seconds, match, opponent, modeLabel, modeIcon, kitImg){
+    let remaining = seconds;
+    const timerEl = document.getElementById('matchTimer');
+    if (timerEl) timerEl.textContent = remaining;
+    if (matchTimerInterval) clearInterval(matchTimerInterval);
+    matchTimerInterval = setInterval(() => {
+        remaining--;
+        if (timerEl) timerEl.textContent = remaining;
+        if (remaining <= 0) {
+            clearInterval(matchTimerInterval);
+            matchTimerInterval = null;
+            // Timeout – handle penalty
+            handleTimeout(match, opponent, modeLabel, modeIcon, kitImg);
+        }
+    }, 1000);
+}
+
+async function handleTimeout(match, opponent, modeLabel, modeIcon, kitImg){
+    // Check who accepted
+    const { data: updatedMatch, error } = await supabase
+        .from('matches')
+        .select('player1_accepted, player2_accepted, player1_id, player2_id')
+        .eq('id', match.id)
+        .single();
+    if (error) {
+        console.error('Error fetching match status:', error);
+        return;
+    }
+    const p1Accepted = updatedMatch.player1_accepted;
+    const p2Accepted = updatedMatch.player2_accepted;
+    const isPlayer1 = match.player1_id === currentUser.id;
+    const p1AcceptedFinal = p1Accepted;
+    const p2AcceptedFinal = p2Accepted;
+
+    // Determine penalties
+    let penalizedPlayers = [];
+    if (!p1AcceptedFinal) penalizedPlayers.push(match.player1_id);
+    if (!p2AcceptedFinal) penalizedPlayers.push(match.player2_id);
+
+    // Apply penalties via Edge Function
+    for (const pid of penalizedPlayers) {
+        try {
+            await fetch(`${SUPABASE_URL}/functions/v1/penalize-player`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ player_id: pid, game_mode: match.game_mode })
+            });
+        } catch (e) {
+            console.error('Penalty error:', e);
+        }
+    }
+
+    // Show result screen
+    const isPlayer1Current = match.player1_id === currentUser.id;
+    const iAccepted = isPlayer1Current ? p1AcceptedFinal : p2AcceptedFinal;
+    const opponentAccepted = isPlayer1Current ? p2AcceptedFinal : p1AcceptedFinal;
+
+    let statusMsg = '';
+    if (iAccepted && !opponentAccepted) {
+        statusMsg = 'Opponent didn\'t accept. You get +5 elo!';
+    } else if (!iAccepted && opponentAccepted) {
+        statusMsg = 'You didn\'t accept. You lost 5 elo.';
+    } else if (!iAccepted && !opponentAccepted) {
+        statusMsg = 'Both players didn\'t accept. Both lost 5 elo.';
+    } else {
+        // Should not happen – both accepted
+    }
+
+    // Show result screen with buttons
+    showResultScreen(match, opponent, modeLabel, modeIcon, kitImg, statusMsg);
+}
+
+function showResultScreen(match, opponent, modeLabel, modeIcon, kitImg, statusMsg){
+    const html = `
+        <div class="match-modal-title">⏰ Time's up!</div>
+        <div style="font-size:20px; color:#ff8a8a; margin:12px 0;">${statusMsg}</div>
+        <div class="match-result-buttons">
+            <button class="match-result-btn requeue" id="requeueBtn">🔄 Requeue</button>
+            <button class="match-result-btn exit" id="exitBtn">✖ Exit</button>
+        </div>
+    `;
+    matchModalContent.innerHTML = html;
+    document.getElementById('requeueBtn').addEventListener('click', async () => {
+        // Close match modal, open queue modal, and join queue for the same game mode
+        closeMatchModal();
+        openQueueModal();
+        // Automatically join the queue for that mode
+        await joinQueue(match.game_mode);
+    });
+    document.getElementById('exitBtn').addEventListener('click', () => {
+        closeMatchModal();
+    });
+}
+
+// Listen for updates on the match (when both accept)
+// Subscribe to changes on this specific match
+function subscribeToMatchUpdates(matchId){
+    const channel = supabase
+        .channel(`match-${matchId}`)
+        .on('postgres_changes', {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'matches',
+            filter: `id=eq.${matchId}`
+        }, async (payload) => {
+            const updated = payload.new;
+            if (updated.status === 'accepted' || (updated.player1_accepted && updated.player2_accepted)) {
+                // Both accepted – show ready screen
+                if (matchTimerInterval) {
+                    clearInterval(matchTimerInterval);
+                    matchTimerInterval = null;
+                }
+                await showReadyScreen(updated);
+            }
+        })
+        .subscribe();
+    return channel;
+}
+
+// Override handleNewMatch to include subscription
+const originalHandleNewMatch = handleNewMatch;
+handleNewMatch = async function(match) {
+    await originalHandleNewMatch(match);
+    // After showing accept screen, subscribe to updates
+    const channel = subscribeToMatchUpdates(match.id);
+    // Store channel for cleanup
+    if (window.matchChannel) window.matchChannel.unsubscribe();
+    window.matchChannel = channel;
+};
+
+async function showReadyScreen(match){
+    // Fetch opponent details
+    const isPlayer1 = match.player1_id === currentUser.id;
+    const opponentId = isPlayer1 ? match.player2_id : match.player1_id;
+    const { data: opponent, error } = await supabase
+        .from('players')
+        .select('name')
+        .eq('id', opponentId)
+        .maybeSingle();
+    if (error) {
+        console.error('Failed to fetch opponent:', error);
+        return;
+    }
+    const modeLabel = match.game_mode === 'KanalServer' ? 'Kanal Server' : 'Lowblock Mace';
+    const modeIcon = match.game_mode === 'KanalServer' ? HELMET_ICON_URL : MACE_ICON_URL;
+    const kitImg = match.game_mode === 'KanalServer' ? KANAL_KIT_IMG : LOWBLOCK_KIT_IMG;
+    const kitName = match.game_mode === 'KanalServer' ? 'Kanal Server Kit' : 'Lowblock Mace Kit';
+    const copyKitCmd = match.game_mode === 'KanalServer' ? '/copykit Zjg4M' : '/copykit N2ZhZ';
+    const pots = match.game_mode === 'KanalServer'
+        ? '3x Fire Resistance, 9x Strength, 12x TnT Minecarts, Bow (Power 5, Flame, Unbreaking 3, Infinity), 64 Windcharges, 64 Golden Apples'
+        : '6x Fire Resistance + 21x Strength 2';
+    const head1 = avatarUrl(currentUser.name, 64);
+    const head2 = avatarUrl(opponent.name, 64);
+    const html = `
+        <div style="font-size:16px; color:#a9b6ff; margin-bottom:10px;">Both players have accepted!</div>
+        <div class="match-ready-title">
+            <img src="${modeIcon}" alt="${modeLabel}"> Kit: ${modeLabel}
+        </div>
+        <div class="match-ready-players">
+            <div class="match-player-box">
+                <img src="${head1}" alt="${currentUser.name}">
+                <div class="name">${currentUser.name}</div>
+            </div>
+            <div class="match-vs">vs</div>
+            <div class="match-player-box">
+                <img src="${head2}" alt="${opponent.name}">
+                <div class="name">${opponent.name}</div>
+            </div>
+        </div>
+        <div class="match-server-info">
+            Join the server <strong>eu.stray.gg</strong>
+            <button class="copy-btn" id="copyServerBtn" title="Copy Address">📋</button>
+        </div>
+        <div class="match-kit-instruction">
+            Go to sandbox and use <strong>/rtp</strong> and select plains.
+            Select <span class="copy-kit" id="copyKitBtn" title="Click to copy kit">"${kitName}"</span>
+            and select your enderchest layout with <span style="color:#ffcc00;">"${pots}"</span>.
+            <br><span style="color:#8b8b96; font-size:13px;">/tpahere or accept the tpahere of your opponent to fight.</span>
+        </div>
+        <div class="match-rules">First to 4! Only rekit after a fight!</div>
+        <div class="match-rules-sub">Fighting may commence after both players used their first potion!</div>
+        <button class="match-finished-btn" id="matchFinishedBtn">✅ Match finished</button>
+    `;
+    matchModalContent.innerHTML = html;
+    // Copy server address
+    document.getElementById('copyServerBtn').addEventListener('click', () => {
+        navigator.clipboard.writeText('eu.stray.gg');
+        alert('Copied: eu.stray.gg');
+    });
+    // Copy kit command
+    document.getElementById('copyKitBtn').addEventListener('click', () => {
+        navigator.clipboard.writeText(copyKitCmd);
+        alert(`Copied: ${copyKitCmd}`);
+    });
+    document.getElementById('matchFinishedBtn').addEventListener('click', () => {
+        closeMatchModal();
+    });
+    isReadyScreen = true;
+}
+
 /* ---------- Leaderboard data loading ---------- */
 renderTabMenu();
 setTitle(currentBoard);
 
 async function loadPlayers(){
-    const { data, error } = await supabase
-        .from("players")
-        .select("*");
+    const { data, error } = await supabase.from("players").select("*");
     if(error){
         list.innerHTML = "Error loading data";
         toggleBtn.style.display = "none";
