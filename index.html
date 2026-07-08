@@ -492,26 +492,6 @@ h2{
     text-align:center;
     position:relative;
 }
-.match-modal-close{
-    position:absolute;
-    top:14px;
-    right:14px;
-    width:32px;
-    height:32px;
-    border-radius:50%;
-    background:#22222a;
-    border:none;
-    color:#fff;
-    font-size:16px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transition: background 0.2s;
-}
-.match-modal-close:hover{
-    background:#3a3a4a;
-}
 .match-modal-title{
     font-family: 'Bahnschrift', Arial, sans-serif;
     font-size:24px;
@@ -531,10 +511,9 @@ h2{
     height:36px;
     image-rendering: pixelated;
 }
-.match-timer{
-    font-size:28px;
-    font-weight:800;
-    color:#ffcc00;
+.match-timer-text{
+    font-size:20px;
+    color:#a9b6ff;
     margin:6px 0 12px;
 }
 .match-kit-image{
@@ -571,7 +550,7 @@ h2{
     cursor:not-allowed;
 }
 .match-status-msg{
-    font-size:18px;
+    font-size:22px;
     color:#ff8a8a;
     margin-top:12px;
 }
@@ -1376,7 +1355,6 @@ h2{
 <!-- Match Found Modal -->
 <div class="match-modal-overlay" id="matchModalOverlay">
   <div class="match-modal-box" id="matchModalBox">
-    <button class="match-modal-close" id="matchModalClose">✕</button>
     <div id="matchModalContent"></div>
   </div>
 </div>
@@ -1992,6 +1970,7 @@ async function attemptLogin(){
         refreshQueueStatus();
         startMatchmakingPolling();
         subscribeToMatches();
+        startPollingMatches();
     } catch (err) {
         errorEl.textContent = "Invalid username or password.";
         errorEl.style.display = "block";
@@ -2022,6 +2001,10 @@ async function logout(){
         window.matchmakingInterval = null;
     }
     closeMatchModal();
+    if(pollInterval){
+        clearInterval(pollInterval);
+        pollInterval = null;
+    }
 }
 
 function updateLoginButton(){
@@ -2055,6 +2038,7 @@ async function restoreSession(){
             refreshQueueStatus();
             startMatchmakingPolling();
             subscribeToMatches();
+            startPollingMatches();
         } else {
             await supabase.auth.signOut();
             currentUser = null;
@@ -2082,6 +2066,12 @@ document.addEventListener("click", (e) => {
 
 renderLoggedOutPanel();
 restoreSession();
+
+setTimeout(() => {
+    if (currentUser) {
+        startPollingMatches();
+    }
+}, 1000);
 
 /* ---------- Queue Modal Logic ---------- */
 const queueModalOverlay = document.getElementById("queueModalOverlay");
@@ -2160,7 +2150,6 @@ async function joinQueue(mode){
         btn.innerHTML = `<span class="queue-btn-text">In Queue (0:00)</span><span class="queue-btn-leave">Leave Queue</span>`;
         btn.disabled = false;
         fetchQueueStats();
-        // Immediately call matchmaker after joining
         callMatchmaker();
     } catch (error) {
         console.error('Join queue error:', error);
@@ -2340,6 +2329,7 @@ const matchModalContent = document.getElementById('matchModalContent');
 let matchTimerInterval = null;
 let currentMatch = null;
 let lastMatchId = null;
+let pollInterval = null;
 
 function closeMatchModal(){
     if(matchTimerInterval){
@@ -2350,14 +2340,15 @@ function closeMatchModal(){
     currentMatch = null;
 }
 
-document.getElementById('matchModalClose').addEventListener('click', closeMatchModal);
-
 async function handleNewMatch(match){
-    // Prevent duplicate handling
     if (lastMatchId === match.id) return;
     lastMatchId = match.id;
     closeMatchModal();
     currentMatch = match;
+    
+    // Refresh queue status to update button (they are no longer in queue)
+    refreshQueueStatus();
+    
     const isPlayer1 = match.player1_id === currentUser.id;
     const opponentId = isPlayer1 ? match.player2_id : match.player1_id;
     const { data: opponent, error } = await supabase
@@ -2378,12 +2369,11 @@ async function handleNewMatch(match){
 
 function showAcceptScreen(match, opponent, modeLabel, modeIcon, kitImg){
     const html = `
-        <div class="match-modal-title">⚔️ Match found for:</div>
+        <div class="match-modal-title">Match found for:</div>
         <div class="match-modal-subtitle">
             <img src="${modeIcon}" alt="${modeLabel}"> ${modeLabel}
         </div>
-        <div class="match-timer" id="matchTimer">30</div>
-        <div style="font-size:18px; color:#a9b6ff; margin-bottom:6px;">You have 30 seconds to accept</div>
+        <div class="match-timer-text" id="matchTimerText">You have 30 seconds to accept</div>
         <div class="match-kit-image"><img src="${kitImg}" alt="${modeLabel} Kit"></div>
         <button class="match-accept-btn" id="matchAcceptBtn">✅ Accept</button>
         <div class="match-status-msg" id="matchStatusMsg"></div>
@@ -2394,7 +2384,7 @@ function showAcceptScreen(match, opponent, modeLabel, modeIcon, kitImg){
     document.getElementById('matchAcceptBtn').addEventListener('click', async () => {
         const btn = document.getElementById('matchAcceptBtn');
         btn.disabled = true;
-        btn.textContent = 'Accepting...';
+        btn.textContent = '⏳ Waiting for opponent...';
         try {
             const response = await fetch(`${SUPABASE_URL}/functions/v1/accept-match`, {
                 method: 'POST',
@@ -2406,9 +2396,7 @@ function showAcceptScreen(match, opponent, modeLabel, modeIcon, kitImg){
             });
             if (!response.ok) throw new Error(await response.text());
             const data = await response.json();
-            if (data.success) {
-                btn.textContent = '✅ Accepted!';
-            } else {
+            if (!data.success) {
                 btn.textContent = '❌ Failed';
                 btn.disabled = false;
             }
@@ -2422,12 +2410,27 @@ function showAcceptScreen(match, opponent, modeLabel, modeIcon, kitImg){
 
 function startMatchTimer(seconds, match, opponent, modeLabel, modeIcon, kitImg){
     let remaining = seconds;
-    const timerEl = document.getElementById('matchTimer');
-    if (timerEl) timerEl.textContent = remaining;
+    const timerEl = document.getElementById('matchTimerText');
+    if (timerEl) timerEl.textContent = `You have ${remaining} seconds to accept`;
     if (matchTimerInterval) clearInterval(matchTimerInterval);
-    matchTimerInterval = setInterval(() => {
+    matchTimerInterval = setInterval(async () => {
+        // Check if both players have accepted
+        const { data: updatedMatch, error } = await supabase
+            .from('matches')
+            .select('player1_accepted, player2_accepted, status')
+            .eq('id', match.id)
+            .single();
+        if (error) {
+            console.error('Error checking match status:', error);
+        } else if (updatedMatch.player1_accepted && updatedMatch.player2_accepted) {
+            // Both accepted – stop timer and show ready screen
+            clearInterval(matchTimerInterval);
+            matchTimerInterval = null;
+            await showReadyScreen(updatedMatch);
+            return;
+        }
         remaining--;
-        if (timerEl) timerEl.textContent = remaining;
+        if (timerEl) timerEl.textContent = `You have ${remaining} seconds to accept`;
         if (remaining <= 0) {
             clearInterval(matchTimerInterval);
             matchTimerInterval = null;
@@ -2456,6 +2459,7 @@ async function handleTimeout(match, opponent, modeLabel, modeIcon, kitImg){
     if (!p1Accepted) penalizedPlayers.push(match.player1_id);
     if (!p2Accepted) penalizedPlayers.push(match.player2_id);
 
+    // Apply penalties only to those who didn't accept
     for (const pid of penalizedPlayers) {
         try {
             await fetch(`${SUPABASE_URL}/functions/v1/penalize-player`, {
@@ -2473,7 +2477,7 @@ async function handleTimeout(match, opponent, modeLabel, modeIcon, kitImg){
 
     let statusMsg = '';
     if (iAccepted && !opponentAccepted) {
-        statusMsg = 'Opponent didn\'t accept. You get +5 elo!';
+        statusMsg = 'Opponent didn\'t accept. You lost 5 elo.';
     } else if (!iAccepted && opponentAccepted) {
         statusMsg = 'You didn\'t accept. You lost 5 elo.';
     } else if (!iAccepted && !opponentAccepted) {
@@ -2485,8 +2489,7 @@ async function handleTimeout(match, opponent, modeLabel, modeIcon, kitImg){
 
 function showResultScreen(match, opponent, modeLabel, modeIcon, kitImg, statusMsg){
     const html = `
-        <div class="match-modal-title">⏰ Time's up!</div>
-        <div style="font-size:20px; color:#ff8a8a; margin:12px 0;">${statusMsg}</div>
+        <div style="font-size:24px; color:#ff8a8a; margin:12px 0;">${statusMsg}</div>
         <div class="match-result-buttons">
             <button class="match-result-btn requeue" id="requeueBtn">🔄 Requeue</button>
             <button class="match-result-btn exit" id="exitBtn">✖ Exit</button>
@@ -2503,7 +2506,6 @@ function showResultScreen(match, opponent, modeLabel, modeIcon, kitImg, statusMs
     });
 }
 
-// Subscribe to match updates (both accept)
 function subscribeToMatchUpdates(matchId){
     const channel = supabase
         .channel(`match-${matchId}`)
@@ -2597,7 +2599,6 @@ async function showReadyScreen(match){
 }
 
 /* ---------- Fallback polling for matches (in case Realtime fails) ---------- */
-let pollInterval = null;
 function startPollingMatches() {
     if (pollInterval) clearInterval(pollInterval);
     pollInterval = setInterval(async () => {
@@ -2618,13 +2619,10 @@ function startPollingMatches() {
                 }
             }
         } catch (e) {
-            // Silent fail – we don't want to spam console
+            // Silent fail
         }
     }, 5000);
 }
-
-// Start polling after login
-startPollingMatches();
 
 /* ---------- Leaderboard data loading ---------- */
 renderTabMenu();
