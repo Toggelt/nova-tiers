@@ -471,13 +471,6 @@ h2{
     font-weight:700;
     color:#c9c9d1;
 }
-.queue-status{
-    font-size:14px;
-    color:#a9b6ff;
-    margin-top:6px;
-    min-height:20px;
-    font-weight:600;
-}
 
 /* ---------- Match Found Modal ---------- */
 .match-modal-overlay{
@@ -1374,7 +1367,6 @@ h2{
           <span id="queueCountKanal">0</span> in queue · 
           <span id="matchCountKanal">0</span> in matches
         </div>
-        <div class="queue-status" id="queueStatusKanal">No players in queue</div>
       </div>
       <!-- Lowblock Mace -->
       <div class="queue-mode-column" data-mode="LowblockMace">
@@ -1387,7 +1379,6 @@ h2{
           <span id="queueCountMace">0</span> in queue · 
           <span id="matchCountMace">0</span> in matches
         </div>
-        <div class="queue-status" id="queueStatusMace">No players in queue</div>
       </div>
     </div>
   </div>
@@ -2113,8 +2104,6 @@ const queueCountKanal = document.getElementById("queueCountKanal");
 const queueCountMace = document.getElementById("queueCountMace");
 const matchCountKanal = document.getElementById("matchCountKanal");
 const matchCountMace = document.getElementById("matchCountMace");
-const queueStatusKanal = document.getElementById("queueStatusKanal");
-const queueStatusMace = document.getElementById("queueStatusMace");
 
 function enableQueueButtons(enabled){
     if(enabled && currentUser){
@@ -2135,7 +2124,6 @@ function openQueueModal(){
     queueModalOverlay.classList.add("active");
     refreshQueueStatus();
     fetchQueueStats();
-    updateQueueStatusMessages();
 }
 
 function closeQueueModal(){
@@ -2184,7 +2172,6 @@ async function joinQueue(mode){
         btn.innerHTML = `<span class="queue-btn-text">In Queue (0:00)</span><span class="queue-btn-leave">Leave Queue</span>`;
         btn.disabled = false;
         fetchQueueStats();
-        updateQueueStatusMessages();
     } catch (error) {
         console.error('Join queue error:', error);
         alert('Failed to join queue: ' + error.message);
@@ -2220,7 +2207,6 @@ async function leaveQueue(mode){
         btn.innerHTML = `Queue`;
         btn.disabled = false;
         fetchQueueStats();
-        updateQueueStatusMessages();
     } catch (error) {
         console.error('Leave queue error:', error);
         alert('Failed to leave queue: ' + error.message);
@@ -2319,14 +2305,6 @@ openQueueModal = function() {
     origOpen();
     fetchQueueStats();
 };
-
-function updateQueueStatusMessages(){
-    // We'll update status based on queue counts
-    const kanalCount = parseInt(queueCountKanal.textContent);
-    const maceCount = parseInt(queueCountMace.textContent);
-    queueStatusKanal.textContent = kanalCount === 0 ? 'No players in queue' : `${kanalCount} player${kanalCount > 1 ? 's' : ''} in queue`;
-    queueStatusMace.textContent = maceCount === 0 ? 'No players in queue' : `${maceCount} player${maceCount > 1 ? 's' : ''} in queue`;
-}
 
 /* ---------- Matchmaking Polling & Realtime ---------- */
 async function callMatchmaker(){
@@ -2570,7 +2548,6 @@ function showResultScreen(match, opponent, modeLabel, modeIcon, kitImg, statusMs
 }
 
 // Listen for updates on the match (when both accept)
-// Subscribe to changes on this specific match
 function subscribeToMatchUpdates(matchId){
     const channel = supabase
         .channel(`match-${matchId}`)
