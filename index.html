@@ -2185,6 +2185,8 @@ async function leaveQueue(mode){
         btn.classList.remove("queued");
         btn.innerHTML = `Queue`;
         btn.disabled = false;
+        // After leaving, clear any pending match detection for this mode
+        // (the matchmaker will ignore any stale entries)
         fetchQueueStats();
     } catch (error) {
         console.error('Leave queue error:', error);
@@ -2375,7 +2377,7 @@ function showAcceptScreen(match, opponent, modeLabel, modeIcon, kitImg){
         </div>
         <div class="match-timer-text" id="matchTimerText">You have 30 seconds to accept</div>
         <div class="match-kit-image"><img src="${kitImg}" alt="${modeLabel} Kit"></div>
-        <button class="match-accept-btn" id="matchAcceptBtn">✅ Accept</button>
+        <button class="match-accept-btn" id="matchAcceptBtn">Accept</button>
         <div class="match-status-msg" id="matchStatusMsg"></div>
     `;
     matchModalContent.innerHTML = html;
@@ -2384,7 +2386,7 @@ function showAcceptScreen(match, opponent, modeLabel, modeIcon, kitImg){
     document.getElementById('matchAcceptBtn').addEventListener('click', async () => {
         const btn = document.getElementById('matchAcceptBtn');
         btn.disabled = true;
-        btn.textContent = '⏳ Waiting for opponent...';
+        btn.textContent = 'Waiting for opponent...';
         try {
             const response = await fetch(`${SUPABASE_URL}/functions/v1/accept-match`, {
                 method: 'POST',
@@ -2397,12 +2399,12 @@ function showAcceptScreen(match, opponent, modeLabel, modeIcon, kitImg){
             if (!response.ok) throw new Error(await response.text());
             const data = await response.json();
             if (!data.success) {
-                btn.textContent = '❌ Failed';
+                btn.textContent = 'Failed';
                 btn.disabled = false;
             }
         } catch (err) {
             console.error('Accept error:', err);
-            btn.textContent = '❌ Error';
+            btn.textContent = 'Error';
             btn.disabled = false;
         }
     });
@@ -2455,11 +2457,12 @@ async function handleTimeout(match, opponent, modeLabel, modeIcon, kitImg){
     const iAccepted = isPlayer1Current ? p1Accepted : p2Accepted;
     const opponentAccepted = isPlayer1Current ? p2Accepted : p1Accepted;
 
+    // Determine who didn't accept
     let penalizedPlayers = [];
     if (!p1Accepted) penalizedPlayers.push(match.player1_id);
     if (!p2Accepted) penalizedPlayers.push(match.player2_id);
 
-    // Apply penalties only to those who didn't accept
+    // Apply penalties to non-acceptors
     for (const pid of penalizedPlayers) {
         try {
             await fetch(`${SUPABASE_URL}/functions/v1/penalize-player`, {
@@ -2475,9 +2478,10 @@ async function handleTimeout(match, opponent, modeLabel, modeIcon, kitImg){
         }
     }
 
+    // Build status message
     let statusMsg = '';
     if (iAccepted && !opponentAccepted) {
-        statusMsg = 'Opponent didn\'t accept. You lost 5 elo.';
+        statusMsg = 'Opponent didn\'t accept.';
     } else if (!iAccepted && opponentAccepted) {
         statusMsg = 'You didn\'t accept. You lost 5 elo.';
     } else if (!iAccepted && !opponentAccepted) {
