@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
 <style>
-/* ---------- All styles unchanged ---------- */
+/* ---------- All existing styles (unchanged) ---------- */
 *{
     box-sizing:border-box;
 }
@@ -1386,6 +1386,7 @@ h2{
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
+// Supabase config
 const SUPABASE_URL = "https://fyyyjjysztzxmmdgubnb.supabase.co";
 const SUPABASE_KEY = "sb_publishable_kHwFOpox2rS81CKz832IBg_fZr5GoWH";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -1395,16 +1396,19 @@ let allPlayers = [];
 let expanded = false;
 let currentUser = null;
 
+// Queue tracking per mode
 const queueState = {
   KanalServer: { inQueue: false, joinedAt: null, timerInterval: null, queueId: null },
   LowblockMace: { inQueue: false, joinedAt: null, timerInterval: null, queueId: null }
 };
 
+/* ---------- Icons from GitHub ---------- */
 const HELMET_ICON_URL = "https://github.com/Toggelt/nova-tiers/blob/main/assets/netherite_helmet.png?raw=true";
 const MACE_ICON_URL   = "https://github.com/Toggelt/nova-tiers/blob/main/assets/mace.png?raw=true";
 const KANAL_KIT_IMG   = "https://github.com/Toggelt/nova-tiers/blob/main/assets/kanalserver_kit.png?raw=true";
 const LOWBLOCK_KIT_IMG = "https://github.com/Toggelt/nova-tiers/blob/main/assets/lowblockmace_kit.png?raw=true";
 
+/* ---------- Leaderboards ---------- */
 const LEADERBOARDS = {
     Overall: {
         key: "Overall",
@@ -1447,13 +1451,457 @@ function iconMarkup(board){
     return `<span class="emoji-icon">${board.emoji}</span>`;
 }
 
-function renderTabMenu(){ /* ... unchanged ... */ }
-function setTitle(key){ /* ... unchanged ... */ }
-function switchBoard(key){ /* ... unchanged ... */ }
+function renderTabMenu(){
+    tabMenu.innerHTML = "";
+    Object.values(LEADERBOARDS).forEach(board => {
+        const el = document.createElement("div");
+        el.className = "tab-item" + (board.key === currentBoard ? " active" : "");
+        el.innerHTML = `${iconMarkup(board)}<span class="tab-label">${board.label}</span>`;
+        el.addEventListener("click", () => switchBoard(board.key));
+        tabMenu.appendChild(el);
+    });
+}
 
-// ... (all tier, leaderboard, and profile functions unchanged) ...
+function setTitle(key){
+    titleIcon.innerHTML = iconMarkup(LEADERBOARDS[key]);
+    titleText.textContent = LEADERBOARDS[key].title;
+}
 
-/* ---------- Login ---------- */
+function switchBoard(key){
+    if(currentBoard === key) return;
+    currentBoard = key;
+    expanded = false;
+    setTitle(key);
+    renderTabMenu();
+    render();
+}
+
+/* ---------- Tier system ---------- */
+const TIER_STEPS = [
+    { name: "LT1", pct: 10 },
+    { name: "HT2", pct: 10 },
+    { name: "LT2", pct: 10 },
+    { name: "HT3", pct: 10 },
+    { name: "LT3", pct: 15 },
+    { name: "HT4", pct: 15 },
+    { name: "LT4", pct: 15 },
+    { name: "HT5", pct: 15 }
+];
+const HT1_BASE = 1250;
+const LT5_FLOOR = 1000;
+const TIER_COLORS = {
+    HT1: "#ffd700",
+    LT1: "#e6c15c",
+    HT2: "#c9c9d1",
+    LT2: "#a9a9b2",
+    HT3: "#cd7f32",
+    LT3: "#b5793c",
+    HT4: "#7d8b99",
+    LT4: "#6b7480",
+    HT5: "#5a6572",
+    LT5: "#454b54"
+};
+const TIER_ORDER = ["HT1","LT1","HT2","LT2","HT3","LT3","HT4","LT4","HT5","LT5"];
+
+function getTierThresholds(topElo){
+    const anchor = topElo >= HT1_BASE ? topElo : HT1_BASE;
+    const range = anchor - LT5_FLOOR;
+    const thresholds = { HT1: anchor };
+    let cumulativePct = 0;
+    TIER_STEPS.forEach(step => {
+        cumulativePct += step.pct;
+        thresholds[step.name] = LT5_FLOOR + range * (1 - cumulativePct / 100);
+    });
+    return thresholds;
+}
+
+function getTier(elo, thresholds){
+    if(elo < LT5_FLOOR) return "LT5";
+    if(elo >= thresholds.HT1) return "HT1";
+    if(elo >= thresholds.LT1) return "LT1";
+    if(elo >= thresholds.HT2) return "HT2";
+    if(elo >= thresholds.LT2) return "LT2";
+    if(elo >= thresholds.HT3) return "HT3";
+    if(elo >= thresholds.LT3) return "LT3";
+    if(elo >= thresholds.HT4) return "HT4";
+    if(elo >= thresholds.LT4) return "LT4";
+    if(elo >= thresholds.HT5) return "HT5";
+    return "LT5";
+}
+
+function sortEntriesByTier(entries){
+    return entries.sort((a, b) => {
+        if(a.tier && b.tier && a.tier !== b.tier) {
+            return TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier);
+        }
+        if(a.tier && !b.tier) return -1;
+        if(!a.tier && b.tier) return 1;
+        if(a.hasValue && b.hasValue) return b.elo - a.elo;
+        if(a.hasValue) return -1;
+        if(b.hasValue) return 1;
+        return 0;
+    });
+}
+
+const infoTooltip = document.getElementById("infoTooltip");
+const TIER_ORDER_DISPLAY = ["HT1","LT1","HT2","LT2","HT3","LT3","HT4","LT4","HT5"];
+
+function renderInfoTooltip(thresholds){
+    let html = `<div class="info-tooltip-title">Elo required</div>`;
+    TIER_ORDER_DISPLAY.forEach(name => {
+        const val = Math.ceil(thresholds[name]);
+        html += `<div class="info-tooltip-row"><span style="color:${TIER_COLORS[name]}">${name}</span><span>${val}+</span></div>`;
+    });
+    html += `<div class="info-tooltip-row"><span style="color:${TIER_COLORS.LT5}">LT5</span><span>&lt;${LT5_FLOOR}</span></div>`;
+    infoTooltip.innerHTML = html;
+}
+
+/* ---------- Titles ---------- */
+function computeTitleThresholds(){
+    const gainFor = (tierName) => {
+        let total = 0;
+        SUB_BOARDS.forEach(key => {
+            const board = LEADERBOARDS[key];
+            const sorted = getSortedPlayers(board.field);
+            const topElo = sorted.length ? sorted[0][board.field] : 0;
+            const thresholds = getTierThresholds(topElo);
+            total += Math.max(0, thresholds[tierName] - LT5_FLOOR);
+        });
+        return Math.ceil(total);
+    };
+    return {
+        Divine: gainFor("LT2"),
+        Celestial: gainFor("HT3"),
+        Eternal: gainFor("LT3"),
+        Ascendant: gainFor("HT4"),
+        Novice: 0
+    };
+}
+
+function isNovaPlayer(player){
+    if(!SUB_BOARDS.length) return false;
+    return SUB_BOARDS.every(key => {
+        const board = LEADERBOARDS[key];
+        const sorted = getSortedPlayers(board.field);
+        return sorted.length && sorted[0].name === player.name;
+    });
+}
+
+function getPlayerTitle(player){
+    if(isNovaPlayer(player)) return "Nova";
+    const reqs = computeTitleThresholds();
+    const gained = player.__total - 1000 * SUB_BOARDS.length;
+    if(gained >= reqs.Divine) return "Divine";
+    if(gained >= reqs.Celestial) return "Celestial";
+    if(gained >= reqs.Eternal) return "Eternal";
+    if(gained >= reqs.Ascendant) return "Ascendant";
+    return "Novice";
+}
+
+function renderTitleInfoTooltip(){
+    const reqs = computeTitleThresholds();
+    const colorMap = {
+        Nova: "linear-gradient(100deg, #c190ec, #a13ca5)",
+        Divine: "linear-gradient(100deg, #cbd4ec, #6468ab)",
+        Celestial: "linear-gradient(100deg, #fac140, #c34513)",
+        Eternal: "linear-gradient(100deg, #f8ab86, #cb322b)",
+        Ascendant: "linear-gradient(100deg, #d67638, #b0483c)",
+        Novice: "linear-gradient(100deg, #9d8aa5, #82638a)"
+    };
+    const descMap = {
+        Nova: "#1 in every gamemode",
+        Divine: `${reqs.Divine}+ gained`,
+        Celestial: `${reqs.Celestial}+ gained`,
+        Eternal: `${reqs.Eternal}+ gained`,
+        Ascendant: `${reqs.Ascendant}+ gained`,
+        Novice: `0+ gained`
+    };
+    let html = `<div class="info-tooltip-title">Titles</div>`;
+    const order = ["Nova", "Divine", "Celestial", "Eternal", "Ascendant", "Novice"];
+    order.forEach(name => {
+        const grad = colorMap[name];
+        const desc = descMap[name];
+        html += `
+            <div class="info-tooltip-row title-row">
+                <span class="title-word title-grad" style="background-image:${grad}">${name}</span>
+                <span class="title-desc">${desc}</span>
+            </div>
+        `;
+    });
+    infoTooltip.innerHTML = html;
+    infoTooltip.classList.add("overall-tooltip");
+}
+
+function resetTooltipClass(){
+    infoTooltip.classList.remove("overall-tooltip");
+}
+
+function renderMiniTierIcons(player){
+    const entries = SUB_BOARDS.map(key => {
+        const board = LEADERBOARDS[key];
+        const sorted = getSortedPlayers(board.field);
+        const topElo = sorted.length ? sorted[0][board.field] : 0;
+        const thresholds = getTierThresholds(topElo);
+        const hasValue = player[board.field] !== null && player[board.field] !== undefined;
+        const elo = hasValue ? player[board.field] : null;
+        const tier = hasValue ? getTier(elo, thresholds) : null;
+        return { board, hasValue, elo, tier };
+    });
+    const sortedEntries = sortEntriesByTier(entries);
+    let html = "";
+    sortedEntries.forEach(({ board, hasValue, elo, tier }) => {
+        const color = tier ? TIER_COLORS[tier] : "#3a3a44";
+        const tipText = hasValue ? `${tier} (${elo})` : "No data";
+        html += `
+            <div class="mini-tier-wrap" data-tip="${tipText}">
+                <div class="mini-tier-circle" style="border-color:${color}">
+                    <img src="${board.icon}" alt="${board.label}" style="width:16px;height:16px;image-rendering:pixelated;">
+                </div>
+            </div>
+        `;
+    });
+    return html;
+}
+
+function getRole(name){
+    if(name === "TestingCheats") return { label: "Developer", cls: "role-developer" };
+    if(name === "cutekiss") return { label: "Tierlist Owner", cls: "role-owner" };
+    return { label: "Player", cls: "role-player" };
+}
+
+function rankClass(rank){
+    if(rank === 1) return "rank-1";
+    if(rank === 2) return "rank-2";
+    if(rank === 3) return "rank-3";
+    return "";
+}
+
+function avatarUrl(name, size){
+    return `https://mc-heads.net/avatar/${encodeURIComponent(name)}/${size}`;
+}
+
+function getSortedPlayers(field){
+    return [...allPlayers]
+        .filter(p => p[field] !== null && p[field] !== undefined)
+        .sort((a, b) => b[field] - a[field]);
+}
+
+function render(){
+    const field = LEADERBOARDS[currentBoard].field;
+    const isOverall = currentBoard === "Overall";
+    const sorted = getSortedPlayers(field);
+    list.innerHTML = "";
+    const playersToShow = expanded ? sorted : sorted.slice(0, COLLAPSED_COUNT);
+    const topElo = sorted.length ? sorted[0][field] : 0;
+    const thresholds = getTierThresholds(topElo);
+    if(isOverall){
+        renderTitleInfoTooltip();
+    } else {
+        resetTooltipClass();
+        renderInfoTooltip(thresholds);
+    }
+    if(sorted.length === 0){
+        list.innerHTML = `<div class="placeholder-card"><div class="ph-dot"></div>No players on this leaderboard yet</div>`;
+        toggleBtn.style.display = "none";
+        return;
+    }
+    playersToShow.forEach((p, i) => {
+        const rank = i + 1;
+        const elo = p[field];
+        let rightHtml;
+        if(isOverall){
+            const gained = elo - 1000 * SUB_BOARDS.length;
+            const gainedStr = (gained >= 0 ? "+" : "") + gained;
+            rightHtml = `
+                <div class="mini-tiers-row">${renderMiniTierIcons(p)}</div>
+                <span class="gained-badge">${gainedStr}</span>
+            `;
+        } else {
+            const tier = getTier(elo, thresholds);
+            rightHtml = `
+                <span class="elo">${elo}</span>
+                <span class="tier-badge" style="color:${TIER_COLORS[tier]}">${tier}</span>
+            `;
+        }
+        const div = document.createElement("div");
+        div.className = `player ${rankClass(rank)}`;
+        div.innerHTML = `
+            <div class="rank-flag">
+                <span class="rank-num">${rank}.</span>
+                <div class="avatar">
+                    <img src="${avatarUrl(p.name, 38)}" alt="${p.name}" onerror="this.parentElement.innerHTML='?'">
+                </div>
+            </div>
+            <div class="info">${p.name}</div>
+            <div class="elo-wrap">
+                ${rightHtml}
+            </div>
+        `;
+        div.addEventListener("click", () => openProfile(p));
+        list.appendChild(div);
+    });
+    if(sorted.length > COLLAPSED_COUNT){
+        toggleBtn.style.display = "block";
+        toggleBtn.textContent = expanded ? "Show less" : `Show all (${sorted.length})`;
+    } else {
+        toggleBtn.style.display = "none";
+    }
+}
+
+toggleBtn.addEventListener("click", () => {
+    expanded = !expanded;
+    render();
+});
+
+/* ---------- Global mini tooltip ---------- */
+const globalMiniTip = document.getElementById("globalMiniTip");
+function showMiniTip(wrap){
+    const tip = wrap.getAttribute("data-tip");
+    if(!tip) return;
+    globalMiniTip.textContent = tip;
+    globalMiniTip.style.display = "block";
+    const rect = wrap.getBoundingClientRect();
+    globalMiniTip.style.left = (rect.left + rect.width / 2) + "px";
+    globalMiniTip.style.top = (rect.top - 8) + "px";
+}
+function hideMiniTip(){
+    globalMiniTip.style.display = "none";
+}
+list.addEventListener("mouseover", (e) => {
+    const wrap = e.target.closest(".mini-tier-wrap");
+    if(wrap) showMiniTip(wrap);
+});
+list.addEventListener("mouseout", (e) => {
+    const wrap = e.target.closest(".mini-tier-wrap");
+    if(wrap && !wrap.contains(e.relatedTarget)) hideMiniTip();
+});
+list.addEventListener("scroll", hideMiniTip);
+window.addEventListener("scroll", hideMiniTip, true);
+
+/* ---------- Profile Modal ---------- */
+const modalOverlay = document.getElementById("modalOverlay");
+const modalClose = document.getElementById("modalClose");
+const modalAvatar = document.getElementById("modalAvatar");
+const modalName = document.getElementById("modalName");
+const modalRoleBadge = document.getElementById("modalRoleBadge");
+const modalTitleText = document.getElementById("modalTitleText");
+const modalPositionCard = document.getElementById("modalPositionCard");
+const tiersRow = document.getElementById("tiersRow");
+
+function renderTierIcons(player){
+    const entries = SUB_BOARDS.map(key => {
+        const board = LEADERBOARDS[key];
+        const sorted = getSortedPlayers(board.field);
+        const topElo = sorted.length ? sorted[0][board.field] : 0;
+        const thresholds = getTierThresholds(topElo);
+        const hasValue = player[board.field] !== null && player[board.field] !== undefined;
+        const elo = hasValue ? player[board.field] : null;
+        const tier = hasValue ? getTier(elo, thresholds) : null;
+        return { board, hasValue, elo, tier };
+    });
+    const sortedEntries = sortEntriesByTier(entries);
+    let html = "";
+    sortedEntries.forEach(({ board, hasValue, elo, tier }) => {
+        const color = tier ? TIER_COLORS[tier] : "#3a3a44";
+        const tierLabel = tier || "—";
+        const tipText = hasValue ? `Elo: ${elo}` : "No data";
+        html += `
+            <div class="tier-icon-wrap">
+                <div class="tier-icon-circle" style="border-color:${color}">
+                    <img src="${board.icon}" alt="${board.label}" style="width:30px;height:30px;image-rendering:pixelated;">
+                </div>
+                <div class="tier-icon-label" style="color:${color}">${tierLabel}</div>
+                <div class="tier-elo-tip">${tipText}</div>
+            </div>
+        `;
+    });
+    tiersRow.innerHTML = html;
+}
+
+function openProfile(player){
+    modalAvatar.innerHTML = `<img src="${avatarUrl(player.name, 110)}" alt="${player.name}" onerror="this.parentElement.innerHTML='?'">`;
+    modalName.textContent = player.name;
+    const role = getRole(player.name);
+    modalRoleBadge.textContent = role.label;
+    modalRoleBadge.className = `role-badge ${role.cls}`;
+    const title = getPlayerTitle(player);
+    const colorMap = {
+        Nova: "linear-gradient(100deg, #c190ec, #a13ca5)",
+        Divine: "linear-gradient(100deg, #cbd4ec, #6468ab)",
+        Celestial: "linear-gradient(100deg, #fac140, #c34513)",
+        Eternal: "linear-gradient(100deg, #f8ab86, #cb322b)",
+        Ascendant: "linear-gradient(100deg, #d67638, #b0483c)",
+        Novice: "linear-gradient(100deg, #9d8aa5, #82638a)"
+    };
+    modalTitleText.textContent = title;
+    modalTitleText.style.backgroundImage = colorMap[title];
+    const overallSorted = getSortedPlayers("__total");
+    const overallRank = overallSorted.findIndex(p => p.name === player.name) + 1;
+    const gained = player.__total - 1000 * SUB_BOARDS.length;
+    const gainedStr = (gained >= 0 ? "+" : "") + gained;
+    modalPositionCard.className = `position-card ${rankClass(overallRank)}`;
+    modalPositionCard.innerHTML = `
+        <div class="rank-flag">
+            <span class="rank-num">${overallRank}.</span>
+        </div>
+        <div class="pos-info">
+            💎 Total Elo Gained <span class="pos-points gained-badge">${gainedStr}</span>
+        </div>
+    `;
+    renderTierIcons(player);
+    modalOverlay.classList.add("active");
+}
+
+function closeProfile(){
+    modalOverlay.classList.remove("active");
+}
+modalClose.addEventListener("click", closeProfile);
+modalOverlay.addEventListener("click", (e) => {
+    if(e.target === modalOverlay) closeProfile();
+});
+
+/* ---------- Search ---------- */
+const searchBtn = document.getElementById("searchBtn");
+const searchPanel = document.getElementById("searchPanel");
+const searchWrapper = document.getElementById("searchWrapper");
+const searchInput = document.getElementById("searchInput");
+const searchResults = document.getElementById("searchResults");
+
+function renderSearchResults(query){
+    const q = query.trim().toLowerCase();
+    const source = q ? allPlayers.filter(p => p.name.toLowerCase().includes(q)) : allPlayers;
+    const matches = source.slice(0, 8);
+    if(matches.length === 0){
+        searchResults.innerHTML = `<div class="search-empty">No players found</div>`;
+        return;
+    }
+    searchResults.innerHTML = "";
+    matches.forEach(p => {
+        const row = document.createElement("div");
+        row.className = "search-result-item";
+        row.innerHTML = `<img src="${avatarUrl(p.name, 26)}" alt="" onerror="this.style.display='none'"><span>${p.name}</span>`;
+        row.addEventListener("click", () => {
+            searchPanel.classList.remove("active");
+            openProfile(p);
+        });
+        searchResults.appendChild(row);
+    });
+}
+
+searchBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const willOpen = !searchPanel.classList.contains("active");
+    searchPanel.classList.toggle("active");
+    if(willOpen){
+        searchInput.value = "";
+        renderSearchResults("");
+        setTimeout(() => searchInput.focus(), 30);
+    }
+});
+searchInput.addEventListener("input", () => renderSearchResults(searchInput.value));
+searchInput.addEventListener("click", (e) => e.stopPropagation());
+
+/* ---------- 🔐 Login ---------- */
 const loginBtn = document.getElementById("loginBtn");
 const loginPanel = document.getElementById("loginPanel");
 const loginWrapper = document.getElementById("loginWrapper");
@@ -1466,15 +1914,176 @@ function buildEmail(username) {
     return username.toLowerCase() + "@minecraft.local";
 }
 
-function updatePlayButton(loggedIn){ /* ... unchanged ... */ }
-function renderLoggedOutPanel(){ /* ... unchanged ... */ }
-function renderLoggedInPanel(){ /* ... unchanged ... */ }
-async function attemptLogin(){ /* ... unchanged ... */ }
-async function logout(){ /* ... unchanged ... */ }
-function updateLoginButton(){ /* ... unchanged ... */ }
-async function restoreSession(){ /* ... unchanged ... */ }
+function updatePlayButton(loggedIn){
+    if(loggedIn){
+        playBtn.classList.remove("logged-out");
+        playBtn.classList.add("logged-in");
+        playIcon.textContent = "▶";
+        playLabel.textContent = "Play";
+        playTooltip.textContent = "";
+        playBtn.style.cursor = "pointer";
+    } else {
+        playBtn.classList.remove("logged-in");
+        playBtn.classList.add("logged-out");
+        playIcon.textContent = "!";
+        playLabel.textContent = "Play";
+        playTooltip.textContent = "Log in to play";
+        playBtn.style.cursor = "not-allowed";
+    }
+}
 
-// Queue logic (unchanged except for matchmaker call)
+function renderLoggedOutPanel(){
+    loginPanel.innerHTML = `
+        <div class="login-panel-title">Player Login</div>
+        <input type="text" id="loginUsername" placeholder="Username" autocomplete="off">
+        <input type="password" id="loginPassword" placeholder="Password" autocomplete="off">
+        <button class="login-submit" id="loginSubmit">Log in</button>
+        <div class="login-error" id="loginError">Invalid username or password.</div>
+    `;
+    document.getElementById("loginSubmit").addEventListener("click", attemptLogin);
+    document.getElementById("loginPassword").addEventListener("keydown", (e) => {
+        if(e.key === "Enter") attemptLogin();
+    });
+    updatePlayButton(false);
+}
+
+function renderLoggedInPanel(){
+    loginPanel.innerHTML = `
+        <div class="logged-name">${currentUser.name}</div>
+        <button class="profile-btn" id="profileBtn">Show Player Profile</button>
+        <button class="logout-btn" id="logoutBtn">Log out</button>
+    `;
+    document.getElementById("logoutBtn").addEventListener("click", logout);
+    document.getElementById("profileBtn").addEventListener("click", () => {
+        loginPanel.classList.remove("active");
+        if(currentUser){
+            openProfile(currentUser);
+        }
+    });
+    updatePlayButton(true);
+}
+
+async function attemptLogin(){
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    const errorEl = document.getElementById("loginError");
+    errorEl.style.display = "none";
+    if(!username || !password) return;
+    const email = buildEmail(username);
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        const { data: playerData, error: playerError } = await supabase
+            .from("players")
+            .select("*")
+            .ilike("name", username)
+            .maybeSingle();
+        if (playerError || !playerData) {
+            await supabase.auth.signOut();
+            errorEl.textContent = "Account exists but no player profile found. Contact admin.";
+            errorEl.style.display = "block";
+            return;
+        }
+        currentUser = playerData;
+        updateLoginButton();
+        renderLoggedInPanel();
+        loginPanel.classList.remove("active");
+        enableQueueButtons(true);
+        refreshQueueStatus();
+        startMatchmakingPolling();
+        subscribeToMatches();
+    } catch (err) {
+        errorEl.textContent = "Invalid username or password.";
+        errorEl.style.display = "block";
+    }
+}
+
+async function logout(){
+    await supabase.auth.signOut();
+    currentUser = null;
+    updateLoginButton();
+    renderLoggedOutPanel();
+    loginPanel.classList.remove("active");
+    updatePlayButton(false);
+    enableQueueButtons(false);
+    Object.keys(queueState).forEach(mode => {
+        if(queueState[mode].timerInterval) {
+            clearInterval(queueState[mode].timerInterval);
+            queueState[mode].timerInterval = null;
+        }
+        queueState[mode].inQueue = false;
+        queueState[mode].joinedAt = null;
+    });
+    document.getElementById("queueBtnKanal").disabled = true;
+    document.getElementById("queueBtnMace").disabled = true;
+    closeQueueModal();
+    if(window.matchmakingInterval){
+        clearInterval(window.matchmakingInterval);
+        window.matchmakingInterval = null;
+    }
+    closeMatchModal();
+}
+
+function updateLoginButton(){
+    if(currentUser){
+        loginBtn.classList.add("logged-in");
+        loginBtn.innerHTML = `
+            <div class="login-face"><img src="${avatarUrl(currentUser.name, 26)}" alt=""></div>
+            ${currentUser.name}
+        `;
+    } else {
+        loginBtn.classList.remove("logged-in");
+        loginBtn.textContent = "Log in";
+    }
+}
+
+async function restoreSession(){
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+        const user = session.user;
+        const username = user.email.replace(/@minecraft\.local$/, '');
+        const { data: playerData, error } = await supabase
+            .from("players")
+            .select("*")
+            .ilike("name", username)
+            .maybeSingle();
+        if (!error && playerData) {
+            currentUser = playerData;
+            updateLoginButton();
+            renderLoggedInPanel();
+            enableQueueButtons(true);
+            refreshQueueStatus();
+            startMatchmakingPolling();
+            subscribeToMatches();
+        } else {
+            await supabase.auth.signOut();
+            currentUser = null;
+            updateLoginButton();
+            renderLoggedOutPanel();
+            enableQueueButtons(false);
+        }
+    } else {
+        currentUser = null;
+        updateLoginButton();
+        renderLoggedOutPanel();
+        enableQueueButtons(false);
+    }
+}
+
+loginBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    loginPanel.classList.toggle("active");
+});
+
+document.addEventListener("click", (e) => {
+    if(!loginWrapper.contains(e.target)) loginPanel.classList.remove("active");
+    if(!searchWrapper.contains(e.target)) searchPanel.classList.remove("active");
+});
+
+renderLoggedOutPanel();
+restoreSession();
+
+/* ---------- Queue Modal Logic ---------- */
 const queueModalOverlay = document.getElementById("queueModalOverlay");
 const queueModalClose = document.getElementById("queueModalClose");
 const queueBtnKanal = document.getElementById("queueBtnKanal");
@@ -1484,15 +2093,31 @@ const queueCountMace = document.getElementById("queueCountMace");
 const matchCountKanal = document.getElementById("matchCountKanal");
 const matchCountMace = document.getElementById("matchCountMace");
 
-function enableQueueButtons(enabled){ /* ... unchanged ... */ }
+function enableQueueButtons(enabled){
+    if(enabled && currentUser){
+        queueBtnKanal.disabled = false;
+        queueBtnMace.disabled = false;
+    } else {
+        queueBtnKanal.disabled = true;
+        queueBtnMace.disabled = true;
+    }
+}
 
 playBtn.addEventListener("click", () => {
     if (!currentUser) return;
     openQueueModal();
 });
 
-function openQueueModal(){ /* ... unchanged ... */ }
-function closeQueueModal(){ /* ... unchanged ... */ }
+function openQueueModal(){
+    queueModalOverlay.classList.add("active");
+    refreshQueueStatus();
+    fetchQueueStats();
+}
+
+function closeQueueModal(){
+    queueModalOverlay.classList.remove("active");
+}
+
 queueModalClose.addEventListener("click", closeQueueModal);
 queueModalOverlay.addEventListener("click", (e) => {
     if (e.target === queueModalOverlay) closeQueueModal();
@@ -1580,17 +2205,92 @@ async function leaveQueue(mode){
     }
 }
 
-function startTimer(mode){ /* ... unchanged ... */ }
+function startTimer(mode){
+    const state = queueState[mode];
+    if(state.timerInterval) clearInterval(state.timerInterval);
+    state.timerInterval = setInterval(() => {
+        if(!state.inQueue || !state.joinedAt){
+            clearInterval(state.timerInterval);
+            state.timerInterval = null;
+            return;
+        }
+        const elapsed = Math.floor((Date.now() - state.joinedAt) / 1000);
+        const mins = Math.floor(elapsed / 60);
+        const secs = elapsed % 60;
+        const timeStr = `${mins}:${secs.toString().padStart(2, '0')}`;
+        const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
+        const textSpan = btn.querySelector('.queue-btn-text');
+        if(textSpan){
+            textSpan.textContent = `In Queue (${timeStr})`;
+        }
+    }, 1000);
+}
 
-async function refreshQueueStatus(){ /* ... unchanged ... */ }
-async function fetchQueueStats(){ /* ... unchanged ... */ }
+async function refreshQueueStatus(){
+    if(!currentUser) return;
+    try {
+        const { data, error } = await supabase
+            .from('queue')
+            .select('*')
+            .eq('player_id', currentUser.id)
+            .eq('status', 'waiting');
+        if (error) throw error;
+        Object.keys(queueState).forEach(m => {
+            const state = queueState[m];
+            state.inQueue = false;
+            state.joinedAt = null;
+            state.queueId = null;
+            if(state.timerInterval){
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+            const btn = m === "KanalServer" ? queueBtnKanal : queueBtnMace;
+            btn.classList.remove("queued");
+            btn.innerHTML = `Queue`;
+        });
+        data.forEach(entry => {
+            const mode = entry.game_mode;
+            const state = queueState[mode];
+            state.inQueue = true;
+            state.joinedAt = new Date(entry.joined_at).getTime();
+            state.queueId = entry.id;
+            const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
+            btn.classList.add("queued");
+            btn.innerHTML = `<span class="queue-btn-text">In Queue (0:00)</span><span class="queue-btn-leave">Leave Queue</span>`;
+            startTimer(mode);
+        });
+    } catch (e) {
+        console.error('Refresh queue error:', e);
+    }
+}
+
+async function fetchQueueStats(){
+    try {
+        const [kanalQueue, maceQueue, kanalMatches, maceMatches] = await Promise.all([
+            supabase.from('queue').select('id', { count: 'exact', head: true }).eq('game_mode', 'KanalServer').eq('status', 'waiting'),
+            supabase.from('queue').select('id', { count: 'exact', head: true }).eq('game_mode', 'LowblockMace').eq('status', 'waiting'),
+            supabase.from('matches').select('id', { count: 'exact', head: true }).eq('game_mode', 'KanalServer').eq('status', 'pending'),
+            supabase.from('matches').select('id', { count: 'exact', head: true }).eq('game_mode', 'LowblockMace').eq('status', 'pending')
+        ]);
+        if (kanalQueue.error) throw kanalQueue.error;
+        if (maceQueue.error) throw maceQueue.error;
+        if (kanalMatches.error) throw kanalMatches.error;
+        if (maceMatches.error) throw maceMatches.error;
+        queueCountKanal.textContent = kanalQueue.count || 0;
+        queueCountMace.textContent = maceQueue.count || 0;
+        matchCountKanal.textContent = kanalMatches.count || 0;
+        matchCountMace.textContent = maceMatches.count || 0;
+    } catch (e) {
+        console.error('Stats fetch error:', e);
+    }
+}
 
 setInterval(fetchQueueStats, 5000);
 queueModalOverlay.addEventListener('click', (e) => {
     if (e.target === queueModalOverlay) closeQueueModal();
 });
 
-/* ---------- Matchmaking ---------- */
+/* ---------- Matchmaking Polling & Realtime ---------- */
 async function callMatchmaker(){
     try {
         const response = await fetch(`${SUPABASE_URL}/functions/v1/matchmake`, {
@@ -1612,7 +2312,6 @@ function startMatchmakingPolling(){
     callMatchmaker();
 }
 
-// Realtime subscription - listen to ALL inserts on matches, then filter manually
 let matchSubscription = null;
 function subscribeToMatches(){
     if(matchSubscription) {
@@ -1635,7 +2334,7 @@ function subscribeToMatches(){
         .subscribe();
 }
 
-/* ---------- Match modal logic ---------- */
+/* ---------- Match Modal Logic ---------- */
 const matchModalOverlay = document.getElementById('matchModalOverlay');
 const matchModalContent = document.getElementById('matchModalContent');
 let matchTimerInterval = null;
@@ -1893,39 +2592,30 @@ async function showReadyScreen(match){
     });
 }
 
-// … leaderboard loading etc. …
-
+/* ---------- Leaderboard data loading ---------- */
 renderTabMenu();
 setTitle(currentBoard);
-async function loadPlayers(){ /* ... unchanged ... */ }
-loadPlayers();
-setInterval(loadPlayers, 5000);
 
-// Start matchmaking polling and subscription after login/restore
-// We'll call these after successful login
-function initializeMatchmaking(){
-    startMatchmakingPolling();
-    subscribeToMatches();
+async function loadPlayers(){
+    const { data, error } = await supabase.from("players").select("*");
+    if(error){
+        list.innerHTML = "Error loading data";
+        toggleBtn.style.display = "none";
+        return;
+    }
+    allPlayers = data.map(p => ({
+        ...p,
+        __total: (Number(p.KanalServer) || 0) + (Number(p.LowblockMace) || 0)
+    }));
+    render();
+    if(currentUser){
+        const fresh = allPlayers.find(p => p.name.toLowerCase() === currentUser.name.toLowerCase());
+        if(fresh) currentUser = fresh;
+    }
 }
 
-// Override the login/restore to call initializeMatchmaking
-const origAttemptLogin = attemptLogin;
-attemptLogin = async function() {
-    await origAttemptLogin();
-    if(currentUser) initializeMatchmaking();
-};
-
-const origRestoreSession = restoreSession;
-restoreSession = async function() {
-    await origRestoreSession();
-    if(currentUser) initializeMatchmaking();
-};
-
-// Also call it if user is already logged in on page load
-setTimeout(() => {
-    if(currentUser) initializeMatchmaking();
-}, 1000);
-
+loadPlayers();
+setInterval(loadPlayers, 5000);
 </script>
 </body>
 </html>
