@@ -814,7 +814,7 @@ h2{
 .gained-badge{
     font-size:18px;
     font-weight:900;
-    color:#7CFFB2;
+    color:#a9b6ff;
     font-family: 'Arial Black', Arial, sans-serif;
     white-space:nowrap;
 }
@@ -1126,7 +1126,7 @@ function renderMiniTierIcons(player){
         const elo = hasValue ? player[board.field] : null;
         const tier = hasValue ? getTier(elo, thresholds) : null;
         const color = tier ? TIER_COLORS[tier] : "#3a3a44";
-        const tipText = hasValue ? `${board.label}: ${tier} (${elo})` : `${board.label}: No data`;
+        const tipText = hasValue ? `${tier} (${elo})` : "No data";
         html += `
             <div class="mini-tier-wrap" data-tip="${tipText}">
                 <div class="mini-tier-circle" style="border-color:${color}">
@@ -1192,11 +1192,9 @@ function render(){
         if(isOverall){
             const gained = elo - 1000 * SUB_BOARDS.length;
             const gainedStr = (gained >= 0 ? "+" : "") + gained;
-            const overallTier = getTier(elo, thresholds);
-            const gainedColor = TIER_COLORS[overallTier];
             rightHtml = `
                 <div class="mini-tiers-row">${renderMiniTierIcons(p)}</div>
-                <span class="gained-badge" style="color:${gainedColor}">${gainedStr}</span>
+                <span class="gained-badge">${gainedStr}</span>
             `;
         } else {
             const tier = getTier(elo, thresholds);
@@ -1280,7 +1278,7 @@ const tiersRow = document.getElementById("tiersRow");
 
 function renderTierIcons(player){
     let html = "";
-    SUB_BOARDS.forEach(key => {
+    const entries = SUB_BOARDS.map(key => {
         const board = LEADERBOARDS[key];
         const sorted = getSortedPlayers(board.field);
         const topElo = sorted.length ? sorted[0][board.field] : 0;
@@ -1288,6 +1286,17 @@ function renderTierIcons(player){
         const hasValue = player[board.field] !== null && player[board.field] !== undefined;
         const elo = hasValue ? player[board.field] : null;
         const tier = hasValue ? getTier(elo, thresholds) : null;
+        return { board, hasValue, elo, tier };
+    });
+
+    entries.sort((a, b) => {
+        if(a.hasValue && b.hasValue) return b.elo - a.elo;
+        if(a.hasValue) return -1;
+        if(b.hasValue) return 1;
+        return 0;
+    });
+
+    entries.forEach(({ board, hasValue, elo, tier }) => {
         const color = tier ? TIER_COLORS[tier] : "#3a3a44";
         const tierLabel = tier || "—";
         const tipText = hasValue ? `Elo: ${elo}` : "No data";
