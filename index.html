@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
 <style>
+/* ---------- All styles unchanged ---------- */
 *{
     box-sizing:border-box;
 }
@@ -56,8 +57,6 @@ h2{
     font-size:34px;
     line-height:1;
 }
-
-/* ---------- Leaderboard Tab Selector ---------- */
 .tab-menu{
     display:flex;
     background:#1c1c22;
@@ -109,7 +108,6 @@ h2{
 .tab-item.active span.tab-label{
     color:#a9b6ff;
 }
-
 .top-bar{
     display:flex;
     align-items:center;
@@ -117,8 +115,6 @@ h2{
     gap:10px;
     margin-bottom:14px;
 }
-
-/* ---------- Login (fixed, outside the box, top-right of page) ---------- */
 .login-wrapper{
     position:fixed;
     top:26px;
@@ -243,8 +239,6 @@ h2{
     margin-bottom:12px;
     color:#fff;
 }
-
-/* ---------- Info button ---------- */
 .info-btn-wrapper{
     position:relative;
 }
@@ -297,7 +291,6 @@ h2{
 .info-btn-wrapper:hover .info-tooltip{
     display:block;
 }
-/* overall tab tooltip – narrower */
 .info-tooltip.overall-tooltip{
     min-width:220px;
     padding:12px 16px;
@@ -321,7 +314,6 @@ h2{
 .info-tooltip-row span:first-child{
     font-weight:800;
 }
-/* Overall tab title rows: title above description */
 .overall-tooltip .title-row {
     display: flex;
     flex-direction: column;
@@ -344,8 +336,6 @@ h2{
     font-family: monospace;
     padding-left: 0;
 }
-
-/* ---------- Search ---------- */
 .search-btn-wrapper{
     position:relative;
 }
@@ -436,7 +426,6 @@ h2{
     font-size:12px;
     padding:6px 2px;
 }
-
 .player{
     display:flex;
     align-items:stretch;
@@ -452,7 +441,6 @@ h2{
     box-shadow: 0 6px 16px rgba(0,0,0,0.45);
     filter: brightness(1.25);
 }
-
 .rank-flag{
     position:relative;
     display:flex;
@@ -489,7 +477,6 @@ h2{
     height:100%;
     image-rendering: pixelated;
 }
-
 .info{
     flex:1;
     display:flex;
@@ -500,7 +487,6 @@ h2{
     letter-spacing:0.3px;
     font-family: 'Bahnschrift', Arial, sans-serif;
 }
-
 .elo-wrap{
     display:flex;
     align-items:center;
@@ -522,25 +508,18 @@ h2{
     border:1px solid currentColor;
     white-space:nowrap;
 }
-
-/* Rank 1 - gold */
 .rank-1 .rank-flag{
     background: linear-gradient(100deg, #f4c744, #c99a1e);
 }
 .rank-1 .rank-num{ color:#3a2c00; }
-
-/* Rank 2 - silver */
 .rank-2 .rank-flag{
     background: linear-gradient(100deg, #d6d9dd, #9ea3aa);
 }
 .rank-2 .rank-num{ color:#2b2e33; }
-
-/* Rank 3 - bronze */
 .rank-3 .rank-flag{
     background: linear-gradient(100deg, #d98b45, #a85f24);
 }
 .rank-3 .rank-num{ color:#3a2000; }
-
 .toggle-btn{
     display:block;
     width:100%;
@@ -560,8 +539,6 @@ h2{
 .toggle-btn:hover{
     background:#2e2e38;
 }
-
-/* ---------- Profile Modal ---------- */
 .modal-overlay{
     position:fixed;
     inset:0;
@@ -608,7 +585,6 @@ h2{
 .modal-close:hover{
     background:#2e2e38;
 }
-
 .modal-avatar{
     width:110px;
     height:110px;
@@ -624,14 +600,12 @@ h2{
     height:100%;
     image-rendering: pixelated;
 }
-
 .modal-name{
     font-family: 'Bahnschrift', Arial, sans-serif;
     font-size:26px;
     font-weight:700;
     margin-bottom:16px;
 }
-
 .role-badge{
     position:absolute;
     top:16px;
@@ -645,8 +619,6 @@ h2{
     text-transform:uppercase;
     z-index:5;
 }
-
-/* ---------- Title section (centered, no image) ---------- */
 .title-section{
     display:flex;
     justify-content:center;
@@ -684,7 +656,6 @@ h2{
     border:1px solid #1f6b70;
     background:#132628;
 }
-
 .modal-section-label{
     text-align:left;
     color:#8b8b96;
@@ -694,7 +665,6 @@ h2{
     text-transform:uppercase;
     margin-bottom:10px;
 }
-
 .position-card{
     display:flex;
     align-items:stretch;
@@ -722,8 +692,6 @@ h2{
     font-weight:600;
     font-size:13px;
 }
-
-/* ---------- Tiers section in profile modal ---------- */
 .tiers-row{
     display:flex;
     gap:16px;
@@ -778,8 +746,6 @@ h2{
 .tier-icon-wrap:hover .tier-elo-tip{
     display:block;
 }
-
-/* ---------- Overall row: mini tier icons + elo gained ---------- */
 .mini-tiers-row{
     display:flex;
     align-items:center;
@@ -833,8 +799,6 @@ h2{
     font-family: 'Arial Black', Arial, sans-serif;
     white-space:nowrap;
 }
-
-/* ---------- Title gradient text ---------- */
 .title-grad{
     background-clip:text;
     -webkit-background-clip:text;
@@ -846,37 +810,37 @@ h2{
 </head>
 <body>
 
-<!-- Login (outside the box, top-right of page) -->
+<!-- Login (fixed top-right) -->
 <div class="login-wrapper" id="loginWrapper">
   <button class="login-btn" id="loginBtn">Log in</button>
-  <div class="login-panel" id="loginPanel"></div>
+  <div class="login-panel" id="loginPanel">
+    <!-- Dynamically rendered -->
+  </div>
 </div>
 
 <div class="container">
-
-<!-- Leaderboard Tab Selector -->
-<div class="tab-menu" id="tabMenu"></div>
-
-<div class="top-bar">
-  <div class="info-btn-wrapper">
-    <button class="info-btn" id="infoBtn"><span class="info-icon">i</span>Info</button>
-    <div class="info-tooltip" id="infoTooltip">Loading...</div>
-  </div>
-  <div class="search-btn-wrapper" id="searchWrapper">
-    <button class="search-btn" id="searchBtn">
+  <!-- Tab menu, top bar, etc. unchanged -->
+  <div class="tab-menu" id="tabMenu"></div>
+  <div class="top-bar">
+    <div class="info-btn-wrapper">
+      <button class="info-btn" id="infoBtn"><span class="info-icon">i</span>Info</button>
+      <div class="info-tooltip" id="infoTooltip">Loading...</div>
+    </div>
+    <div class="search-btn-wrapper" id="searchWrapper">
+      <button class="search-btn" id="searchBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
         Search
-    </button>
-    <div class="search-panel" id="searchPanel">
+      </button>
+      <div class="search-panel" id="searchPanel">
         <input type="text" class="search-input" id="searchInput" placeholder="Search player...">
         <div class="search-results" id="searchResults"></div>
+      </div>
     </div>
   </div>
-</div>
 
-<h2><span class="title-icon" id="titleIcon"></span><span id="titleText">Overall Leaderboard</span></h2>
-<div id="list">Loading...</div>
-<button id="toggleBtn" class="toggle-btn" style="display:none;">Show all</button>
+  <h2><span class="title-icon" id="titleIcon"></span><span id="titleText">Overall Leaderboard</span></h2>
+  <div id="list">Loading...</div>
+  <button id="toggleBtn" class="toggle-btn" style="display:none;">Show all</button>
 </div>
 
 <!-- Profile Modal -->
@@ -886,32 +850,30 @@ h2{
     <div class="role-badge" id="modalRoleBadge"></div>
     <div class="modal-avatar" id="modalAvatar"></div>
     <div class="modal-name" id="modalName"></div>
-
     <div class="title-section" id="titleSection">
       <div class="title-text-box"><span class="title-badge-text title-grad" id="modalTitleText"></span></div>
     </div>
-
     <div class="modal-section-label">Position</div>
     <div class="position-card" id="modalPositionCard"></div>
-
     <div class="modal-section-label">Tiers</div>
     <div class="tiers-row" id="tiersRow"></div>
   </div>
 </div>
 
-<!-- Global tooltip for mini tier icons (rendered at body level so it is never clipped by a player row) -->
 <div class="global-mini-tip" id="globalMiniTip"></div>
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-// 🔴 PASTE YOUR KEYS HERE
+
+// Supabase config
 const SUPABASE_URL = "https://fyyyjjysztzxmmdgubnb.supabase.co";
 const SUPABASE_KEY = "sb_publishable_kHwFOpox2rS81CKz832IBg_fZr5GoWH";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const COLLAPSED_COUNT = 5; // how many players to show before "Show all"
+const COLLAPSED_COUNT = 5;
 let allPlayers = [];
 let expanded = false;
+let currentUser = null; // will hold player data from 'players' table after login
 
 /* ---------- Icons from GitHub ---------- */
 const HELMET_ICON_URL = "https://github.com/Toggelt/nova-tiers/blob/main/assets/netherite_helmet.png?raw=true";
@@ -933,7 +895,7 @@ const LEADERBOARDS = {
         label: "Kanal Server",
         title: "Kanal Server Leaderboard",
         icon: HELMET_ICON_URL,
-        emoji: "⛑️" // fallback
+        emoji: "⛑️"
     },
     LowblockMace: {
         key: "LowblockMace",
@@ -941,10 +903,10 @@ const LEADERBOARDS = {
         label: "Lowblock Mace",
         title: "Lowblock Mace Leaderboard",
         icon: MACE_ICON_URL,
-        emoji: "🔨" // fallback
+        emoji: "🔨"
     }
 };
-const SUB_BOARDS = ["KanalServer", "LowblockMace"]; // leaderboards shown in the profile Tiers row
+const SUB_BOARDS = ["KanalServer", "LowblockMace"];
 let currentBoard = "Overall";
 
 const list = document.getElementById("list");
@@ -985,8 +947,7 @@ function switchBoard(key){
     render();
 }
 
-/* ---------- Tier system ---------- */
-// Cumulative % subtracted from HT1 elo (=100%) to reach each tier's threshold
+/* ---------- Tier system (unchanged) ---------- */
 const TIER_STEPS = [
     { name: "LT1", pct: 10 },
     { name: "HT2", pct: 10 },
@@ -998,8 +959,7 @@ const TIER_STEPS = [
     { name: "HT5", pct: 15 }
 ];
 const HT1_BASE = 1250;
-const LT5_FLOOR = 1000; // below this elo is always LT5, regardless of scaling
-
+const LT5_FLOOR = 1000;
 const TIER_COLORS = {
     HT1: "#ffd700",
     LT1: "#e6c15c",
@@ -1012,13 +972,11 @@ const TIER_COLORS = {
     HT5: "#5a6572",
     LT5: "#454b54"
 };
-
-// Hierarchical order for sorting tiers (highest first)
 const TIER_ORDER = ["HT1","LT1","HT2","LT2","HT3","LT3","HT4","LT4","HT5","LT5"];
 
 function getTierThresholds(topElo){
     const anchor = topElo >= HT1_BASE ? topElo : HT1_BASE;
-    const range = anchor - LT5_FLOOR; // 100% of the scale sits between 1000 (0%) and anchor (100%)
+    const range = anchor - LT5_FLOOR;
     const thresholds = { HT1: anchor };
     let cumulativePct = 0;
     TIER_STEPS.forEach(step => {
@@ -1042,16 +1000,13 @@ function getTier(elo, thresholds){
     return "LT5";
 }
 
-// Sort entries by tier hierarchy, then by elo descending
 function sortEntriesByTier(entries){
     return entries.sort((a, b) => {
-        // a and b are objects with { board, hasValue, elo, tier }
         if(a.tier && b.tier && a.tier !== b.tier) {
             return TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier);
         }
         if(a.tier && !b.tier) return -1;
         if(!a.tier && b.tier) return 1;
-        // both same tier or both no tier: sort by elo descending if hasValue
         if(a.hasValue && b.hasValue) return b.elo - a.elo;
         if(a.hasValue) return -1;
         if(b.hasValue) return 1;
@@ -1060,7 +1015,7 @@ function sortEntriesByTier(entries){
 }
 
 const infoTooltip = document.getElementById("infoTooltip");
-const TIER_ORDER_DISPLAY = ["HT1","LT1","HT2","LT2","HT3","LT3","HT4","LT4","HT5"]; // for info tooltip
+const TIER_ORDER_DISPLAY = ["HT1","LT1","HT2","LT2","HT3","LT3","HT4","LT4","HT5"];
 
 function renderInfoTooltip(thresholds){
     let html = `<div class="info-tooltip-title">Elo required</div>`;
@@ -1072,7 +1027,7 @@ function renderInfoTooltip(thresholds){
     infoTooltip.innerHTML = html;
 }
 
-/* ---------- Titles (Overall tab) ---------- */
+/* ---------- Titles ---------- */
 function computeTitleThresholds(){
     const gainFor = (tierName) => {
         let total = 0;
@@ -1116,14 +1071,13 @@ function getPlayerTitle(player){
 
 function renderTitleInfoTooltip(){
     const reqs = computeTitleThresholds();
-    // Swapped colors: Novice <-> Ascendant, Divine <-> Celestial
     const colorMap = {
         Nova: "linear-gradient(100deg, #c190ec, #a13ca5)",
-        Divine: "linear-gradient(100deg, #cbd4ec, #6468ab)",   // swapped with Celestial
-        Celestial: "linear-gradient(100deg, #fac140, #c34513)", // swapped with Divine
+        Divine: "linear-gradient(100deg, #cbd4ec, #6468ab)",
+        Celestial: "linear-gradient(100deg, #fac140, #c34513)",
         Eternal: "linear-gradient(100deg, #f8ab86, #cb322b)",
-        Ascendant: "linear-gradient(100deg, #d67638, #b0483c)", // swapped with Novice
-        Novice: "linear-gradient(100deg, #9d8aa5, #82638a)"     // swapped with Ascendant
+        Ascendant: "linear-gradient(100deg, #d67638, #b0483c)",
+        Novice: "linear-gradient(100deg, #9d8aa5, #82638a)"
     };
     const descMap = {
         Nova: "#1 in every gamemode",
@@ -1154,7 +1108,6 @@ function resetTooltipClass(){
 }
 
 function renderMiniTierIcons(player){
-    // Build an array of entries for each sub-board
     const entries = SUB_BOARDS.map(key => {
         const board = LEADERBOARDS[key];
         const sorted = getSortedPlayers(board.field);
@@ -1165,10 +1118,7 @@ function renderMiniTierIcons(player){
         const tier = hasValue ? getTier(elo, thresholds) : null;
         return { board, hasValue, elo, tier };
     });
-
-    // Sort using the same tier hierarchy as in profile modal
     const sortedEntries = sortEntriesByTier(entries);
-
     let html = "";
     sortedEntries.forEach(({ board, hasValue, elo, tier }) => {
         const color = tier ? TIER_COLORS[tier] : "#3a3a44";
@@ -1184,7 +1134,6 @@ function renderMiniTierIcons(player){
     return html;
 }
 
-/* ---------- Roles ---------- */
 function getRole(name){
     if(name === "TestingCheats") return { label: "Developer", cls: "role-developer" };
     if(name === "cutekiss") return { label: "Tierlist Owner", cls: "role-owner" };
@@ -1212,30 +1161,25 @@ function render(){
     const field = LEADERBOARDS[currentBoard].field;
     const isOverall = currentBoard === "Overall";
     const sorted = getSortedPlayers(field);
-
     list.innerHTML = "";
     const playersToShow = expanded ? sorted : sorted.slice(0, COLLAPSED_COUNT);
     const topElo = sorted.length ? sorted[0][field] : 0;
     const thresholds = getTierThresholds(topElo);
-
     if(isOverall){
         renderTitleInfoTooltip();
     } else {
         resetTooltipClass();
         renderInfoTooltip(thresholds);
     }
-
     if(sorted.length === 0){
         list.innerHTML = `<div class="placeholder-card"><div class="ph-dot"></div>No players on this leaderboard yet</div>`;
         toggleBtn.style.display = "none";
         return;
     }
-
     playersToShow.forEach((p, i) => {
         const rank = i + 1;
         const elo = p[field];
         let rightHtml;
-
         if(isOverall){
             const gained = elo - 1000 * SUB_BOARDS.length;
             const gainedStr = (gained >= 0 ? "+" : "") + gained;
@@ -1250,7 +1194,6 @@ function render(){
                 <span class="tier-badge" style="color:${TIER_COLORS[tier]}">${tier}</span>
             `;
         }
-
         const div = document.createElement("div");
         div.className = `player ${rankClass(rank)}`;
         div.innerHTML = `
@@ -1268,7 +1211,6 @@ function render(){
         div.addEventListener("click", () => openProfile(p));
         list.appendChild(div);
     });
-
     if(sorted.length > COLLAPSED_COUNT){
         toggleBtn.style.display = "block";
         toggleBtn.textContent = expanded ? "Show less" : `Show all (${sorted.length})`;
@@ -1282,9 +1224,8 @@ toggleBtn.addEventListener("click", () => {
     render();
 });
 
-/* ---------- Global tooltip for mini tier icons ---------- */
+/* ---------- Global mini tooltip ---------- */
 const globalMiniTip = document.getElementById("globalMiniTip");
-
 function showMiniTip(wrap){
     const tip = wrap.getAttribute("data-tip");
     if(!tip) return;
@@ -1294,11 +1235,9 @@ function showMiniTip(wrap){
     globalMiniTip.style.left = (rect.left + rect.width / 2) + "px";
     globalMiniTip.style.top = (rect.top - 8) + "px";
 }
-
 function hideMiniTip(){
     globalMiniTip.style.display = "none";
 }
-
 list.addEventListener("mouseover", (e) => {
     const wrap = e.target.closest(".mini-tier-wrap");
     if(wrap) showMiniTip(wrap);
@@ -1310,7 +1249,7 @@ list.addEventListener("mouseout", (e) => {
 list.addEventListener("scroll", hideMiniTip);
 window.addEventListener("scroll", hideMiniTip, true);
 
-/* ---------- Profile Modal logic ---------- */
+/* ---------- Profile Modal ---------- */
 const modalOverlay = document.getElementById("modalOverlay");
 const modalClose = document.getElementById("modalClose");
 const modalAvatar = document.getElementById("modalAvatar");
@@ -1331,16 +1270,12 @@ function renderTierIcons(player){
         const tier = hasValue ? getTier(elo, thresholds) : null;
         return { board, hasValue, elo, tier };
     });
-
-    // Sort using the same function
     const sortedEntries = sortEntriesByTier(entries);
-
     let html = "";
     sortedEntries.forEach(({ board, hasValue, elo, tier }) => {
         const color = tier ? TIER_COLORS[tier] : "#3a3a44";
         const tierLabel = tier || "—";
         const tipText = hasValue ? `Elo: ${elo}` : "No data";
-
         html += `
             <div class="tier-icon-wrap">
                 <div class="tier-icon-circle" style="border-color:${color}">
@@ -1357,11 +1292,9 @@ function renderTierIcons(player){
 function openProfile(player){
     modalAvatar.innerHTML = `<img src="${avatarUrl(player.name, 110)}" alt="${player.name}" onerror="this.parentElement.innerHTML='?'">`;
     modalName.textContent = player.name;
-
     const role = getRole(player.name);
     modalRoleBadge.textContent = role.label;
     modalRoleBadge.className = `role-badge ${role.cls}`;
-
     const title = getPlayerTitle(player);
     const colorMap = {
         Nova: "linear-gradient(100deg, #c190ec, #a13ca5)",
@@ -1373,12 +1306,10 @@ function openProfile(player){
     };
     modalTitleText.textContent = title;
     modalTitleText.style.backgroundImage = colorMap[title];
-
     const overallSorted = getSortedPlayers("__total");
     const overallRank = overallSorted.findIndex(p => p.name === player.name) + 1;
     const gained = player.__total - 1000 * SUB_BOARDS.length;
     const gainedStr = (gained >= 0 ? "+" : "") + gained;
-
     modalPositionCard.className = `position-card ${rankClass(overallRank)}`;
     modalPositionCard.innerHTML = `
         <div class="rank-flag">
@@ -1388,16 +1319,13 @@ function openProfile(player){
             💎 Total Elo Gained <span class="pos-points gained-badge">${gainedStr}</span>
         </div>
     `;
-
     renderTierIcons(player);
-
     modalOverlay.classList.add("active");
 }
 
 function closeProfile(){
     modalOverlay.classList.remove("active");
 }
-
 modalClose.addEventListener("click", closeProfile);
 modalOverlay.addEventListener("click", (e) => {
     if(e.target === modalOverlay) closeProfile();
@@ -1414,12 +1342,10 @@ function renderSearchResults(query){
     const q = query.trim().toLowerCase();
     const source = q ? allPlayers.filter(p => p.name.toLowerCase().includes(q)) : allPlayers;
     const matches = source.slice(0, 8);
-
     if(matches.length === 0){
         searchResults.innerHTML = `<div class="search-empty">No players found</div>`;
         return;
     }
-
     searchResults.innerHTML = "";
     matches.forEach(p => {
         const row = document.createElement("div");
@@ -1446,12 +1372,17 @@ searchBtn.addEventListener("click", (e) => {
 searchInput.addEventListener("input", () => renderSearchResults(searchInput.value));
 searchInput.addEventListener("click", (e) => e.stopPropagation());
 
-/* ---------- Login ---------- */
+/* ---------- 🔐 Login with Supabase Auth ---------- */
 const loginBtn = document.getElementById("loginBtn");
 const loginPanel = document.getElementById("loginPanel");
 const loginWrapper = document.getElementById("loginWrapper");
-let currentUser = null;
 
+// Helper to build fake email from username
+function buildEmail(username) {
+    return username.toLowerCase() + "@minecraft.local";
+}
+
+// Render login panel (no sign‑up, only login form)
 function renderLoggedOutPanel(){
     loginPanel.innerHTML = `
         <div class="login-panel-title">Player Login</div>
@@ -1466,6 +1397,7 @@ function renderLoggedOutPanel(){
     });
 }
 
+// Render logged‑in panel
 function renderLoggedInPanel(){
     loginPanel.innerHTML = `
         <div class="logged-name">${currentUser.name}</div>
@@ -1482,23 +1414,50 @@ async function attemptLogin(){
 
     if(!username || !password) return;
 
-    const { data, error } = await supabase
-        .from("players")
-        .select("*")
-        .ilike("name", username)
-        .maybeSingle();
+    const email = buildEmail(username);
 
-    if(error || !data || data.password !== password){
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+        if (error) {
+            errorEl.textContent = "Invalid username or password.";
+            errorEl.style.display = "block";
+            return;
+        }
+
+        // Auth success – now fetch the player's data from 'players' table
+        const { data: playerData, error: playerError } = await supabase
+            .from("players")
+            .select("*")
+            .ilike("name", username)
+            .maybeSingle();
+
+        if (playerError || !playerData) {
+            // Auth succeeded but no matching player record – log out and show error
+            await supabase.auth.signOut();
+            errorEl.textContent = "Account exists but no player profile found. Contact admin.";
+            errorEl.style.display = "block";
+            return;
+        }
+
+        // Store player data
+        currentUser = playerData;
+        updateLoginButton();
+        renderLoggedInPanel();
+        // Close the panel after login
+        loginPanel.classList.remove("active");
+
+    } catch (err) {
+        errorEl.textContent = "Something went wrong. Try again.";
         errorEl.style.display = "block";
-        return;
     }
-
-    currentUser = data;
-    updateLoginButton();
-    renderLoggedInPanel();
 }
 
-function logout(){
+async function logout(){
+    await supabase.auth.signOut();
     currentUser = null;
     updateLoginButton();
     renderLoggedOutPanel();
@@ -1518,11 +1477,47 @@ function updateLoginButton(){
     }
 }
 
+// Restore session on page load
+async function restoreSession(){
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+        // User is logged in via Supabase Auth – fetch player data
+        const user = session.user;
+        const email = user.email;
+        // Extract username from fake email (remove '@minecraft.local')
+        const username = email.replace(/@minecraft\.local$/, '');
+        const { data: playerData, error } = await supabase
+            .from("players")
+            .select("*")
+            .ilike("name", username)
+            .maybeSingle();
+        if (!error && playerData) {
+            currentUser = playerData;
+            updateLoginButton();
+            renderLoggedInPanel();
+            // The panel stays hidden; the button shows the avatar and name
+        } else {
+            // If player record missing, sign out
+            await supabase.auth.signOut();
+            currentUser = null;
+            updateLoginButton();
+            renderLoggedOutPanel();
+        }
+    } else {
+        // No session – show logged out state
+        currentUser = null;
+        updateLoginButton();
+        renderLoggedOutPanel();
+    }
+}
+
+// Click on login button toggles panel
 loginBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     loginPanel.classList.toggle("active");
 });
 
+// Close panel when clicking outside
 document.addEventListener("click", (e) => {
     if(!loginWrapper.contains(e.target)){
         loginPanel.classList.remove("active");
@@ -1532,9 +1527,11 @@ document.addEventListener("click", (e) => {
     }
 });
 
+// Init – render login panel and try to restore session
 renderLoggedOutPanel();
+restoreSession();
 
-/* ---------- Init ---------- */
+/* ---------- Leaderboard data loading ---------- */
 renderTabMenu();
 setTitle(currentBoard);
 
@@ -1542,19 +1539,17 @@ async function loadPlayers(){
     const { data, error } = await supabase
         .from("players")
         .select("*");
-
     if(error){
         list.innerHTML = "Error loading data";
         toggleBtn.style.display = "none";
         return;
     }
-
     allPlayers = data.map(p => ({
         ...p,
         __total: (Number(p.KanalServer) || 0) + (Number(p.LowblockMace) || 0)
     }));
     render();
-
+    // If currentUser is set but their data may have changed, refresh it
     if(currentUser){
         const fresh = allPlayers.find(p => p.name.toLowerCase() === currentUser.name.toLowerCase());
         if(fresh) currentUser = fresh;
