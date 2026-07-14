@@ -1,2657 +1,2157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Kanal Server Leaderboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
-<style>
-/* ---------- All styles (unchanged) ---------- */
-*{
-    box-sizing:border-box;
-}
-body{
-    font-family: Arial, sans-serif;
-    background:#0b0b0e;
-    color:#fff;
-    display:flex;
-    justify-content:center;
-    padding:30px;
-}
-.container{
-    width:640px;
-    background:#131318;
-    padding:20px;
-    border-radius:14px;
-    border:1px solid #232329;
-}
-h2{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    white-space:nowrap;
-    text-align:center;
-    margin-top:4px;
-    margin-bottom:18px;
-    letter-spacing:2px;
-    font-weight:800;
-    text-transform:uppercase;
-    font-family: 'Orbitron', Arial, sans-serif;
-}
-.title-icon{
-    width:42px;
-    height:42px;
-    flex-shrink:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-.title-icon img{
-    width:100%;
-    height:100%;
-    image-rendering: pixelated;
-}
-.title-icon .emoji-icon{
-    font-size:34px;
-    line-height:1;
-}
-.tab-menu{
-    display:flex;
-    background:#1c1c22;
-    border:1px solid #2c2c34;
-    border-radius:14px;
-    overflow:hidden;
-    margin-bottom:16px;
-}
-.tab-item{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-    padding:10px 8px 9px;
-    cursor:pointer;
-    color:#8b8b96;
-    border-right:1px solid #2c2c34;
-    transition: background 0.15s ease, color 0.15s ease;
-    user-select:none;
-}
-.tab-item:last-child{
-    border-right:none;
-}
-.tab-item img{
-    width:32px;
-    height:32px;
-    image-rendering: pixelated;
-}
-.tab-item .emoji-icon{
-    font-size:28px;
-    line-height:1;
-}
-.tab-item span.tab-label{
-    font-size:12px;
-    font-weight:700;
-    letter-spacing:0.4px;
-    white-space:nowrap;
-}
-.tab-item:hover{
-    background:#22222a;
-    color:#c9c9d1;
-}
-.tab-item.active{
-    background:#26262e;
-    color:#fff;
-}
-.tab-item.active span.tab-label{
-    color:#a9b6ff;
-}
-.top-bar{
-    display:flex;
-    align-items:center;
-    justify-content:flex-end;
-    gap:10px;
-    margin-bottom:14px;
-}
-.login-wrapper{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    position:fixed;
-    top:26px;
-    right:34px;
-    z-index:200;
-}
-.play-btn-wrapper{
-    position:relative;
-}
-.play-btn{
-    background:#1a3a6a;
-    border:2px solid #2a5a8a;
-    color:#fff;
-    font-weight:800;
-    font-size:14px;
-    padding:6px 16px;
-    border-radius:8px;
-    cursor:pointer;
-    transition: background 0.2s, transform 0.2s, border-color 0.2s;
-    font-family: Arial, sans-serif;
-    letter-spacing:1px;
-    display:flex;
-    align-items:center;
-    gap:6px;
-}
-.play-btn .play-icon{
-    display:inline-block;
-    font-size:16px;
-    line-height:1;
-}
-.play-btn .play-label{
-    display:inline-block;
-}
-.play-btn.logged-in{
-    background:#1a6a3a;
-    border-color:#2a9a5a;
-}
-.play-btn.logged-in:hover{
-    background:#2a8a4a;
-    transform:scale(1.08);
-    border-color:#3aaa6a;
-}
-.play-btn.logged-out{
-    background:#6a3a1a;
-    border-color:#8a5a2a;
-    opacity:0.8;
-    cursor:not-allowed;
-}
-.play-btn.logged-out:hover{
-    transform:none;
-    background:#6a3a1a;
-    border-color:#8a5a2a;
-}
-.play-tooltip{
-    position:absolute;
-    top:calc(100% + 6px);
-    left:50%;
-    transform:translateX(-50%);
-    background:#191920;
-    border:1px solid #2c2c34;
-    border-radius:6px;
-    padding:4px 10px;
-    font-size:12px;
-    color:#c9c9d1;
-    white-space:nowrap;
-    display:none;
-    z-index:210;
-    pointer-events:none;
-}
-.play-btn-wrapper:hover .play-tooltip{
-    display:block;
-}
-.login-btn{
-    display:flex;
-    align-items:center;
-    gap:7px;
-    background:#1c1c22;
-    border:1px solid #2c2c34;
-    color:#c9c9d1;
-    padding:8px 18px;
-    border-radius:20px;
-    font-size:13px;
-    font-weight:700;
-    font-family: Arial, sans-serif;
-    cursor:pointer;
-    transition: background 0.15s ease;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.35);
-}
-.login-btn:hover{
-    background:#26262e;
-}
-.login-btn.logged-in{
-    padding:5px 16px 5px 5px;
-}
-.login-face{
-    width:26px;
-    height:26px;
-    border-radius:6px;
-    overflow:hidden;
-    background:#000;
-    flex-shrink:0;
-    image-rendering: pixelated;
-}
-.login-face img{
-    width:100%;
-    height:100%;
-    image-rendering: pixelated;
-}
-.login-panel{
-    position:absolute;
-    top:calc(100% + 8px);
-    right:0;
-    background:#191920;
-    border:1px solid #2c2c34;
-    border-radius:10px;
-    padding:16px;
-    width:220px;
-    display:none;
-    z-index:200;
-    box-shadow: 0 10px 24px rgba(0,0,0,0.5);
-}
-.login-panel.active{
-    display:block;
-}
-.login-panel-title{
-    font-size:11px;
-    font-weight:800;
-    letter-spacing:1px;
-    color:#8b8b96;
-    text-transform:uppercase;
-    margin-bottom:10px;
-}
-.login-panel input{
-    width:100%;
-    background:#131318;
-    border:1px solid #2c2c34;
-    border-radius:7px;
-    color:#fff;
-    padding:8px 10px;
-    font-size:13px;
-    margin-bottom:8px;
-    font-family: Arial, sans-serif;
-}
-.login-panel input:focus{
-    outline:none;
-    border-color:#4a4a5c;
-}
-.login-submit{
-    width:100%;
-    background:#3a3a44;
-    border:none;
-    color:#fff;
-    padding:9px;
-    border-radius:7px;
-    font-weight:700;
-    font-size:13px;
-    cursor:pointer;
-    margin-top:2px;
-    transition: background 0.15s ease;
-}
-.login-submit:hover{
-    background:#464652;
-}
-.login-error{
-    color:#ff6b6b;
-    font-size:12px;
-    margin-top:6px;
-    display:none;
-}
-.logout-btn{
-    width:100%;
-    background:#241414;
-    border:1px solid #7a2323;
-    color:#ff8a8a;
-    padding:9px;
-    border-radius:7px;
-    font-weight:700;
-    font-size:13px;
-    cursor:pointer;
-    transition: background 0.15s ease;
-}
-.logout-btn:hover{
-    background:#2e1818;
-}
-.login-panel .logged-name{
-    font-size:15px;
-    font-weight:700;
-    margin-bottom:12px;
-    color:#fff;
-}
-.profile-btn{
-    width:100%;
-    background:#1a2a3a;
-    border:1px solid #2a4a6a;
-    color:#8ab4f8;
-    padding:9px;
-    border-radius:7px;
-    font-weight:700;
-    font-size:13px;
-    cursor:pointer;
-    transition: background 0.15s ease;
-    margin-bottom:8px;
-}
-.profile-btn:hover{
-    background:#1f3348;
-}
-.queue-modal-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.7);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    z-index:1500;
-    padding:20px;
-}
-.queue-modal-overlay.active{
-    display:flex;
-}
-.queue-modal-box{
-    background:#131318;
-    border-radius:20px;
-    padding:40px 30px;
-    width:700px;
-    max-width:100%;
-    max-height:90vh;
-    overflow-y:auto;
-    position:relative;
-    text-align:center;
-    border:1px solid #2a2a3a;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-}
-.queue-modal-close{
-    position:absolute;
-    top:14px;
-    right:14px;
-    width:32px;
-    height:32px;
-    border-radius:50%;
-    background:#22222a;
-    border:none;
-    color:#fff;
-    font-size:16px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transition: background 0.2s;
-}
-.queue-modal-close:hover{
-    background:#3a3a4a;
-}
-.queue-modal-title{
-    font-family: 'Bahnschrift', Arial, sans-serif;
-    font-size:28px;
-    font-weight:700;
-    margin-bottom:24px;
-    letter-spacing:1px;
-}
-.queue-modes-container{
-    display:flex;
-    gap:30px;
-    justify-content:center;
-    flex-wrap:wrap;
-}
-.queue-mode-column{
-    flex:1 1 250px;
-    background:#191920;
-    border:2px solid #2a2a3a;
-    border-radius:16px;
-    padding:20px 16px 18px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:14px;
-}
-.queue-mode-column .mode-header{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-.queue-mode-column .mode-header img{
-    width:40px;
-    height:40px;
-    image-rendering: pixelated;
-}
-.queue-mode-column .mode-header .mode-label{
-    font-size:20px;
-    font-weight:700;
-}
-.queue-btn{
-    background:#1a6a3a;
-    border:2px solid #2a9a5a;
-    color:#fff;
-    font-weight:800;
-    font-size:16px;
-    padding:10px 20px;
-    border-radius:12px;
-    cursor:pointer;
-    transition: background 0.2s, transform 0.15s;
-    font-family: Arial, sans-serif;
-    letter-spacing:1px;
-    width:100%;
-    max-width:200px;
-    position:relative;
-}
-.queue-btn:hover:not(:disabled){
-    background:#2a8a4a;
-    transform:scale(1.04);
-}
-.queue-btn:disabled{
-    opacity:0.5;
-    cursor:not-allowed;
-}
-.queue-btn.queued{
-    background:#b8860b;
-    border-color:#daa520;
-}
-.queue-btn.queued .queue-btn-text{
-    display:inline;
-}
-.queue-btn.queued .queue-btn-leave{
-    display:none;
-}
-.queue-btn.queued:hover:not(:disabled){
-    background:#6a1a1a;
-    border-color:#8a3a3a;
-    transform:scale(1.04);
-}
-.queue-btn.queued:hover .queue-btn-text{
-    display:none;
-}
-.queue-btn.queued:hover .queue-btn-leave{
-    display:inline;
-}
-.queue-btn .queue-btn-leave{
-    color:#fff;
-    font-weight:800;
-}
-.queue-stats{
-    font-size:14px;
-    color:#8b8b96;
-    margin-top:2px;
-}
-.queue-stats span{
-    font-weight:700;
-    color:#c9c9d1;
-}
-.match-modal-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.85);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    z-index:2000;
-    padding:20px;
-}
-.match-modal-overlay.active{
-    display:flex;
-}
-.match-modal-box{
-    background:#131318;
-    border-radius:20px;
-    padding:40px 30px;
-    max-width:750px;
-    width:100%;
-    max-height:90vh;
-    overflow-y:auto;
-    border:2px solid #2a3a3a;
-    box-shadow: 0 0 60px rgba(0,200,0,0.15);
-    text-align:center;
-    position:relative;
-}
-.match-modal-title{
-    font-family: 'Bahnschrift', Arial, sans-serif;
-    font-size:24px;
-    font-weight:700;
-    margin-bottom:8px;
-}
-.match-modal-subtitle{
-    font-size:18px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:12px;
-    margin-bottom:12px;
-}
-.match-modal-subtitle img{
-    width:36px;
-    height:36px;
-    image-rendering: pixelated;
-}
-.match-timer-text{
-    font-size:20px;
-    color:#a9b6ff;
-    margin:6px 0 12px;
-}
-.match-kit-image{
-    margin:10px auto;
-    max-width:100%;
-    border-radius:12px;
-    border:2px solid #2a3a3a;
-}
-.match-kit-image img{
-    width:100%;
-    max-height:280px;
-    object-fit:contain;
-    display:block;
-    border-radius:12px;
-}
-.match-accept-btn{
-    background:#2a8a4a;
-    border:2px solid #4aba6a;
-    color:#fff;
-    font-weight:800;
-    font-size:22px;
-    padding:14px 40px;
-    border-radius:12px;
-    cursor:pointer;
-    transition: background 0.2s, transform 0.15s;
-    margin:16px auto 8px;
-}
-.match-accept-btn:hover:not(:disabled){
-    background:#3a9a5a;
-    transform:scale(1.04);
-}
-.match-accept-btn:disabled{
-    opacity:0.5;
-    cursor:not-allowed;
-}
-.match-status-msg{
-    font-size:22px;
-    color:#ff8a8a;
-    margin-top:12px;
-}
-.match-result-buttons{
-    display:flex;
-    gap:16px;
-    justify-content:center;
-    margin-top:16px;
-    flex-wrap:wrap;
-}
-.match-result-btn{
-    padding:10px 28px;
-    border-radius:10px;
-    font-weight:700;
-    font-size:16px;
-    cursor:pointer;
-    transition: background 0.2s;
-    border:2px solid #3a3a4a;
-    background:#22222a;
-    color:#c9c9d1;
-}
-.match-result-btn:hover{
-    background:#2a2a3a;
-}
-.match-result-btn.requeue{
-    border-color:#2a9a5a;
-    color:#6bff6b;
-}
-.match-result-btn.requeue:hover{
-    background:#1a3a2a;
-}
-.match-result-btn.exit{
-    border-color:#8a3a3a;
-    color:#ff6b6b;
-}
-.match-result-btn.exit:hover{
-    background:#2a1a1a;
-}
-.match-ready-title{
-    font-size:18px;
-    font-weight:700;
-    margin-bottom:10px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-}
-.match-ready-title img{
-    width:28px;
-    height:28px;
-    image-rendering: pixelated;
-}
-.match-ready-players{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:30px;
-    margin:16px 0;
-}
-.match-player-box{
-    text-align:center;
-}
-.match-player-box img{
-    width:64px;
-    height:64px;
-    border-radius:50%;
-    border:3px solid #4a4a5a;
-    image-rendering: pixelated;
-}
-.match-player-box .name{
-    margin-top:6px;
-    font-size:16px;
-    font-weight:700;
-}
-.match-vs{
-    font-size:32px;
-    font-weight:900;
-    color:#a9b6ff;
-}
-.match-server-info{
-    font-size:15px;
-    color:#8b8b96;
-    margin:10px 0 6px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-}
-.match-server-info .copy-btn{
-    background:transparent;
-    border:1px solid #4a4a5a;
-    color:#c9c9d1;
-    padding:2px 8px;
-    border-radius:4px;
-    cursor:pointer;
-    font-size:12px;
-    transition: background 0.2s;
-}
-.match-server-info .copy-btn:hover{
-    background:#2a2a3a;
-}
-.match-kit-instruction{
-    font-size:14px;
-    color:#a9b6ff;
-    margin:4px 0;
-    line-height:1.6;
-}
-.match-kit-instruction .copy-kit{
-    color:#ffcc00;
-    cursor:pointer;
-    border-bottom:1px dashed #ffcc00;
-    transition: color 0.2s;
-}
-.match-kit-instruction .copy-kit:hover{
-    color:#ffdd44;
-}
-.match-rules{
-    font-size:20px;
-    font-weight:700;
-    color:#fff;
-    margin:12px 0 4px;
-}
-.match-rules-sub{
-    font-size:15px;
-    color:#8b8b96;
-    margin-bottom:12px;
-}
-.match-finished-btn{
-    background:#2a6a3a;
-    border:2px solid #4a9a5a;
-    color:#fff;
-    font-weight:800;
-    font-size:20px;
-    padding:12px 40px;
-    border-radius:12px;
-    cursor:pointer;
-    transition: background 0.2s;
-    margin-top:12px;
-}
-.match-finished-btn:hover{
-    background:#3a7a4a;
-}
-.info-btn-wrapper{
-    position:relative;
-}
-.info-btn{
-    display:flex;
-    align-items:center;
-    gap:7px;
-    background:#1c1c22;
-    border:1px solid #2c2c34;
-    color:#c9c9d1;
-    padding:7px 16px;
-    border-radius:20px;
-    font-size:13px;
-    font-weight:700;
-    font-family: Arial, sans-serif;
-    cursor:pointer;
-    transition: background 0.15s ease;
-}
-.info-btn:hover{
-    background:#26262e;
-}
-.info-icon{
-    width:16px;
-    height:16px;
-    border-radius:50%;
-    background:#3a3a44;
-    color:#fff;
-    font-size:11px;
-    font-weight:800;
-    font-style:italic;
-    font-family: 'Georgia', serif;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-shrink:0;
-}
-.info-tooltip{
-    position:absolute;
-    top:calc(100% + 8px);
-    right:0;
-    background:#191920;
-    border:1px solid #2c2c34;
-    border-radius:10px;
-    padding:12px 16px;
-    min-width:180px;
-    display:none;
-    z-index:50;
-    box-shadow: 0 10px 24px rgba(0,0,0,0.5);
-}
-.info-btn-wrapper:hover .info-tooltip{
-    display:block;
-}
-.info-tooltip.overall-tooltip{
-    min-width:220px;
-    padding:12px 16px;
-}
-.info-tooltip-title{
-    font-size:11px;
-    font-weight:800;
-    letter-spacing:1px;
-    color:#8b8b96;
-    text-transform:uppercase;
-    margin-bottom:8px;
-}
-.info-tooltip-row{
-    display:flex;
-    justify-content:space-between;
-    gap:16px;
-    font-size:13px;
-    padding:3px 0;
-    font-family: monospace;
-}
-.info-tooltip-row span:first-child{
-    font-weight:800;
-}
-.overall-tooltip .title-row {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 2px;
-    padding: 4px 0;
-}
-.overall-tooltip .title-row .title-word {
-    font-size: 17px;
-    font-weight: 900;
-    font-family: 'Bahnschrift', Arial, sans-serif;
-    letter-spacing: 0.3px;
-    margin-bottom: 0;
-}
-.overall-tooltip .title-row .title-desc {
-    font-size: 13px;
-    color: #8b8b96;
-    font-weight: 600;
-    font-family: monospace;
-    padding-left: 0;
-}
-.search-btn-wrapper{
-    position:relative;
-}
-.search-btn{
-    display:flex;
-    align-items:center;
-    gap:7px;
-    background:#1c1c22;
-    border:1px solid #2c2c34;
-    color:#c9c9d1;
-    padding:7px 16px;
-    border-radius:20px;
-    font-size:13px;
-    font-weight:700;
-    font-family: Arial, sans-serif;
-    cursor:pointer;
-    transition: background 0.15s ease;
-}
-.search-btn:hover{
-    background:#26262e;
-}
-.search-btn svg{
-    width:14px;
-    height:14px;
-    flex-shrink:0;
-}
-.search-panel{
-    position:absolute;
-    top:calc(100% + 8px);
-    right:0;
-    background:#191920;
-    border:1px solid #2c2c34;
-    border-radius:10px;
-    padding:14px;
-    width:250px;
-    display:none;
-    z-index:70;
-    box-shadow: 0 10px 24px rgba(0,0,0,0.5);
-}
-.search-panel.active{
-    display:block;
-}
-.search-input{
-    width:100%;
-    background:#131318;
-    border:1px solid #2c2c34;
-    border-radius:7px;
-    color:#fff;
-    padding:8px 10px;
-    font-size:13px;
-    margin-bottom:10px;
-    font-family: Arial, sans-serif;
-}
-.search-input:focus{
-    outline:none;
-    border-color:#4a4a5c;
-}
-.search-results{
-    max-height:220px;
-    overflow-y:auto;
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-}
-.search-result-item{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:6px 8px;
-    border-radius:7px;
-    cursor:pointer;
-    font-size:13px;
-    font-weight:600;
-}
-.search-result-item:hover{
-    background:#22222a;
-}
-.search-result-item img{
-    width:26px;
-    height:26px;
-    border-radius:5px;
-    image-rendering: pixelated;
-    background:#000;
-    flex-shrink:0;
-}
-.search-empty{
-    color:#5c5c66;
-    font-size:12px;
-    padding:6px 2px;
-}
-.player{
-    display:flex;
-    align-items:stretch;
-    background:#191920;
-    border-radius:10px;
-    margin:10px 0;
-    overflow:hidden;
-    cursor:pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-}
-.player:hover{
-    transform: scale(1.035);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.45);
-    filter: brightness(1.25);
-}
-.rank-flag{
-    position:relative;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:14px 26px 14px 16px;
-    background:#22222a;
-    clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
-    min-width:120px;
-}
-.rank-num{
-    font-size:26px;
-    font-weight:700;
-    font-style:italic;
-    color:#c7c7ce;
-    width:26px;
-}
-.avatar{
-    width:38px;
-    height:38px;
-    border-radius:6px;
-    background:#000;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:18px;
-    color:#666;
-    flex-shrink:0;
-    overflow:hidden;
-    image-rendering: pixelated;
-}
-.avatar img{
-    width:100%;
-    height:100%;
-    image-rendering: pixelated;
-}
-.info{
-    flex:1;
-    display:flex;
-    align-items:center;
-    padding:0 16px;
-    font-size:21px;
-    font-weight:700;
-    letter-spacing:0.3px;
-    font-family: 'Bahnschrift', Arial, sans-serif;
-}
-.elo-wrap{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:0 22px;
-}
-.elo{
-    font-size:18px;
-    font-weight:900;
-    color:#a9b6ff;
-    font-family: 'Arial Black', Arial, sans-serif;
-}
-.tier-badge{
-    font-size:12px;
-    font-weight:800;
-    padding:3px 9px;
-    border-radius:999px;
-    letter-spacing:0.5px;
-    border:1px solid currentColor;
-    white-space:nowrap;
-}
-.rank-1 .rank-flag{
-    background: linear-gradient(100deg, #f4c744, #c99a1e);
-}
-.rank-1 .rank-num{ color:#3a2c00; }
-.rank-2 .rank-flag{
-    background: linear-gradient(100deg, #d6d9dd, #9ea3aa);
-}
-.rank-2 .rank-num{ color:#2b2e33; }
-.rank-3 .rank-flag{
-    background: linear-gradient(100deg, #d98b45, #a85f24);
-}
-.rank-3 .rank-num{ color:#3a2000; }
-.toggle-btn{
-    display:block;
-    width:100%;
-    margin-top:10px;
-    padding:10px;
-    background:#22222a;
-    color:#fff;
-    border:none;
-    border-radius:8px;
-    font-family: Arial, sans-serif;
-    font-weight:600;
-    font-size:15px;
-    letter-spacing:0.5px;
-    cursor:pointer;
-    transition: background 0.2s;
-}
-.toggle-btn:hover{
-    background:#2e2e38;
-}
-.modal-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.6);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    z-index:1000;
-    padding:20px;
-}
-.modal-overlay.active{
-    display:flex;
-}
-.modal-box{
-    background:#131318;
-    border-radius:16px;
-    padding:36px;
-    width:460px;
-    max-width:100%;
-    max-height:90vh;
-    overflow-y:auto;
-    position:relative;
-    text-align:center;
-    border:1px solid #232329;
-    font-family: Arial, sans-serif;
-}
-.modal-close{
-    position:absolute;
-    top:14px;
-    right:14px;
-    width:32px;
-    height:32px;
-    border-radius:50%;
-    background:#22222a;
-    border:none;
-    color:#fff;
-    font-size:16px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transition: background 0.2s;
-}
-.modal-close:hover{
-    background:#2e2e38;
-}
-.modal-avatar{
-    width:110px;
-    height:110px;
-    border-radius:16px;
-    background:#000;
-    margin:6px auto 16px;
-    overflow:hidden;
-    border:2px solid #2a2a32;
-    image-rendering: pixelated;
-}
-.modal-avatar img{
-    width:100%;
-    height:100%;
-    image-rendering: pixelated;
-}
-.modal-name{
-    font-family: 'Bahnschrift', Arial, sans-serif;
-    font-size:26px;
-    font-weight:700;
-    margin-bottom:16px;
-}
-.role-badge{
-    position:absolute;
-    top:16px;
-    left:16px;
-    display:inline-block;
-    padding:5px 14px;
-    border-radius:999px;
-    font-weight:800;
-    font-size:11px;
-    letter-spacing:0.5px;
-    text-transform:uppercase;
-    z-index:5;
-}
-.title-section{
-    display:flex;
-    justify-content:center;
-    margin: 2px 0 28px;
-}
-.title-text-box{
-    background:#191920;
-    border:1px solid #2c2c34;
-    border-radius:10px;
-    height:46px;
-    display:flex;
-    align-items:center;
-    padding:0 20px;
-}
-.title-badge-text{
-    font-size:19px;
-    font-weight:900;
-    font-family: 'Bahnschrift', Arial, sans-serif;
-    letter-spacing:0.4px;
-    white-space:nowrap;
-    background-size:100% 100%;
-}
-.role-player{
-    color:#c9c9d1;
-    border:1px solid #5a5a64;
-    background:#202024;
-}
-.role-developer{
-    color:#ff5c5c;
-    border:1px solid #7a2323;
-    background:#241414;
-}
-.role-owner{
-    color:#5be6e6;
-    border:1px solid #1f6b70;
-    background:#132628;
-}
-.modal-section-label{
-    text-align:left;
-    color:#8b8b96;
-    font-size:13px;
-    font-weight:700;
-    letter-spacing:1.5px;
-    text-transform:uppercase;
-    margin-bottom:10px;
-}
-.position-card{
-    display:flex;
-    align-items:stretch;
-    background:#191920;
-    border-radius:10px;
-    overflow:hidden;
-    margin-bottom:22px;
-}
-.position-card .rank-flag{
-    min-width:70px;
-    padding:12px 22px 12px 14px;
-}
-.position-card .pos-info{
-    flex:1;
-    display:flex;
-    align-items:center;
-    gap:8px;
-    padding:0 14px;
-    font-weight:700;
-    font-size:15px;
-    flex-wrap:wrap;
-}
-.position-card .pos-info .pos-points{
-    color:#8b8b96;
-    font-weight:600;
-    font-size:13px;
-}
-.tiers-row{
-    display:flex;
-    gap:16px;
-    justify-content:flex-start;
-    flex-wrap:wrap;
-    margin-bottom:6px;
-}
-.tier-icon-wrap{
-    position:relative;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:7px;
-}
-.tier-icon-circle{
-    width:54px;
-    height:54px;
-    border-radius:50%;
-    background:#191920;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border:3px solid #454b54;
-    overflow:hidden;
-}
-.tier-icon-circle img{
-    width:30px;
-    height:30px;
-    image-rendering: pixelated;
-}
-.tier-icon-label{
-    font-size:12px;
-    font-weight:800;
-    letter-spacing:0.4px;
-}
-.tier-elo-tip{
-    position:absolute;
-    bottom:calc(100% + 8px);
-    left:50%;
-    transform:translateX(-50%);
-    background:#0e0e12;
-    border:1px solid #2c2c34;
-    border-radius:6px;
-    padding:5px 10px;
-    font-size:12px;
-    font-weight:700;
-    white-space:nowrap;
-    display:none;
-    z-index:10;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.5);
-}
-.tier-icon-wrap:hover .tier-elo-tip{
-    display:block;
-}
-.mini-tiers-row{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-.mini-tier-wrap{
-    position:relative;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-.mini-tier-circle{
-    width:30px;
-    height:30px;
-    border-radius:50%;
-    background:#131318;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border:2px solid #454b54;
-    overflow:hidden;
-}
-.mini-tier-circle img{
-    width:16px;
-    height:16px;
-    image-rendering: pixelated;
-}
-.mini-tier-tip{
-    display:none;
-}
-.mini-tier-wrap{ cursor:default; }
-.global-mini-tip{
-    position:fixed;
-    background:#0e0e12;
-    border:1px solid #2c2c34;
-    border-radius:6px;
-    padding:5px 10px;
-    font-size:12px;
-    font-weight:700;
-    white-space:nowrap;
-    display:none;
-    z-index:1000;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.5);
-    pointer-events:none;
-    transform:translate(-50%,-100%);
-}
-.gained-badge{
-    font-size:18px;
-    font-weight:900;
-    color:#a9b6ff;
-    font-family: 'Arial Black', Arial, sans-serif;
-    white-space:nowrap;
-}
-.title-grad{
-    background-clip:text;
-    -webkit-background-clip:text;
-    color:transparent;
-    -webkit-text-fill-color:transparent;
-    font-weight:800;
-}
-</style>
+    <meta charset="UTF-8">
+    <title>Kanal Server Leaderboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        /* ---------- Base & fixed top bar ---------- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b0b0e;
+            color: #fff;
+            padding-top: 60px;
+        }
+        .top-fixed-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: #0b0b0e;
+            border-bottom: 1px solid #232329;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+        .top-fixed-bar .left-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .top-fixed-bar .login-wrapper {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .top-fixed-bar .login-btn {
+            background: #1c1c22;
+            border: 1px solid #2c2c34;
+            color: #c9c9d1;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: Arial, sans-serif;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .top-fixed-bar .login-btn:hover {
+            background: #26262e;
+        }
+        .top-fixed-bar .login-btn.logged-in {
+            padding: 5px 16px 5px 5px;
+        }
+        .top-fixed-bar .login-face {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #000;
+            flex-shrink: 0;
+            image-rendering: pixelated;
+        }
+        .top-fixed-bar .login-face img {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+        }
+        .top-fixed-bar .login-panel {
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            background: #191920;
+            border: 1px solid #2c2c34;
+            border-radius: 10px;
+            padding: 16px;
+            width: 220px;
+            display: none;
+            z-index: 200;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+        }
+        .top-fixed-bar .login-panel.active {
+            display: block;
+        }
+        .top-fixed-bar .login-panel-title {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #8b8b96;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .top-fixed-bar .login-panel input {
+            width: 100%;
+            background: #131318;
+            border: 1px solid #2c2c34;
+            border-radius: 7px;
+            color: #fff;
+            padding: 8px 10px;
+            font-size: 13px;
+            margin-bottom: 8px;
+            font-family: Arial, sans-serif;
+        }
+        .top-fixed-bar .login-panel input:focus {
+            outline: none;
+            border-color: #4a4a5c;
+        }
+        .top-fixed-bar .login-submit {
+            width: 100%;
+            background: #3a3a44;
+            border: none;
+            color: #fff;
+            padding: 9px;
+            border-radius: 7px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 2px;
+            transition: background 0.15s ease;
+        }
+        .top-fixed-bar .login-submit:hover {
+            background: #464652;
+        }
+        .top-fixed-bar .login-error {
+            color: #ff6b6b;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+        }
+        .top-fixed-bar .logout-btn {
+            width: 100%;
+            background: #241414;
+            border: 1px solid #7a2323;
+            color: #ff8a8a;
+            padding: 9px;
+            border-radius: 7px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .top-fixed-bar .logout-btn:hover {
+            background: #2e1818;
+        }
+        .top-fixed-bar .login-panel .logged-name {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        .top-fixed-bar .profile-btn {
+            width: 100%;
+            background: #1a2a3a;
+            border: 1px solid #2a4a6a;
+            color: #8ab4f8;
+            padding: 9px;
+            border-radius: 7px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            margin-bottom: 8px;
+        }
+        .top-fixed-bar .profile-btn:hover {
+            background: #1f3348;
+        }
+
+        /* Admin edit button */
+        .admin-edit-btn {
+            background: #1a2a3a;
+            border: 1px solid #2a4a6a;
+            color: #8ab4f8;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            font-family: Arial, sans-serif;
+        }
+        .admin-edit-btn:hover {
+            background: #1f3348;
+        }
+        .admin-edit-btn.hidden {
+            display: none;
+        }
+
+        /* ---------- Container ---------- */
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 1250px;
+            max-width: 100%;
+            background: #131318;
+            padding: 20px;
+            border-radius: 14px;
+            border: 1px solid #232329;
+            margin: 20px auto;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+        }
+        h2 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            white-space: nowrap;
+            text-align: center;
+            margin-top: 4px;
+            margin-bottom: 18px;
+            letter-spacing: 2px;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-family: 'Orbitron', Arial, sans-serif;
+        }
+        .title-icon {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .title-icon img {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+        }
+        .title-icon .emoji-icon {
+            font-size: 34px;
+            line-height: 1;
+        }
+
+        .tab-menu {
+            display: flex;
+            background: #1c1c22;
+            border: 1px solid #2c2c34;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 8px 9px;
+            cursor: pointer;
+            color: #8b8b96;
+            border-right: 1px solid #2c2c34;
+            transition: background 0.15s ease, color 0.15s ease;
+            user-select: none;
+        }
+        .tab-item:last-child {
+            border-right: none;
+        }
+        .tab-item img {
+            width: 32px;
+            height: 32px;
+            image-rendering: pixelated;
+        }
+        .tab-item .emoji-icon {
+            font-size: 28px;
+            line-height: 1;
+        }
+        .tab-item span.tab-label {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+        }
+        .tab-item:hover {
+            background: #22222a;
+            color: #c9c9d1;
+        }
+        .tab-item.active {
+            background: #26262e;
+            color: #fff;
+        }
+        .tab-item.active span.tab-label {
+            color: #a9b6ff;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        /* Info tooltip */
+        .info-btn-wrapper {
+            position: relative;
+        }
+        .info-btn {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: #1c1c22;
+            border: 1px solid #2c2c34;
+            color: #c9c9d1;
+            padding: 7px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: Arial, sans-serif;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .info-btn:hover {
+            background: #26262e;
+        }
+        .info-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #3a3a44;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 800;
+            font-style: italic;
+            font-family: 'Georgia', serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .info-tooltip {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: #191920;
+            border: 1px solid #2c2c34;
+            border-radius: 10px;
+            padding: 12px 16px;
+            min-width: 180px;
+            display: none;
+            z-index: 50;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+            cursor: default;
+        }
+        .info-tooltip.active {
+            display: block;
+        }
+        .info-tooltip.overall-tooltip {
+            min-width: 280px;
+            padding: 14px 20px;
+        }
+        .info-tooltip-title {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #8b8b96;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .info-tooltip-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            font-size: 13px;
+            padding: 3px 0;
+            font-family: monospace;
+        }
+        .info-tooltip-row span:first-child {
+            font-weight: 800;
+        }
+        .overall-tooltip .title-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            font-family: monospace;
+        }
+        .overall-tooltip .title-row .title-word {
+            font-size: 17px;
+            font-weight: 900;
+            font-family: 'Bahnschrift', Arial, sans-serif;
+            letter-spacing: 0.3px;
+        }
+        .overall-tooltip .title-row .title-desc {
+            font-size: 13px;
+            color: #8b8b96;
+            font-weight: 600;
+            font-family: monospace;
+        }
+        .overall-tooltip .points-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            font-size: 13px;
+            padding: 3px 0;
+            font-family: monospace;
+        }
+        .overall-tooltip .points-row .tier-name {
+            font-weight: 800;
+        }
+        .overall-tooltip .points-row .tier-pts {
+            color: #8b8b96;
+            font-weight: 600;
+        }
+        .tooltip-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #2c2c34;
+            padding-bottom: 6px;
+        }
+        .tooltip-tab {
+            flex: 1;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #8b8b96;
+            cursor: pointer;
+            padding: 4px 0;
+            border-radius: 4px 4px 0 0;
+            transition: background 0.15s, color 0.15s;
+        }
+        .tooltip-tab:hover {
+            background: #26262e;
+            color: #c9c9d1;
+        }
+        .tooltip-tab.active {
+            color: #fff;
+            background: #2a2a36;
+        }
+        .tooltip-content {
+            display: block;
+        }
+        .tooltip-content.hidden {
+            display: none;
+        }
+
+        /* Search */
+        .search-btn-wrapper {
+            position: relative;
+        }
+        .search-btn {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: #1c1c22;
+            border: 1px solid #2c2c34;
+            color: #c9c9d1;
+            padding: 7px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: Arial, sans-serif;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .search-btn:hover {
+            background: #26262e;
+        }
+        .search-btn svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+        .search-panel {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: #191920;
+            border: 1px solid #2c2c34;
+            border-radius: 10px;
+            padding: 14px;
+            width: 250px;
+            display: none;
+            z-index: 70;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+        }
+        .search-panel.active {
+            display: block;
+        }
+        .search-input {
+            width: 100%;
+            background: #131318;
+            border: 1px solid #2c2c34;
+            border-radius: 7px;
+            color: #fff;
+            padding: 8px 10px;
+            font-size: 13px;
+            margin-bottom: 10px;
+            font-family: Arial, sans-serif;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #4a4a5c;
+        }
+        .search-results {
+            max-height: 220px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 8px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .search-result-item:hover {
+            background: #22222a;
+        }
+        .search-result-item img {
+            width: 26px;
+            height: 26px;
+            border-radius: 5px;
+            image-rendering: pixelated;
+            background: #000;
+            flex-shrink: 0;
+        }
+        .search-empty {
+            color: #5c5c66;
+            font-size: 12px;
+            padding: 6px 2px;
+        }
+
+        /* Player row (Overall) */
+        .player {
+            display: flex;
+            align-items: stretch;
+            background: #191920;
+            border-radius: 12px;
+            margin: 14px 0;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+        }
+        .player:hover {
+            transform: scale(1.035);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+            filter: brightness(1.25);
+        }
+        .rank-flag {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 18px 32px 18px 20px;
+            background: #22222a;
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+            min-width: 140px;
+        }
+        .rank-num {
+            font-size: 32px;
+            font-weight: 700;
+            font-style: italic;
+            color: #c7c7ce;
+            width: 32px;
+        }
+        .avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 8px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #666;
+            flex-shrink: 0;
+            overflow: hidden;
+            image-rendering: pixelated;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+        }
+        .info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            font-family: 'Bahnschrift', Arial, sans-serif;
+        }
+        .elo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0 26px;
+        }
+
+        /* mini tier icons – short form T1+, T1, etc. */
+        .mini-tiers-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .mini-tier-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            position: relative;
+            cursor: default;
+        }
+        .mini-tier-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #131318;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #454b54;
+            overflow: hidden;
+        }
+        .mini-tier-circle img {
+            width: 24px;
+            height: 24px;
+            image-rendering: pixelated;
+        }
+        .mini-tier-label {
+            font-size: 12px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #1a1a22;
+            border: 1px solid #454b54;
+            color: #8b8b96;
+            letter-spacing: 0.3px;
+            text-align: center;
+            min-width: 32px;
+        }
+        .mini-tier-tip {
+            display: none;
+        }
+        .global-mini-tip {
+            position: fixed;
+            background: #0e0e12;
+            border: 1px solid #2c2c34;
+            border-radius: 9px;
+            padding: 8px 16px;
+            font-size: 18px;
+            font-weight: 700;
+            white-space: nowrap;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            transform: translate(-50%, -100%);
+            text-align: center;
+            line-height: 1.4;
+        }
+        .global-mini-tip .tip-tier {
+            font-size: 18px;
+            font-weight: 800;
+        }
+        .global-mini-tip .tip-points {
+            font-size: 13px;
+            font-weight: 600;
+            color: #8b8b96;
+            margin-top: 2px;
+        }
+
+        /* Tier Columns – headers "Tier 1", "Tier 2", etc. */
+        .tier-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        .tier-column {
+            flex: 0 0 200px;
+            min-width: 160px;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background: #14141a;
+        }
+        .tier-column-1 {
+            background: #2a2a1a;
+        }
+        .tier-column-2 {
+            background: #2a2a30;
+        }
+        .tier-column-3 {
+            background: #2a221a;
+        }
+        .tier-column-4 {
+            background: #22222a;
+        }
+        .tier-column-5 {
+            background: #22222a;
+        }
+
+        .tier-header {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 800;
+            padding: 10px 4px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .tier-players {
+            padding: 6px 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .tier-player {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #16161e;
+            border-radius: 6px;
+            padding: 4px 8px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+        .tier-player:hover {
+            background: #2a2a36;
+        }
+        .tier-player.plus {
+            background: #1e1e2a;
+        }
+        .tier-player.plus:hover {
+            background: #3a3a4a;
+        }
+        .tier-player .tier-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 5px;
+            overflow: hidden;
+            flex-shrink: 0;
+            image-rendering: pixelated;
+        }
+        .tier-player .tier-avatar img {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+        }
+        .tier-player .tier-name {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .tier-player .tier-badge {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 1px 8px;
+            border-radius: 12px;
+            background: #2a2a36;
+            color: #a9b6ff;
+            flex-shrink: 0;
+        }
+        .tier-player .tier-badge.plus {
+            background: #1a3a2a;
+            color: #6bff6b;
+        }
+
+        /* Rank colours for overall */
+        .rank-1 .rank-flag {
+            background: linear-gradient(100deg, #f4c744, #c99a1e);
+        }
+        .rank-1 .rank-num {
+            color: #3a2c00;
+        }
+        .rank-2 .rank-flag {
+            background: linear-gradient(100deg, #d6d9dd, #9ea3aa);
+        }
+        .rank-2 .rank-num {
+            color: #2b2e33;
+        }
+        .rank-3 .rank-flag {
+            background: linear-gradient(100deg, #d98b45, #a85f24);
+        }
+        .rank-3 .rank-num {
+            color: #3a2000;
+        }
+
+        .toggle-btn {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            background: #22222a;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .toggle-btn:hover {
+            background: #2e2e38;
+        }
+
+        /* ---------- Profile Modal ---------- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: #131318;
+            border-radius: 16px;
+            padding: 36px;
+            width: 460px;
+            max-width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            text-align: center;
+            border: 1px solid #232329;
+            font-family: Arial, sans-serif;
+        }
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #22222a;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .modal-close:hover {
+            background: #2e2e38;
+        }
+        .modal-avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 16px;
+            background: #000;
+            margin: 6px auto 16px;
+            overflow: hidden;
+            border: 2px solid #2a2a32;
+            image-rendering: pixelated;
+        }
+        .modal-avatar img {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+        }
+        .modal-name {
+            font-family: 'Bahnschrift', Arial, sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .role-badge {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            z-index: 5;
+        }
+        .role-player {
+            color: #c9c9d1;
+            border: 1px solid #5a5a64;
+            background: #202024;
+        }
+        .role-developer {
+            color: #ff5c5c;
+            border: 1px solid #7a2323;
+            background: #241414;
+        }
+        .role-owner {
+            color: #5be6e6;
+            border: 1px solid #1f6b70;
+            background: #132628;
+        }
+
+        .title-section {
+            display: flex;
+            justify-content: center;
+            margin: 2px 0 28px;
+            position: relative;
+        }
+        .title-text-box {
+            background: #191920;
+            border: 1px solid #2c2c34;
+            border-radius: 10px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            cursor: default;
+            position: relative;
+        }
+        .title-badge-text {
+            font-size: 19px;
+            font-weight: 900;
+            font-family: 'Bahnschrift', Arial, sans-serif;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+            background-size: 100% 100%;
+        }
+        .title-grad {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        .title-tooltip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0e0e12;
+            border: 1px solid #2c2c34;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #a9b6ff;
+            white-space: nowrap;
+            display: none;
+            z-index: 20;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+        }
+        .title-section:hover .title-tooltip {
+            display: block;
+        }
+
+        .modal-section-label {
+            text-align: left;
+            color: #8b8b96;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .position-card {
+            display: flex;
+            align-items: stretch;
+            background: #191920;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 22px;
+        }
+        .position-card .rank-flag {
+            min-width: 70px;
+            padding: 12px 22px 12px 14px;
+        }
+        .position-card .pos-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 14px;
+            font-weight: 700;
+            font-size: 15px;
+            flex-wrap: wrap;
+        }
+        .pos-overall {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 800;
+        }
+        .pos-points {
+            color: #8b8b96;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .tiers-row {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+        }
+        .tier-icon-wrap {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+        }
+        .tier-icon-circle {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: #191920;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #454b54;
+            overflow: hidden;
+        }
+        .tier-icon-circle img {
+            width: 30px;
+            height: 30px;
+            image-rendering: pixelated;
+        }
+        .tier-icon-label {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+        }
+        .tier-elo-tip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0e0e12;
+            border: 1px solid #2c2c34;
+            border-radius: 9px;
+            padding: 5px 12px;
+            font-size: 18px;
+            font-weight: 700;
+            white-space: nowrap;
+            display: none;
+            z-index: 10;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            text-align: center;
+            line-height: 1.4;
+        }
+        .tier-elo-tip .tip-tier {
+            font-size: 18px;
+            font-weight: 800;
+        }
+        .tier-elo-tip .tip-points {
+            font-size: 13px;
+            font-weight: 600;
+            color: #8b8b96;
+            margin-top: 2px;
+        }
+        .tier-icon-wrap:hover .tier-elo-tip {
+            display: block;
+        }
+
+        /* ---------- Admin Edit Modal ---------- */
+        .admin-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1500;
+            padding: 20px;
+        }
+        .admin-modal-overlay.active {
+            display: flex;
+        }
+        .admin-modal-box {
+            background: #131318;
+            border-radius: 16px;
+            padding: 30px;
+            width: 800px;
+            max-width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #2a4a6a;
+            box-shadow: 0 0 40px rgba(42, 74, 106, 0.3);
+        }
+        .admin-modal-box h2 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-family: 'Orbitron', Arial, sans-serif;
+            font-size: 22px;
+            text-align: center;
+        }
+        .admin-table-wrap {
+            overflow-x: auto;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .admin-table th {
+            text-align: left;
+            padding: 8px 10px;
+            color: #8b8b96;
+            border-bottom: 1px solid #2c2c34;
+            font-weight: 700;
+        }
+        .admin-table td {
+            padding: 6px 10px;
+            border-bottom: 1px solid #1c1c22;
+        }
+        .admin-table select,
+        .admin-table input[type="number"] {
+            background: #1c1c22;
+            border: 1px solid #2c2c34;
+            color: #fff;
+            padding: 4px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+            width: 100%;
+        }
+        .admin-table input[type="number"] {
+            width: 60px;
+        }
+        .admin-save-btn {
+            background: #2a6a3a;
+            border: 2px solid #4a9a5a;
+            color: #fff;
+            font-weight: 800;
+            font-size: 18px;
+            padding: 10px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 16px;
+        }
+        .admin-save-btn:hover {
+            background: #3a7a4a;
+        }
+        .admin-close-btn {
+            background: #3a3a44;
+            border: 2px solid #4a4a5a;
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            padding: 8px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 12px;
+            transition: background 0.2s;
+        }
+        .admin-close-btn:hover {
+            background: #4a4a5a;
+        }
+        .admin-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 16px;
+        }
+    </style>
 </head>
 <body>
 
-<!-- Login & Play button (fixed top-right) -->
-<div class="login-wrapper" id="loginWrapper">
-  <div class="play-btn-wrapper">
-    <button class="play-btn logged-out" id="playBtn">
-      <span class="play-icon" id="playIcon">!</span>
-      <span class="play-label" id="playLabel">Play</span>
-    </button>
-    <div class="play-tooltip" id="playTooltip">Log in to play</div>
-  </div>
-  <button class="login-btn" id="loginBtn">Log in</button>
-  <div class="login-panel" id="loginPanel"></div>
-</div>
-
-<div class="container">
-  <div class="tab-menu" id="tabMenu"></div>
-  <div class="top-bar">
-    <div class="info-btn-wrapper">
-      <button class="info-btn" id="infoBtn"><span class="info-icon">i</span>Info</button>
-      <div class="info-tooltip" id="infoTooltip">Loading...</div>
-    </div>
-    <div class="search-btn-wrapper" id="searchWrapper">
-      <button class="search-btn" id="searchBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
-        Search
-      </button>
-      <div class="search-panel" id="searchPanel">
-        <input type="text" class="search-input" id="searchInput" placeholder="Search player...">
-        <div class="search-results" id="searchResults"></div>
-      </div>
-    </div>
-  </div>
-
-  <h2><span class="title-icon" id="titleIcon"></span><span id="titleText">Overall Leaderboard</span></h2>
-  <div id="list">Loading...</div>
-  <button id="toggleBtn" class="toggle-btn" style="display:none;">Show all</button>
-</div>
-
-<!-- Profile Modal -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal-box">
-    <button class="modal-close" id="modalClose">✕</button>
-    <div class="role-badge" id="modalRoleBadge"></div>
-    <div class="modal-avatar" id="modalAvatar"></div>
-    <div class="modal-name" id="modalName"></div>
-    <div class="title-section" id="titleSection">
-      <div class="title-text-box"><span class="title-badge-text title-grad" id="modalTitleText"></span></div>
-    </div>
-    <div class="modal-section-label">Position</div>
-    <div class="position-card" id="modalPositionCard"></div>
-    <div class="modal-section-label">Tiers</div>
-    <div class="tiers-row" id="tiersRow"></div>
-  </div>
-</div>
-
-<!-- Queue Modal -->
-<div class="queue-modal-overlay" id="queueModalOverlay">
-  <div class="queue-modal-box">
-    <button class="queue-modal-close" id="queueModalClose">✕</button>
-    <div class="queue-modal-title">Select Game Mode</div>
-    <div class="queue-modes-container">
-      <!-- Kanal Server -->
-      <div class="queue-mode-column" data-mode="KanalServer">
-        <div class="mode-header">
-          <img src="https://github.com/Toggelt/nova-tiers/blob/main/assets/netherite_helmet.png?raw=true" alt="Kanal Server">
-          <span class="mode-label">Kanal Server</span>
+    <!-- Fixed top bar -->
+    <div class="top-fixed-bar">
+        <div class="left-group">
+            <button class="admin-edit-btn hidden" id="adminEditBtn">✎ Edit Tiers</button>
         </div>
-        <button class="queue-btn" id="queueBtnKanal" disabled>Queue</button>
-        <div class="queue-stats">
-          <span id="queueCountKanal">0</span> in queue · 
-          <span id="matchCountKanal">0</span> in matches
+        <div class="login-wrapper">
+            <button class="login-btn" id="loginBtn">Log in</button>
+            <div class="login-panel" id="loginPanel"></div>
         </div>
-      </div>
-      <!-- Lowblock Mace -->
-      <div class="queue-mode-column" data-mode="LowblockMace">
-        <div class="mode-header">
-          <img src="https://github.com/Toggelt/nova-tiers/blob/main/assets/mace.png?raw=true" alt="Lowblock Mace">
-          <span class="mode-label">Lowblock Mace</span>
-        </div>
-        <button class="queue-btn" id="queueBtnMace" disabled>Queue</button>
-        <div class="queue-stats">
-          <span id="queueCountMace">0</span> in queue · 
-          <span id="matchCountMace">0</span> in matches
-        </div>
-      </div>
     </div>
-  </div>
-</div>
 
-<!-- Match Found Modal -->
-<div class="match-modal-overlay" id="matchModalOverlay">
-  <div class="match-modal-box" id="matchModalBox">
-    <div id="matchModalContent"></div>
-  </div>
-</div>
-
-<div class="global-mini-tip" id="globalMiniTip"></div>
-
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-// Supabase config
-const SUPABASE_URL = "https://fyyyjjysztzxmmdgubnb.supabase.co";
-const SUPABASE_KEY = "sb_publishable_kHwFOpox2rS81CKz832IBg_fZr5GoWH";
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-const COLLAPSED_COUNT = 5;
-let allPlayers = [];
-let expanded = false;
-let currentUser = null;
-
-// Queue tracking per mode
-const queueState = {
-  KanalServer: { inQueue: false, joinedAt: null, timerInterval: null, queueId: null },
-  LowblockMace: { inQueue: false, joinedAt: null, timerInterval: null, queueId: null }
-};
-
-/* ---------- Icons from GitHub ---------- */
-const HELMET_ICON_URL = "https://github.com/Toggelt/nova-tiers/blob/main/assets/netherite_helmet.png?raw=true";
-const MACE_ICON_URL   = "https://github.com/Toggelt/nova-tiers/blob/main/assets/mace.png?raw=true";
-const KANAL_KIT_IMG   = "https://github.com/Toggelt/nova-tiers/blob/main/assets/kanalserver_kit.png?raw=true";
-const LOWBLOCK_KIT_IMG = "https://github.com/Toggelt/nova-tiers/blob/main/assets/lowblockmace_kit.png?raw=true";
-
-/* ---------- Leaderboards ---------- */
-const LEADERBOARDS = {
-    Overall: {
-        key: "Overall",
-        field: "__total",
-        label: "Overall",
-        title: "Overall Leaderboard",
-        icon: null,
-        emoji: "💎"
-    },
-    KanalServer: {
-        key: "KanalServer",
-        field: "KanalServer",
-        label: "Kanal Server",
-        title: "Kanal Server Leaderboard",
-        icon: HELMET_ICON_URL,
-        emoji: "⛑️"
-    },
-    LowblockMace: {
-        key: "LowblockMace",
-        field: "LowblockMace",
-        label: "Lowblock Mace",
-        title: "Lowblock Mace Leaderboard",
-        icon: MACE_ICON_URL,
-        emoji: "🔨"
-    }
-};
-const SUB_BOARDS = ["KanalServer", "LowblockMace"];
-let currentBoard = "Overall";
-
-const list = document.getElementById("list");
-const toggleBtn = document.getElementById("toggleBtn");
-const tabMenu = document.getElementById("tabMenu");
-const titleIcon = document.getElementById("titleIcon");
-const titleText = document.getElementById("titleText");
-
-function iconMarkup(board){
-    if(board.icon){
-        return `<img src="${board.icon}" alt="${board.label}" style="width:32px;height:32px;image-rendering:pixelated;">`;
-    }
-    return `<span class="emoji-icon">${board.emoji}</span>`;
-}
-
-function renderTabMenu(){
-    tabMenu.innerHTML = "";
-    Object.values(LEADERBOARDS).forEach(board => {
-        const el = document.createElement("div");
-        el.className = "tab-item" + (board.key === currentBoard ? " active" : "");
-        el.innerHTML = `${iconMarkup(board)}<span class="tab-label">${board.label}</span>`;
-        el.addEventListener("click", () => switchBoard(board.key));
-        tabMenu.appendChild(el);
-    });
-}
-
-function setTitle(key){
-    titleIcon.innerHTML = iconMarkup(LEADERBOARDS[key]);
-    titleText.textContent = LEADERBOARDS[key].title;
-}
-
-function switchBoard(key){
-    if(currentBoard === key) return;
-    currentBoard = key;
-    expanded = false;
-    setTitle(key);
-    renderTabMenu();
-    render();
-}
-
-/* ---------- Tier system ---------- */
-const TIER_STEPS = [
-    { name: "LT1", pct: 10 },
-    { name: "HT2", pct: 10 },
-    { name: "LT2", pct: 10 },
-    { name: "HT3", pct: 10 },
-    { name: "LT3", pct: 15 },
-    { name: "HT4", pct: 15 },
-    { name: "LT4", pct: 15 },
-    { name: "HT5", pct: 15 }
-];
-const HT1_BASE = 1250;
-const LT5_FLOOR = 1000;
-const TIER_COLORS = {
-    HT1: "#ffd700",
-    LT1: "#e6c15c",
-    HT2: "#c9c9d1",
-    LT2: "#a9a9b2",
-    HT3: "#cd7f32",
-    LT3: "#b5793c",
-    HT4: "#7d8b99",
-    LT4: "#6b7480",
-    HT5: "#5a6572",
-    LT5: "#454b54"
-};
-const TIER_ORDER = ["HT1","LT1","HT2","LT2","HT3","LT3","HT4","LT4","HT5","LT5"];
-
-function getTierThresholds(topElo){
-    const anchor = topElo >= HT1_BASE ? topElo : HT1_BASE;
-    const range = anchor - LT5_FLOOR;
-    const thresholds = { HT1: anchor };
-    let cumulativePct = 0;
-    TIER_STEPS.forEach(step => {
-        cumulativePct += step.pct;
-        thresholds[step.name] = LT5_FLOOR + range * (1 - cumulativePct / 100);
-    });
-    return thresholds;
-}
-
-function getTier(elo, thresholds){
-    if(elo < LT5_FLOOR) return "LT5";
-    if(elo >= thresholds.HT1) return "HT1";
-    if(elo >= thresholds.LT1) return "LT1";
-    if(elo >= thresholds.HT2) return "HT2";
-    if(elo >= thresholds.LT2) return "LT2";
-    if(elo >= thresholds.HT3) return "HT3";
-    if(elo >= thresholds.LT3) return "LT3";
-    if(elo >= thresholds.HT4) return "HT4";
-    if(elo >= thresholds.LT4) return "LT4";
-    if(elo >= thresholds.HT5) return "HT5";
-    return "LT5";
-}
-
-function sortEntriesByTier(entries){
-    return entries.sort((a, b) => {
-        if(a.tier && b.tier && a.tier !== b.tier) {
-            return TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier);
-        }
-        if(a.tier && !b.tier) return -1;
-        if(!a.tier && b.tier) return 1;
-        if(a.hasValue && b.hasValue) return b.elo - a.elo;
-        if(a.hasValue) return -1;
-        if(b.hasValue) return 1;
-        return 0;
-    });
-}
-
-const infoTooltip = document.getElementById("infoTooltip");
-const TIER_ORDER_DISPLAY = ["HT1","LT1","HT2","LT2","HT3","LT3","HT4","LT4","HT5"];
-
-function renderInfoTooltip(thresholds){
-    let html = `<div class="info-tooltip-title">Elo required</div>`;
-    TIER_ORDER_DISPLAY.forEach(name => {
-        const val = Math.ceil(thresholds[name]);
-        html += `<div class="info-tooltip-row"><span style="color:${TIER_COLORS[name]}">${name}</span><span>${val}+</span></div>`;
-    });
-    html += `<div class="info-tooltip-row"><span style="color:${TIER_COLORS.LT5}">LT5</span><span>&lt;${LT5_FLOOR}</span></div>`;
-    infoTooltip.innerHTML = html;
-}
-
-/* ---------- Titles ---------- */
-function computeTitleThresholds(){
-    const gainFor = (tierName) => {
-        let total = 0;
-        SUB_BOARDS.forEach(key => {
-            const board = LEADERBOARDS[key];
-            const sorted = getSortedPlayers(board.field);
-            const topElo = sorted.length ? sorted[0][board.field] : 0;
-            const thresholds = getTierThresholds(topElo);
-            total += Math.max(0, thresholds[tierName] - LT5_FLOOR);
-        });
-        return Math.ceil(total);
-    };
-    return {
-        Divine: gainFor("LT2"),
-        Celestial: gainFor("HT3"),
-        Eternal: gainFor("LT3"),
-        Ascendant: gainFor("HT4"),
-        Novice: 0
-    };
-}
-
-function isNovaPlayer(player){
-    if(!SUB_BOARDS.length) return false;
-    return SUB_BOARDS.every(key => {
-        const board = LEADERBOARDS[key];
-        const sorted = getSortedPlayers(board.field);
-        return sorted.length && sorted[0].name === player.name;
-    });
-}
-
-function getPlayerTitle(player){
-    if(isNovaPlayer(player)) return "Nova";
-    const reqs = computeTitleThresholds();
-    const gained = player.__total - 1000 * SUB_BOARDS.length;
-    if(gained >= reqs.Divine) return "Divine";
-    if(gained >= reqs.Celestial) return "Celestial";
-    if(gained >= reqs.Eternal) return "Eternal";
-    if(gained >= reqs.Ascendant) return "Ascendant";
-    return "Novice";
-}
-
-function renderTitleInfoTooltip(){
-    const reqs = computeTitleThresholds();
-    const colorMap = {
-        Nova: "linear-gradient(100deg, #c190ec, #a13ca5)",
-        Divine: "linear-gradient(100deg, #cbd4ec, #6468ab)",
-        Celestial: "linear-gradient(100deg, #fac140, #c34513)",
-        Eternal: "linear-gradient(100deg, #f8ab86, #cb322b)",
-        Ascendant: "linear-gradient(100deg, #d67638, #b0483c)",
-        Novice: "linear-gradient(100deg, #9d8aa5, #82638a)"
-    };
-    const descMap = {
-        Nova: "#1 in every gamemode",
-        Divine: `${reqs.Divine}+ gained`,
-        Celestial: `${reqs.Celestial}+ gained`,
-        Eternal: `${reqs.Eternal}+ gained`,
-        Ascendant: `${reqs.Ascendant}+ gained`,
-        Novice: `0+ gained`
-    };
-    let html = `<div class="info-tooltip-title">Titles</div>`;
-    const order = ["Nova", "Divine", "Celestial", "Eternal", "Ascendant", "Novice"];
-    order.forEach(name => {
-        const grad = colorMap[name];
-        const desc = descMap[name];
-        html += `
-            <div class="info-tooltip-row title-row">
-                <span class="title-word title-grad" style="background-image:${grad}">${name}</span>
-                <span class="title-desc">${desc}</span>
+    <!-- Leaderboard container -->
+    <div class="container">
+        <div class="tab-menu" id="tabMenu"></div>
+        <div class="top-bar">
+            <div class="info-btn-wrapper">
+                <button class="info-btn" id="infoBtn"><span class="info-icon">i</span>Info</button>
+                <div class="info-tooltip" id="infoTooltip">Loading...</div>
             </div>
-        `;
-    });
-    infoTooltip.innerHTML = html;
-    infoTooltip.classList.add("overall-tooltip");
-}
-
-function resetTooltipClass(){
-    infoTooltip.classList.remove("overall-tooltip");
-}
-
-function renderMiniTierIcons(player){
-    const entries = SUB_BOARDS.map(key => {
-        const board = LEADERBOARDS[key];
-        const sorted = getSortedPlayers(board.field);
-        const topElo = sorted.length ? sorted[0][board.field] : 0;
-        const thresholds = getTierThresholds(topElo);
-        const hasValue = player[board.field] !== null && player[board.field] !== undefined;
-        const elo = hasValue ? player[board.field] : null;
-        const tier = hasValue ? getTier(elo, thresholds) : null;
-        return { board, hasValue, elo, tier };
-    });
-    const sortedEntries = sortEntriesByTier(entries);
-    let html = "";
-    sortedEntries.forEach(({ board, hasValue, elo, tier }) => {
-        const color = tier ? TIER_COLORS[tier] : "#3a3a44";
-        const tipText = hasValue ? `${tier} (${elo})` : "No data";
-        html += `
-            <div class="mini-tier-wrap" data-tip="${tipText}">
-                <div class="mini-tier-circle" style="border-color:${color}">
-                    <img src="${board.icon}" alt="${board.label}" style="width:16px;height:16px;image-rendering:pixelated;">
+            <div class="search-btn-wrapper" id="searchWrapper">
+                <button class="search-btn" id="searchBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+                    Search
+                </button>
+                <div class="search-panel" id="searchPanel">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search player...">
+                    <div class="search-results" id="searchResults"></div>
                 </div>
             </div>
-        `;
-    });
-    return html;
-}
+        </div>
 
-function getRole(name){
-    if(name === "TestingCheats") return { label: "Developer", cls: "role-developer" };
-    if(name === "cutekiss") return { label: "Tierlist Owner", cls: "role-owner" };
-    return { label: "Player", cls: "role-player" };
-}
+        <h2><span class="title-icon" id="titleIcon"></span><span id="titleText">Overall Leaderboard</span></h2>
+        <div id="list">Loading...</div>
+        <button id="toggleBtn" class="toggle-btn" style="display:none;">Show all</button>
+    </div>
 
-function rankClass(rank){
-    if(rank === 1) return "rank-1";
-    if(rank === 2) return "rank-2";
-    if(rank === 3) return "rank-3";
-    return "";
-}
+    <!-- Profile Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box">
+            <button class="modal-close" id="modalClose">✕</button>
+            <div class="role-badge" id="modalRoleBadge"></div>
+            <div class="modal-avatar" id="modalAvatar"></div>
+            <div class="modal-name" id="modalName"></div>
+            <div class="title-section" id="titleSection">
+                <div class="title-text-box"><span class="title-badge-text title-grad" id="modalTitleText"></span>
+                    <div class="title-tooltip" id="titleTooltip"></div>
+                </div>
+            </div>
+            <div class="modal-section-label">Position</div>
+            <div class="position-card" id="modalPositionCard"></div>
+            <div class="modal-section-label">Tiers</div>
+            <div class="tiers-row" id="tiersRow"></div>
+        </div>
+    </div>
 
-function avatarUrl(name, size){
-    return `https://mc-heads.net/avatar/${encodeURIComponent(name)}/${size}`;
-}
+    <!-- Admin Edit Modal -->
+    <div class="admin-modal-overlay" id="adminModalOverlay">
+        <div class="admin-modal-box">
+            <h2>Edit Tiers & Positions</h2>
+            <div class="admin-table-wrap">
+                <table class="admin-table" id="adminTable">
+                    <thead>
+                        <tr>
+                            <th>Player</th>
+                            <th>Kanal Tier</th>
+                            <th>Kanal Pos</th>
+                            <th>Mace Tier</th>
+                            <th>Mace Pos</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody"></tbody>
+                </table>
+            </div>
+            <div class="admin-actions">
+                <button class="admin-save-btn" id="adminSaveBtn">💾 Save</button>
+                <button class="admin-close-btn" id="adminCloseBtn">✖ Close</button>
+            </div>
+        </div>
+    </div>
 
-function getSortedPlayers(field){
-    return [...allPlayers]
-        .filter(p => p[field] !== null && p[field] !== undefined)
-        .sort((a, b) => b[field] - a[field]);
-}
+    <div class="global-mini-tip" id="globalMiniTip"></div>
 
-function render(){
-    const field = LEADERBOARDS[currentBoard].field;
-    const isOverall = currentBoard === "Overall";
-    const sorted = getSortedPlayers(field);
-    list.innerHTML = "";
-    const playersToShow = expanded ? sorted : sorted.slice(0, COLLAPSED_COUNT);
-    const topElo = sorted.length ? sorted[0][field] : 0;
-    const thresholds = getTierThresholds(topElo);
-    if(isOverall){
-        renderTitleInfoTooltip();
-    } else {
-        resetTooltipClass();
-        renderInfoTooltip(thresholds);
-    }
-    if(sorted.length === 0){
-        list.innerHTML = `<div class="placeholder-card"><div class="ph-dot"></div>No players on this leaderboard yet</div>`;
-        toggleBtn.style.display = "none";
-        return;
-    }
-    playersToShow.forEach((p, i) => {
-        const rank = i + 1;
-        const elo = p[field];
-        let rightHtml;
-        if(isOverall){
-            const gained = elo - 1000 * SUB_BOARDS.length;
-            const gainedStr = (gained >= 0 ? "+" : "") + gained;
-            rightHtml = `
-                <div class="mini-tiers-row">${renderMiniTierIcons(p)}</div>
-                <span class="gained-badge">${gainedStr}</span>
+    <script type="module">
+        import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+        const SUPABASE_URL = "https://fyyyjjysztzxmmdgubnb.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_kHwFOpox2rS81CKz832IBg_fZr5GoWH";
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const COLLAPSED_COUNT = 5;
+        let allPlayers = [];
+        let expanded = false;
+        let currentUser = null;
+
+        const HELMET_ICON_URL = "https://github.com/Toggelt/nova-tiers/blob/main/assets/netherite_helmet.png?raw=true";
+        const MACE_ICON_URL = "https://github.com/Toggelt/nova-tiers/blob/main/assets/mace.png?raw=true";
+        const OVERALL_ICON_URL = "https://github.com/Toggelt/nova-tiers/blob/main/assets/636879664591858480.png?raw=true";
+
+        const LEADERBOARDS = {
+            Overall: {
+                key: "Overall",
+                field: "__overall_tier",
+                label: "Overall",
+                title: "Overall Leaderboard",
+                icon: OVERALL_ICON_URL,
+                emoji: null
+            },
+            KanalServer: {
+                key: "KanalServer",
+                field: "KanalServer",
+                label: "Kanal Server",
+                title: "Kanal Server Leaderboard",
+                icon: HELMET_ICON_URL,
+                emoji: "⛑️"
+            },
+            LowblockMace: {
+                key: "LowblockMace",
+                field: "LowblockMace",
+                label: "Lowblock Mace",
+                title: "Lowblock Mace Leaderboard",
+                icon: MACE_ICON_URL,
+                emoji: "🔨"
+            }
+        };
+        const SUB_BOARDS = ["KanalServer", "LowblockMace"];
+        const NUM_MODES = SUB_BOARDS.length;
+        let currentBoard = "Overall";
+
+        const list = document.getElementById("list");
+        const toggleBtn = document.getElementById("toggleBtn");
+        const tabMenu = document.getElementById("tabMenu");
+        const titleIcon = document.getElementById("titleIcon");
+        const titleText = document.getElementById("titleText");
+        const infoTooltip = document.getElementById("infoTooltip");
+
+        const adminEditBtn = document.getElementById("adminEditBtn");
+        const adminModalOverlay = document.getElementById("adminModalOverlay");
+        const adminTableBody = document.getElementById("adminTableBody");
+        const adminSaveBtn = document.getElementById("adminSaveBtn");
+        const adminCloseBtn = document.getElementById("adminCloseBtn");
+
+        // ---------- Utility ----------
+        function iconMarkup(board) {
+            if (board.icon) {
+                return `<img src="${board.icon}" alt="${board.label}" style="width:32px;height:32px;image-rendering:pixelated;">`;
+            }
+            return `<span class="emoji-icon">${board.emoji}</span>`;
+        }
+
+        function renderTabMenu() {
+            tabMenu.innerHTML = "";
+            Object.values(LEADERBOARDS).forEach(board => {
+                const el = document.createElement("div");
+                el.className = "tab-item" + (board.key === currentBoard ? " active" : "");
+                el.innerHTML = `${iconMarkup(board)}<span class="tab-label">${board.label}</span>`;
+                el.addEventListener("click", () => switchBoard(board.key));
+                tabMenu.appendChild(el);
+            });
+        }
+
+        function setTitle(key) {
+            titleIcon.innerHTML = iconMarkup(LEADERBOARDS[key]);
+            titleText.textContent = LEADERBOARDS[key].title;
+        }
+
+        function switchBoard(key) {
+            if (currentBoard === key) return;
+            currentBoard = key;
+            expanded = false;
+            setTitle(key);
+            renderTabMenu();
+            render();
+        }
+
+        // ---------- Tier system ----------
+        const TIER_POINTS = {
+            "1+": 1000,
+            "1": 800,
+            "2+": 600,
+            "2": 400,
+            "3+": 250,
+            "3": 150,
+            "4+": 50,
+            "4": 25,
+            "5+": 15,
+            "5": 10
+        };
+
+        const TIER_COLORS = {
+            "1+": "#ffd700",
+            "1": "#e6c15c",
+            "2+": "#c9c9d1",
+            "2": "#a9a9b2",
+            "3+": "#cd7f32",
+            "3": "#b5793c",
+            "4+": "#7d8b99",
+            "4": "#6b7480",
+            "5+": "#5a6572",
+            "5": "#454b54"
+        };
+
+        // Short tier label: "T1+", "T1", etc.
+        function shortTierLabel(tierNum, plus) {
+            return `T${tierNum}${plus ? '+' : ''}`;
+        }
+
+        // Full tier label: "Tier 1+", "Tier 1", etc.
+        function fullTierLabel(tierNum, plus) {
+            return `Tier ${tierNum}${plus ? '+' : ''}`;
+        }
+
+        // -------- Tier assignment (rank-based) --------
+        function assignTiersForMode(players, modeField) {
+            const sorted = [...players]
+                .filter(p => p[modeField] !== null && p[modeField] !== undefined)
+                .sort((a, b) => b[modeField] - a[modeField]);
+
+            const total = sorted.length;
+            if (total === 0) return players.map(p => ({ ...p, [`${modeField}_tier`]: null, [`${modeField}_plus`]: false }));
+
+            const tierSize = Math.ceil(total / 5);
+            const tiers = [];
+            for (let i = 0; i < 5; i++) {
+                const start = i * tierSize;
+                const end = Math.min(start + tierSize, total);
+                if (start < total) {
+                    tiers.push(sorted.slice(start, end));
+                }
+            }
+
+            const result = players.map(p => {
+                let tierNum = null;
+                let isPlus = false;
+                for (let t = 0; t < tiers.length; t++) {
+                    const group = tiers[t];
+                    const idx = group.findIndex(g => g.id === p.id);
+                    if (idx !== -1) {
+                        tierNum = t + 1;
+                        const plusCount = Math.ceil(group.length / 3);
+                        if (idx < plusCount) isPlus = true;
+                        break;
+                    }
+                }
+                return {
+                    ...p,
+                    [`${modeField}_tier`]: tierNum,
+                    [`${modeField}_plus`]: isPlus
+                };
+            });
+            return result;
+        }
+
+        function computePlayerPoints(player) {
+            let total = 0;
+            SUB_BOARDS.forEach(key => {
+                const tier = player[`${key}_tier`];
+                const plus = player[`${key}_plus`];
+                if (tier !== null && tier !== undefined) {
+                    const keyStr = plus ? `${tier}+` : `${tier}`;
+                    total += TIER_POINTS[keyStr] || 0;
+                }
+            });
+            return total;
+        }
+
+        // Get title
+        function getPlayerTitle(points, player, allPlayers) {
+            const isNova = (() => {
+                const kanalSorted = allPlayers.filter(p => p.KanalServer !== null && p.KanalServer !== undefined)
+                    .sort((a, b) => b.KanalServer - a.KanalServer);
+                const maceSorted = allPlayers.filter(p => p.LowblockMace !== null && p.LowblockMace !== undefined)
+                    .sort((a, b) => b.LowblockMace - a.LowblockMace);
+                if (kanalSorted.length === 0 || maceSorted.length === 0) return false;
+                return kanalSorted[0].id === player.id && maceSorted[0].id === player.id;
+            })();
+            if (isNova) return "Nova";
+
+            const required = {
+                Divine: 400 * NUM_MODES,
+                Celestial: 300 * NUM_MODES,
+                Eternal: 200 * NUM_MODES,
+                Ascendant: 100 * NUM_MODES
+            };
+            if (points >= required.Divine) return "Divine";
+            if (points >= required.Celestial) return "Celestial";
+            if (points >= required.Eternal) return "Eternal";
+            if (points >= required.Ascendant) return "Ascendant";
+            return null;
+        }
+
+        const TITLE_COLORS = {
+            Nova: "linear-gradient(100deg, #c190ec, #a13ca5)",
+            Divine: "linear-gradient(100deg, #cbd4ec, #6468ab)",
+            Celestial: "linear-gradient(100deg, #fac140, #c34513)",
+            Eternal: "linear-gradient(100deg, #f8ab86, #cb322b)",
+            Ascendant: "linear-gradient(100deg, #d67638, #b0483c)"
+        };
+
+        // Nova: "all gamemodes" — others reverted to original short descriptions
+        const TITLE_REQUIREMENTS = {
+            Nova: "Rank #1 in all gamemodes",
+            Divine: "Get 400+ points",
+            Celestial: "Get 300+ points",
+            Eternal: "Get 200+ points",
+            Ascendant: "Get 100+ points"
+        };
+
+        // ---------- Render info tooltip ----------
+        let infoTab = 'titles';
+
+        function renderInfoTooltip() {
+            const titlesHtml = `
+                <div class="info-tooltip-title">Titles</div>
+                ${Object.keys(TITLE_REQUIREMENTS).map(name => {
+                    const grad = TITLE_COLORS[name];
+                    const desc = TITLE_REQUIREMENTS[name];
+                    return `
+                        <div class="info-tooltip-row title-row">
+                            <span class="title-word title-grad" style="background-image:${grad}">${name}</span>
+                            <span class="title-desc">${desc}</span>
+                        </div>
+                    `;
+                }).join('')}
             `;
-        } else {
-            const tier = getTier(elo, thresholds);
-            rightHtml = `
-                <span class="elo">${elo}</span>
-                <span class="tier-badge" style="color:${TIER_COLORS[tier]}">${tier}</span>
+
+            // Order: 1+, 1, 2+, 2, 3+, 3, 4+, 4, 5+, 5
+            const tierOrder = ["1+", "1", "2+", "2", "3+", "3", "4+", "4", "5+", "5"];
+            const pointsHtml = `
+                <div class="info-tooltip-title">Points</div>
+                ${tierOrder.map(key => {
+                    const color = TIER_COLORS[key];
+                    const pts = TIER_POINTS[key];
+                    const display = key.includes('+') ? `Tier ${key}` : `Tier ${key}`;
+                    return `
+                        <div class="info-tooltip-row points-row">
+                            <span class="tier-name" style="color:${color}">${display}</span>
+                            <span class="tier-pts">${pts} points</span>
+                        </div>
+                    `;
+                }).join('')}
             `;
+
+            const tabsHtml = `
+                <div class="tooltip-tabs">
+                    <span class="tooltip-tab ${infoTab === 'titles' ? 'active' : ''}" data-tab="titles">Titles</span>
+                    <span class="tooltip-tab ${infoTab === 'points' ? 'active' : ''}" data-tab="points">Points</span>
+                </div>
+                <div class="tooltip-content ${infoTab === 'titles' ? '' : 'hidden'}" id="tooltipTitles">${titlesHtml}</div>
+                <div class="tooltip-content ${infoTab === 'points' ? '' : 'hidden'}" id="tooltipPoints">${pointsHtml}</div>
+            `;
+
+            infoTooltip.innerHTML = tabsHtml;
+            infoTooltip.classList.add("overall-tooltip");
+
+            infoTooltip.querySelectorAll('.tooltip-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    infoTab = tab.dataset.tab;
+                    infoTooltip.querySelectorAll('.tooltip-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    infoTooltip.querySelector('#tooltipTitles').classList.toggle('hidden', infoTab !== 'titles');
+                    infoTooltip.querySelector('#tooltipPoints').classList.toggle('hidden', infoTab !== 'points');
+                });
+            });
+
+            document.getElementById('infoBtn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                infoTooltip.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!infoTooltip.contains(e.target) && e.target !== document.getElementById('infoBtn')) {
+                    infoTooltip.classList.remove('active');
+                }
+            });
         }
-        const div = document.createElement("div");
-        div.className = `player ${rankClass(rank)}`;
-        div.innerHTML = `
-            <div class="rank-flag">
-                <span class="rank-num">${rank}.</span>
-                <div class="avatar">
-                    <img src="${avatarUrl(p.name, 38)}" alt="${p.name}" onerror="this.parentElement.innerHTML='?'">
-                </div>
-            </div>
-            <div class="info">${p.name}</div>
-            <div class="elo-wrap">
-                ${rightHtml}
-            </div>
-        `;
-        div.addEventListener("click", () => openProfile(p));
-        list.appendChild(div);
-    });
-    if(sorted.length > COLLAPSED_COUNT){
-        toggleBtn.style.display = "block";
-        toggleBtn.textContent = expanded ? "Show less" : `Show all (${sorted.length})`;
-    } else {
-        toggleBtn.style.display = "none";
-    }
-}
 
-toggleBtn.addEventListener("click", () => {
-    expanded = !expanded;
-    render();
-});
+        // ---------- Roles, rankClass, avatar ----------
+        function getRole(name) {
+            if (name === "TestingCheats") return { label: "Developer", cls: "role-developer" };
+            if (name === "cutekiss") return { label: "Tierlist Owner", cls: "role-owner" };
+            return { label: "Player", cls: "role-player" };
+        }
 
-/* ---------- Global mini tooltip ---------- */
-const globalMiniTip = document.getElementById("globalMiniTip");
-function showMiniTip(wrap){
-    const tip = wrap.getAttribute("data-tip");
-    if(!tip) return;
-    globalMiniTip.textContent = tip;
-    globalMiniTip.style.display = "block";
-    const rect = wrap.getBoundingClientRect();
-    globalMiniTip.style.left = (rect.left + rect.width / 2) + "px";
-    globalMiniTip.style.top = (rect.top - 8) + "px";
-}
-function hideMiniTip(){
-    globalMiniTip.style.display = "none";
-}
-list.addEventListener("mouseover", (e) => {
-    const wrap = e.target.closest(".mini-tier-wrap");
-    if(wrap) showMiniTip(wrap);
-});
-list.addEventListener("mouseout", (e) => {
-    const wrap = e.target.closest(".mini-tier-wrap");
-    if(wrap && !wrap.contains(e.relatedTarget)) hideMiniTip();
-});
-list.addEventListener("scroll", hideMiniTip);
-window.addEventListener("scroll", hideMiniTip, true);
+        function rankClass(rank) {
+            if (rank === 1) return "rank-1";
+            if (rank === 2) return "rank-2";
+            if (rank === 3) return "rank-3";
+            return "";
+        }
 
-/* ---------- Profile Modal ---------- */
-const modalOverlay = document.getElementById("modalOverlay");
-const modalClose = document.getElementById("modalClose");
-const modalAvatar = document.getElementById("modalAvatar");
-const modalName = document.getElementById("modalName");
-const modalRoleBadge = document.getElementById("modalRoleBadge");
-const modalTitleText = document.getElementById("modalTitleText");
-const modalPositionCard = document.getElementById("modalPositionCard");
-const tiersRow = document.getElementById("tiersRow");
+        function avatarUrl(name, size) {
+            return `https://mc-heads.net/avatar/${encodeURIComponent(name)}/${size}`;
+        }
 
-function renderTierIcons(player){
-    const entries = SUB_BOARDS.map(key => {
-        const board = LEADERBOARDS[key];
-        const sorted = getSortedPlayers(board.field);
-        const topElo = sorted.length ? sorted[0][board.field] : 0;
-        const thresholds = getTierThresholds(topElo);
-        const hasValue = player[board.field] !== null && player[board.field] !== undefined;
-        const elo = hasValue ? player[board.field] : null;
-        const tier = hasValue ? getTier(elo, thresholds) : null;
-        return { board, hasValue, elo, tier };
-    });
-    const sortedEntries = sortEntriesByTier(entries);
-    let html = "";
-    sortedEntries.forEach(({ board, hasValue, elo, tier }) => {
-        const color = tier ? TIER_COLORS[tier] : "#3a3a44";
-        const tierLabel = tier || "—";
-        const tipText = hasValue ? `Elo: ${elo}` : "No data";
-        html += `
-            <div class="tier-icon-wrap">
-                <div class="tier-icon-circle" style="border-color:${color}">
-                    <img src="${board.icon}" alt="${board.label}" style="width:30px;height:30px;image-rendering:pixelated;">
-                </div>
-                <div class="tier-icon-label" style="color:${color}">${tierLabel}</div>
-                <div class="tier-elo-tip">${tipText}</div>
-            </div>
-        `;
-    });
-    tiersRow.innerHTML = html;
-}
+        function getSortedPlayers(field) {
+            if (field === "__overall_tier") {
+                return [...allPlayers]
+                    .filter(p => SUB_BOARDS.some(key => p[key] !== null && p[key] !== undefined))
+                    .map(p => {
+                        const points = computePlayerPoints(p);
+                        return { ...p, __overall_tier: points };
+                    })
+                    .sort((a, b) => b.__overall_tier - a.__overall_tier);
+            } else {
+                return [...allPlayers]
+                    .filter(p => p[field] !== null && p[field] !== undefined)
+                    .sort((a, b) => b[field] - a[field]);
+            }
+        }
 
-function openProfile(player){
-    modalAvatar.innerHTML = `<img src="${avatarUrl(player.name, 110)}" alt="${player.name}" onerror="this.parentElement.innerHTML='?'">`;
-    modalName.textContent = player.name;
-    const role = getRole(player.name);
-    modalRoleBadge.textContent = role.label;
-    modalRoleBadge.className = `role-badge ${role.cls}`;
-    const title = getPlayerTitle(player);
-    const colorMap = {
-        Nova: "linear-gradient(100deg, #c190ec, #a13ca5)",
-        Divine: "linear-gradient(100deg, #cbd4ec, #6468ab)",
-        Celestial: "linear-gradient(100deg, #fac140, #c34513)",
-        Eternal: "linear-gradient(100deg, #f8ab86, #cb322b)",
-        Ascendant: "linear-gradient(100deg, #d67638, #b0483c)",
-        Novice: "linear-gradient(100deg, #9d8aa5, #82638a)"
-    };
-    modalTitleText.textContent = title;
-    modalTitleText.style.backgroundImage = colorMap[title];
-    const overallSorted = getSortedPlayers("__total");
-    const overallRank = overallSorted.findIndex(p => p.name === player.name) + 1;
-    const gained = player.__total - 1000 * SUB_BOARDS.length;
-    const gainedStr = (gained >= 0 ? "+" : "") + gained;
-    modalPositionCard.className = `position-card ${rankClass(overallRank)}`;
-    modalPositionCard.innerHTML = `
-        <div class="rank-flag">
-            <span class="rank-num">${overallRank}.</span>
-        </div>
-        <div class="pos-info">
-            💎 Total Elo Gained <span class="pos-points gained-badge">${gainedStr}</span>
-        </div>
-    `;
-    renderTierIcons(player);
-    modalOverlay.classList.add("active");
-}
+        // ---------- Render ----------
+        function render() {
+            const board = LEADERBOARDS[currentBoard];
+            const field = board.field;
+            const isOverall = currentBoard === "Overall";
 
-function closeProfile(){
-    modalOverlay.classList.remove("active");
-}
-modalClose.addEventListener("click", closeProfile);
-modalOverlay.addEventListener("click", (e) => {
-    if(e.target === modalOverlay) closeProfile();
-});
+            allPlayers = assignTiersForMode(allPlayers, "KanalServer");
+            allPlayers = assignTiersForMode(allPlayers, "LowblockMace");
 
-/* ---------- Search ---------- */
-const searchBtn = document.getElementById("searchBtn");
-const searchPanel = document.getElementById("searchPanel");
-const searchWrapper = document.getElementById("searchWrapper");
-const searchInput = document.getElementById("searchInput");
-const searchResults = document.getElementById("searchResults");
+            const sorted = getSortedPlayers(field);
 
-function renderSearchResults(query){
-    const q = query.trim().toLowerCase();
-    const source = q ? allPlayers.filter(p => p.name.toLowerCase().includes(q)) : allPlayers;
-    const matches = source.slice(0, 8);
-    if(matches.length === 0){
-        searchResults.innerHTML = `<div class="search-empty">No players found</div>`;
-        return;
-    }
-    searchResults.innerHTML = "";
-    matches.forEach(p => {
-        const row = document.createElement("div");
-        row.className = "search-result-item";
-        row.innerHTML = `<img src="${avatarUrl(p.name, 26)}" alt="" onerror="this.style.display='none'"><span>${p.name}</span>`;
-        row.addEventListener("click", () => {
-            searchPanel.classList.remove("active");
-            openProfile(p);
+            list.innerHTML = "";
+            if (sorted.length === 0) {
+                list.innerHTML = `<div class="placeholder-card"><div class="ph-dot"></div>No players on this leaderboard yet</div>`;
+                toggleBtn.style.display = "none";
+                return;
+            }
+
+            if (isOverall) {
+                renderInfoTooltip();
+
+                const playersToShow = expanded ? sorted : sorted.slice(0, COLLAPSED_COUNT);
+                playersToShow.forEach((p, i) => {
+                    const rank = i + 1;
+                    const points = p.__overall_tier;
+                    const div = document.createElement("div");
+                    div.className = `player ${rankClass(rank)}`;
+                    div.innerHTML = `
+                        <div class="rank-flag">
+                            <span class="rank-num">${rank}.</span>
+                            <div class="avatar">
+                                <img src="${avatarUrl(p.name, 38)}" alt="${p.name}" onerror="this.parentElement.innerHTML='?'">
+                            </div>
+                        </div>
+                        <div class="info">${p.name}</div>
+                        <div class="elo-wrap">
+                            <div class="mini-tiers-row">${renderMiniTierIcons(p)}</div>
+                        </div>
+                    `;
+                    div.addEventListener("click", () => openProfile(p));
+                    list.appendChild(div);
+                });
+                if (sorted.length > COLLAPSED_COUNT) {
+                    toggleBtn.style.display = "block";
+                    toggleBtn.textContent = expanded ? "Show less" : `Show all (${sorted.length})`;
+                } else {
+                    toggleBtn.style.display = "none";
+                }
+            } else {
+                // Gamemode tabs – group by tier (1..5)
+                const modeField = field;
+                const tierGroups = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+                sorted.forEach(p => {
+                    const tier = p[`${modeField}_tier`];
+                    if (tier !== null && tier !== undefined && tier >= 1 && tier <= 5) {
+                        tierGroups[tier].push(p);
+                    }
+                });
+
+                for (let t = 1; t <= 5; t++) {
+                    tierGroups[t].sort((a, b) => {
+                        const aPlus = a[`${modeField}_plus`];
+                        const bPlus = b[`${modeField}_plus`];
+                        if (aPlus && !bPlus) return -1;
+                        if (!aPlus && bPlus) return 1;
+                        return b[modeField] - a[modeField];
+                    });
+                }
+
+                const columnsDiv = document.createElement("div");
+                columnsDiv.className = "tier-columns";
+
+                // Column headers now say "Tier 1", "Tier 2", etc.
+                const tierNames = { 1: "Tier 1", 2: "Tier 2", 3: "Tier 3", 4: "Tier 4", 5: "Tier 5" };
+                const tierColorMap = {
+                    1: TIER_COLORS["1+"],
+                    2: TIER_COLORS["2+"],
+                    3: TIER_COLORS["3+"],
+                    4: TIER_COLORS["4+"],
+                    5: TIER_COLORS["5+"]
+                };
+                const tierBgClass = {
+                    1: "tier-column-1",
+                    2: "tier-column-2",
+                    3: "tier-column-3",
+                    4: "tier-column-4",
+                    5: "tier-column-5"
+                };
+
+                for (let t = 1; t <= 5; t++) {
+                    const players = tierGroups[t] || [];
+                    const col = document.createElement("div");
+                    col.className = `tier-column ${tierBgClass[t]}`;
+
+                    const header = document.createElement("div");
+                    header.className = "tier-header";
+                    header.style.color = tierColorMap[t] || "#fff";
+                    header.textContent = tierNames[t]; // "Tier 1", etc.
+                    col.appendChild(header);
+
+                    const playersDiv = document.createElement("div");
+                    playersDiv.className = "tier-players";
+
+                    players.forEach(p => {
+                        const isPlus = p[`${modeField}_plus`];
+                        const playerDiv = document.createElement("div");
+                        playerDiv.className = `tier-player${isPlus ? ' plus' : ''}`;
+                        // Simple + badge (no tier number)
+                        playerDiv.innerHTML = `
+                            <div class="tier-avatar">
+                                <img src="${avatarUrl(p.name, 28)}" alt="${p.name}" onerror="this.parentElement.innerHTML='?'">
+                            </div>
+                            <span class="tier-name">${p.name}</span>
+                            <span class="tier-badge ${isPlus ? 'plus' : ''}">${isPlus ? '+' : ''}</span>
+                        `;
+                        playerDiv.addEventListener("click", () => openProfile(p));
+                        playersDiv.appendChild(playerDiv);
+                    });
+
+                    col.appendChild(playersDiv);
+                    columnsDiv.appendChild(col);
+                }
+
+                list.appendChild(columnsDiv);
+                toggleBtn.style.display = "none";
+            }
+        }
+
+        function renderMiniTierIcons(player) {
+            const entries = [];
+            SUB_BOARDS.forEach(key => {
+                const tier = player[`${key}_tier`];
+                const plus = player[`${key}_plus`];
+                if (tier === null || tier === undefined) return;
+                const tierStr = plus ? `${tier}+` : `${tier}`;
+                const points = TIER_POINTS[tierStr] || 0;
+                const board = LEADERBOARDS[key];
+                entries.push({ board, tierStr, points, tierNum: tier, plus });
+            });
+            // Order: 1+, 1, 2+, 2, ...
+            const order = ["1+", "1", "2+", "2", "3+", "3", "4+", "4", "5+", "5"];
+            entries.sort((a, b) => order.indexOf(a.tierStr) - order.indexOf(b.tierStr));
+
+            let html = "";
+            entries.forEach(({ board, tierStr, points, tierNum, plus }) => {
+                const color = TIER_COLORS[tierStr];
+                const fullLabel = fullTierLabel(tierNum, plus);
+                const tipText = `${fullLabel} – (${points} points)`;
+                const labelStyle = `border-color:${color}; background:#1a1a22; color:${color};`;
+                const displayLabel = shortTierLabel(tierNum, plus);
+                html += `
+                    <div class="mini-tier-wrap" data-tip="${tipText}">
+                        <div class="mini-tier-circle" style="border-color:${color}">
+                            <img src="${board.icon}" alt="${board.label}" style="width:24px;height:24px;image-rendering:pixelated;">
+                        </div>
+                        <div class="mini-tier-label" style="${labelStyle}">${displayLabel}</div>
+                    </div>
+                `;
+            });
+            return html;
+        }
+
+        // Global tooltip for mini tier icons
+        const globalMiniTip = document.getElementById("globalMiniTip");
+        list.addEventListener("mouseover", (e) => {
+            const wrap = e.target.closest(".mini-tier-wrap");
+            if (wrap) {
+                const tip = wrap.getAttribute("data-tip");
+                if (!tip) return;
+                const parts = tip.split(' – ');
+                const tierLabel = parts[0] || tip;
+                const pointsLabel = parts[1] || '';
+                globalMiniTip.innerHTML = `
+                    <div class="tip-tier">${tierLabel}</div>
+                    ${pointsLabel ? `<div class="tip-points">${pointsLabel}</div>` : ''}
+                `;
+                globalMiniTip.style.display = "block";
+                const rect = wrap.getBoundingClientRect();
+                globalMiniTip.style.left = (rect.left + rect.width / 2) + "px";
+                globalMiniTip.style.top = (rect.top - 8) + "px";
+            }
         });
-        searchResults.appendChild(row);
-    });
-}
+        list.addEventListener("mouseout", (e) => {
+            const wrap = e.target.closest(".mini-tier-wrap");
+            if (wrap && !wrap.contains(e.relatedTarget)) {
+                globalMiniTip.style.display = "none";
+            }
+        });
+        list.addEventListener("scroll", () => { globalMiniTip.style.display = "none"; });
+        window.addEventListener("scroll", () => { globalMiniTip.style.display = "none"; }, true);
 
-searchBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    const willOpen = !searchPanel.classList.contains("active");
-    searchPanel.classList.toggle("active");
-    if(willOpen){
-        searchInput.value = "";
-        renderSearchResults("");
-        setTimeout(() => searchInput.focus(), 30);
-    }
-});
-searchInput.addEventListener("input", () => renderSearchResults(searchInput.value));
-searchInput.addEventListener("click", (e) => e.stopPropagation());
+        toggleBtn.addEventListener("click", () => {
+            expanded = !expanded;
+            render();
+        });
 
-/* ---------- 🔐 Login ---------- */
-const loginBtn = document.getElementById("loginBtn");
-const loginPanel = document.getElementById("loginPanel");
-const loginWrapper = document.getElementById("loginWrapper");
-const playBtn = document.getElementById("playBtn");
-const playIcon = document.getElementById("playIcon");
-const playLabel = document.getElementById("playLabel");
-const playTooltip = document.getElementById("playTooltip");
+        // ---------- Profile Modal ----------
+        const modalOverlay = document.getElementById("modalOverlay");
+        const modalClose = document.getElementById("modalClose");
+        const modalAvatar = document.getElementById("modalAvatar");
+        const modalName = document.getElementById("modalName");
+        const modalRoleBadge = document.getElementById("modalRoleBadge");
+        const modalTitleText = document.getElementById("modalTitleText");
+        const modalPositionCard = document.getElementById("modalPositionCard");
+        const tiersRow = document.getElementById("tiersRow");
+        const titleTooltip = document.getElementById("titleTooltip");
 
-function buildEmail(username) {
-    return username.toLowerCase() + "@minecraft.local";
-}
+        function renderTierIcons(player) {
+            const order = ["1+", "1", "2+", "2", "3+", "3", "4+", "4", "5+", "5"];
+            const entries = [];
+            SUB_BOARDS.forEach(key => {
+                const tier = player[`${key}_tier`];
+                const plus = player[`${key}_plus`];
+                if (tier === null || tier === undefined) return;
+                const tierStr = plus ? `${tier}+` : `${tier}`;
+                const board = LEADERBOARDS[key];
+                const points = TIER_POINTS[tierStr] || 0;
+                entries.push({ board, tierStr, points, tierNum: tier, plus });
+            });
+            entries.sort((a, b) => order.indexOf(a.tierStr) - order.indexOf(b.tierStr));
 
-function updatePlayButton(loggedIn){
-    if(loggedIn){
-        playBtn.classList.remove("logged-out");
-        playBtn.classList.add("logged-in");
-        playIcon.textContent = "▶";
-        playLabel.textContent = "Play";
-        playTooltip.textContent = "";
-        playBtn.style.cursor = "pointer";
-    } else {
-        playBtn.classList.remove("logged-in");
-        playBtn.classList.add("logged-out");
-        playIcon.textContent = "!";
-        playLabel.textContent = "Play";
-        playTooltip.textContent = "Log in to play";
-        playBtn.style.cursor = "not-allowed";
-    }
-}
-
-function renderLoggedOutPanel(){
-    loginPanel.innerHTML = `
-        <div class="login-panel-title">Player Login</div>
-        <input type="text" id="loginUsername" placeholder="Username" autocomplete="off">
-        <input type="password" id="loginPassword" placeholder="Password" autocomplete="off">
-        <button class="login-submit" id="loginSubmit">Log in</button>
-        <div class="login-error" id="loginError">Invalid username or password.</div>
-    `;
-    document.getElementById("loginSubmit").addEventListener("click", attemptLogin);
-    document.getElementById("loginPassword").addEventListener("keydown", (e) => {
-        if(e.key === "Enter") attemptLogin();
-    });
-    updatePlayButton(false);
-}
-
-function renderLoggedInPanel(){
-    loginPanel.innerHTML = `
-        <div class="logged-name">${currentUser.name}</div>
-        <button class="profile-btn" id="profileBtn">Show Player Profile</button>
-        <button class="logout-btn" id="logoutBtn">Log out</button>
-    `;
-    document.getElementById("logoutBtn").addEventListener("click", logout);
-    document.getElementById("profileBtn").addEventListener("click", () => {
-        loginPanel.classList.remove("active");
-        if(currentUser){
-            openProfile(currentUser);
+            let html = "";
+            entries.forEach(({ board, tierStr, points, tierNum, plus }) => {
+                const color = TIER_COLORS[tierStr];
+                const fullLabel = fullTierLabel(tierNum, plus);
+                const displayLabel = shortTierLabel(tierNum, plus);
+                html += `
+                    <div class="tier-icon-wrap">
+                        <div class="tier-icon-circle" style="border-color:${color}">
+                            <img src="${board.icon}" alt="${board.label}" style="width:30px;height:30px;image-rendering:pixelated;">
+                        </div>
+                        <div class="tier-icon-label" style="color:${color}">${displayLabel}</div>
+                        <div class="tier-elo-tip">
+                            <div class="tip-tier">${fullLabel}</div>
+                            <div class="tip-points">(${points} points)</div>
+                        </div>
+                    </div>
+                `;
+            });
+            tiersRow.innerHTML = html;
         }
-    });
-    updatePlayButton(true);
-}
 
-async function attemptLogin(){
-    const username = document.getElementById("loginUsername").value.trim();
-    const password = document.getElementById("loginPassword").value;
-    const errorEl = document.getElementById("loginError");
-    errorEl.style.display = "none";
-    if(!username || !password) return;
-    const email = buildEmail(username);
-    try {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        const { data: playerData, error: playerError } = await supabase
-            .from("players")
-            .select("*")
-            .ilike("name", username)
-            .maybeSingle();
-        if (playerError || !playerData) {
-            await supabase.auth.signOut();
-            errorEl.textContent = "Account exists but no player profile found. Contact admin.";
-            errorEl.style.display = "block";
-            return;
+        function openProfile(player) {
+            modalAvatar.innerHTML = `<img src="${avatarUrl(player.name, 110)}" alt="${player.name}" onerror="this.parentElement.innerHTML='?'">`;
+            modalName.textContent = player.name;
+            const role = getRole(player.name);
+            modalRoleBadge.textContent = role.label;
+            modalRoleBadge.className = `role-badge ${role.cls}`;
+
+            const totalPoints = computePlayerPoints(player);
+            const title = getPlayerTitle(totalPoints, player, allPlayers);
+
+            const titleSection = document.getElementById("titleSection");
+            if (title) {
+                const grad = TITLE_COLORS[title];
+                modalTitleText.textContent = title;
+                modalTitleText.style.backgroundImage = grad;
+                titleTooltip.textContent = TITLE_REQUIREMENTS[title] || "";
+                titleSection.style.display = "flex";
+            } else {
+                titleSection.style.display = "none";
+            }
+
+            const overallSorted = getSortedPlayers("__overall_tier");
+            const overallRank = overallSorted.findIndex(p => p.name === player.name) + 1;
+            modalPositionCard.className = `position-card ${rankClass(overallRank)}`;
+            modalPositionCard.innerHTML = `
+                <div class="rank-flag">
+                    <span class="rank-num">${overallRank}.</span>
+                </div>
+                <div class="pos-info">
+                    <span class="pos-overall">Overall</span>
+                    <span class="pos-points">(${totalPoints} Points)</span>
+                </div>
+            `;
+
+            renderTierIcons(player);
+            modalOverlay.classList.add("active");
         }
-        currentUser = playerData;
-        updateLoginButton();
-        renderLoggedInPanel();
-        loginPanel.classList.remove("active");
-        enableQueueButtons(true);
-        refreshQueueStatus();
-        startMatchmakingPolling();
-        subscribeToMatches();
-        startPollingMatches();
-    } catch (err) {
-        errorEl.textContent = "Invalid username or password.";
-        errorEl.style.display = "block";
-    }
-}
 
-async function logout(){
-    await supabase.auth.signOut();
-    currentUser = null;
-    updateLoginButton();
-    renderLoggedOutPanel();
-    loginPanel.classList.remove("active");
-    updatePlayButton(false);
-    enableQueueButtons(false);
-    Object.keys(queueState).forEach(mode => {
-        if(queueState[mode].timerInterval) {
-            clearInterval(queueState[mode].timerInterval);
-            queueState[mode].timerInterval = null;
+        function closeProfile() {
+            modalOverlay.classList.remove("active");
         }
-        queueState[mode].inQueue = false;
-        queueState[mode].joinedAt = null;
-    });
-    document.getElementById("queueBtnKanal").disabled = true;
-    document.getElementById("queueBtnMace").disabled = true;
-    closeQueueModal();
-    if(window.matchmakingInterval){
-        clearInterval(window.matchmakingInterval);
-        window.matchmakingInterval = null;
-    }
-    closeMatchModal();
-    if(pollInterval){
-        clearInterval(pollInterval);
-        pollInterval = null;
-    }
-}
+        modalClose.addEventListener("click", closeProfile);
+        modalOverlay.addEventListener("click", (e) => {
+            if (e.target === modalOverlay) closeProfile();
+        });
 
-function updateLoginButton(){
-    if(currentUser){
-        loginBtn.classList.add("logged-in");
-        loginBtn.innerHTML = `
-            <div class="login-face"><img src="${avatarUrl(currentUser.name, 26)}" alt=""></div>
-            ${currentUser.name}
-        `;
-    } else {
-        loginBtn.classList.remove("logged-in");
-        loginBtn.textContent = "Log in";
-    }
-}
+        // ---------- Search ----------
+        const searchBtn = document.getElementById("searchBtn");
+        const searchPanel = document.getElementById("searchPanel");
+        const searchWrapper = document.getElementById("searchWrapper");
+        const searchInput = document.getElementById("searchInput");
+        const searchResults = document.getElementById("searchResults");
 
-async function restoreSession(){
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-        const user = session.user;
-        const username = user.email.replace(/@minecraft\.local$/, '');
-        const { data: playerData, error } = await supabase
-            .from("players")
-            .select("*")
-            .ilike("name", username)
-            .maybeSingle();
-        if (!error && playerData) {
-            currentUser = playerData;
-            updateLoginButton();
-            renderLoggedInPanel();
-            enableQueueButtons(true);
-            refreshQueueStatus();
-            startMatchmakingPolling();
-            subscribeToMatches();
-            startPollingMatches();
-        } else {
+        function renderSearchResults(query) {
+            const q = query.trim().toLowerCase();
+            const source = q ? allPlayers.filter(p => p.name.toLowerCase().includes(q)) : allPlayers;
+            const matches = source.slice(0, 8);
+            if (matches.length === 0) {
+                searchResults.innerHTML = `<div class="search-empty">No players found</div>`;
+                return;
+            }
+            searchResults.innerHTML = "";
+            matches.forEach(p => {
+                const row = document.createElement("div");
+                row.className = "search-result-item";
+                row.innerHTML = `<img src="${avatarUrl(p.name, 26)}" alt="" onerror="this.style.display='none'"><span>${p.name}</span>`;
+                row.addEventListener("click", () => {
+                    searchPanel.classList.remove("active");
+                    openProfile(p);
+                });
+                searchResults.appendChild(row);
+            });
+        }
+
+        searchBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const willOpen = !searchPanel.classList.contains("active");
+            searchPanel.classList.toggle("active");
+            if (willOpen) {
+                searchInput.value = "";
+                renderSearchResults("");
+                setTimeout(() => searchInput.focus(), 30);
+            }
+        });
+        searchInput.addEventListener("input", () => renderSearchResults(searchInput.value));
+        searchInput.addEventListener("click", (e) => e.stopPropagation());
+
+        // ---------- Login ----------
+        const loginBtn = document.getElementById("loginBtn");
+        const loginPanel = document.getElementById("loginPanel");
+        const loginWrapper = document.querySelector(".login-wrapper");
+
+        function buildEmail(username) {
+            return username.toLowerCase() + "@minecraft.local";
+        }
+
+        function renderLoggedOutPanel() {
+            loginPanel.innerHTML = `
+                <div class="login-panel-title">Player Login</div>
+                <input type="text" id="loginUsername" placeholder="Username" autocomplete="off">
+                <input type="password" id="loginPassword" placeholder="Password" autocomplete="off">
+                <button class="login-submit" id="loginSubmit">Log in</button>
+                <div class="login-error" id="loginError">Invalid username or password.</div>
+            `;
+            document.getElementById("loginSubmit").addEventListener("click", attemptLogin);
+            document.getElementById("loginPassword").addEventListener("keydown", (e) => {
+                if (e.key === "Enter") attemptLogin();
+            });
+        }
+
+        function renderLoggedInPanel() {
+            loginPanel.innerHTML = `
+                <div class="logged-name">${currentUser.name}</div>
+                <button class="profile-btn" id="profileBtn">Show Player Profile</button>
+                <button class="logout-btn" id="logoutBtn">Log out</button>
+            `;
+            document.getElementById("logoutBtn").addEventListener("click", logout);
+            document.getElementById("profileBtn").addEventListener("click", () => {
+                loginPanel.classList.remove("active");
+                if (currentUser) openProfile(currentUser);
+            });
+        }
+
+        async function attemptLogin() {
+            const username = document.getElementById("loginUsername").value.trim();
+            const password = document.getElementById("loginPassword").value;
+            const errorEl = document.getElementById("loginError");
+            errorEl.style.display = "none";
+            if (!username || !password) return;
+            const email = buildEmail(username);
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                const { data: playerData, error: playerError } = await supabase
+                    .from("players")
+                    .select("*")
+                    .ilike("name", username)
+                    .maybeSingle();
+                if (playerError || !playerData) {
+                    await supabase.auth.signOut();
+                    errorEl.textContent = "Account exists but no player profile found. Contact admin.";
+                    errorEl.style.display = "block";
+                    return;
+                }
+                currentUser = playerData;
+                updateLoginButton();
+                renderLoggedInPanel();
+                loginPanel.classList.remove("active");
+                if (currentUser.name === "TestingCheats" || currentUser.name === "cutekiss") {
+                    adminEditBtn.classList.remove("hidden");
+                } else {
+                    adminEditBtn.classList.add("hidden");
+                }
+            } catch (err) {
+                errorEl.textContent = "Invalid username or password.";
+                errorEl.style.display = "block";
+            }
+        }
+
+        async function logout() {
             await supabase.auth.signOut();
             currentUser = null;
             updateLoginButton();
             renderLoggedOutPanel();
-            enableQueueButtons(false);
+            loginPanel.classList.remove("active");
+            adminEditBtn.classList.add("hidden");
         }
-    } else {
-        currentUser = null;
-        updateLoginButton();
+
+        function updateLoginButton() {
+            if (currentUser) {
+                loginBtn.classList.add("logged-in");
+                loginBtn.innerHTML = `
+                    <div class="login-face"><img src="${avatarUrl(currentUser.name, 26)}" alt=""></div>
+                    ${currentUser.name}
+                `;
+            } else {
+                loginBtn.classList.remove("logged-in");
+                loginBtn.textContent = "Log in";
+            }
+        }
+
+        async function restoreSession() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                const user = session.user;
+                const username = user.email.replace(/@minecraft\.local$/, '');
+                const { data: playerData, error } = await supabase
+                    .from("players")
+                    .select("*")
+                    .ilike("name", username)
+                    .maybeSingle();
+                if (!error && playerData) {
+                    currentUser = playerData;
+                    updateLoginButton();
+                    renderLoggedInPanel();
+                    if (currentUser.name === "TestingCheats" || currentUser.name === "cutekiss") {
+                        adminEditBtn.classList.remove("hidden");
+                    }
+                } else {
+                    await supabase.auth.signOut();
+                    currentUser = null;
+                    updateLoginButton();
+                    renderLoggedOutPanel();
+                }
+            } else {
+                currentUser = null;
+                updateLoginButton();
+                renderLoggedOutPanel();
+            }
+        }
+
+        loginBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            loginPanel.classList.toggle("active");
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!loginWrapper.contains(e.target)) loginPanel.classList.remove("active");
+            if (!searchWrapper.contains(e.target)) searchPanel.classList.remove("active");
+        });
+
         renderLoggedOutPanel();
-        enableQueueButtons(false);
-    }
-}
+        restoreSession();
 
-loginBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    loginPanel.classList.toggle("active");
-});
-
-document.addEventListener("click", (e) => {
-    if(!loginWrapper.contains(e.target)) loginPanel.classList.remove("active");
-    if(!searchWrapper.contains(e.target)) searchPanel.classList.remove("active");
-});
-
-renderLoggedOutPanel();
-restoreSession();
-
-setTimeout(() => {
-    if (currentUser) {
-        startPollingMatches();
-    }
-}, 1000);
-
-/* ---------- Queue Modal Logic ---------- */
-const queueModalOverlay = document.getElementById("queueModalOverlay");
-const queueModalClose = document.getElementById("queueModalClose");
-const queueBtnKanal = document.getElementById("queueBtnKanal");
-const queueBtnMace = document.getElementById("queueBtnMace");
-const queueCountKanal = document.getElementById("queueCountKanal");
-const queueCountMace = document.getElementById("queueCountMace");
-const matchCountKanal = document.getElementById("matchCountKanal");
-const matchCountMace = document.getElementById("matchCountMace");
-
-function enableQueueButtons(enabled){
-    if(enabled && currentUser){
-        queueBtnKanal.disabled = false;
-        queueBtnMace.disabled = false;
-    } else {
-        queueBtnKanal.disabled = true;
-        queueBtnMace.disabled = true;
-    }
-}
-
-playBtn.addEventListener("click", () => {
-    if (!currentUser) return;
-    openQueueModal();
-});
-
-function openQueueModal(){
-    queueModalOverlay.classList.add("active");
-    refreshQueueStatus();
-    fetchQueueStats();
-}
-
-function closeQueueModal(){
-    queueModalOverlay.classList.remove("active");
-}
-
-queueModalClose.addEventListener("click", closeQueueModal);
-queueModalOverlay.addEventListener("click", (e) => {
-    if (e.target === queueModalOverlay) closeQueueModal();
-});
-
-queueBtnKanal.addEventListener("click", () => handleQueueAction("KanalServer"));
-queueBtnMace.addEventListener("click", () => handleQueueAction("LowblockMace"));
-
-async function handleQueueAction(mode){
-    if(!currentUser) return;
-    const state = queueState[mode];
-    if(state.inQueue){
-        await leaveQueue(mode);
-    } else {
-        await joinQueue(mode);
-    }
-}
-
-async function joinQueue(mode){
-    try {
-        const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
-        btn.disabled = true;
-        btn.textContent = "Joining...";
-        const response = await fetch(`${SUPABASE_URL}/functions/v1/join-queue`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ game_mode: mode })
-        });
-        if (!response.ok) throw new Error(await response.text());
-        const data = await response.json();
-        const state = queueState[mode];
-        state.inQueue = true;
-        state.joinedAt = Date.now();
-        state.queueId = data.id;
-        startTimer(mode);
-        btn.classList.add("queued");
-        btn.innerHTML = `<span class="queue-btn-text">In Queue (0:00)</span><span class="queue-btn-leave">Leave Queue</span>`;
-        btn.disabled = false;
-        fetchQueueStats();
-        callMatchmaker();
-    } catch (error) {
-        console.error('Join queue error:', error);
-        alert('Failed to join queue: ' + error.message);
-        const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
-        btn.disabled = false;
-        btn.textContent = "Queue";
-    }
-}
-
-async function leaveQueue(mode){
-    try {
-        const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
-        btn.disabled = true;
-        btn.textContent = "Leaving...";
-        const response = await fetch(`${SUPABASE_URL}/functions/v1/leave-queue`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ game_mode: mode })
-        });
-        if (!response.ok) throw new Error(await response.text());
-        const state = queueState[mode];
-        state.inQueue = false;
-        state.joinedAt = null;
-        state.queueId = null;
-        if(state.timerInterval){
-            clearInterval(state.timerInterval);
-            state.timerInterval = null;
-        }
-        btn.classList.remove("queued");
-        btn.innerHTML = `Queue`;
-        btn.disabled = false;
-        // After leaving, clear any pending match detection for this mode
-        // (the matchmaker will ignore any stale entries)
-        fetchQueueStats();
-    } catch (error) {
-        console.error('Leave queue error:', error);
-        alert('Failed to leave queue: ' + error.message);
-        const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
-        btn.disabled = false;
-    }
-}
-
-function startTimer(mode){
-    const state = queueState[mode];
-    if(state.timerInterval) clearInterval(state.timerInterval);
-    state.timerInterval = setInterval(() => {
-        if(!state.inQueue || !state.joinedAt){
-            clearInterval(state.timerInterval);
-            state.timerInterval = null;
-            return;
-        }
-        const elapsed = Math.floor((Date.now() - state.joinedAt) / 1000);
-        const mins = Math.floor(elapsed / 60);
-        const secs = elapsed % 60;
-        const timeStr = `${mins}:${secs.toString().padStart(2, '0')}`;
-        const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
-        const textSpan = btn.querySelector('.queue-btn-text');
-        if(textSpan){
-            textSpan.textContent = `In Queue (${timeStr})`;
-        }
-    }, 1000);
-}
-
-async function refreshQueueStatus(){
-    if(!currentUser) return;
-    try {
-        const { data, error } = await supabase
-            .from('queue')
-            .select('*')
-            .eq('player_id', currentUser.id)
-            .eq('status', 'waiting');
-        if (error) throw error;
-        Object.keys(queueState).forEach(m => {
-            const state = queueState[m];
-            state.inQueue = false;
-            state.joinedAt = null;
-            state.queueId = null;
-            if(state.timerInterval){
-                clearInterval(state.timerInterval);
-                state.timerInterval = null;
-            }
-            const btn = m === "KanalServer" ? queueBtnKanal : queueBtnMace;
-            btn.classList.remove("queued");
-            btn.innerHTML = `Queue`;
-        });
-        data.forEach(entry => {
-            const mode = entry.game_mode;
-            const state = queueState[mode];
-            state.inQueue = true;
-            state.joinedAt = new Date(entry.joined_at).getTime();
-            state.queueId = entry.id;
-            const btn = mode === "KanalServer" ? queueBtnKanal : queueBtnMace;
-            btn.classList.add("queued");
-            btn.innerHTML = `<span class="queue-btn-text">In Queue (0:00)</span><span class="queue-btn-leave">Leave Queue</span>`;
-            startTimer(mode);
-        });
-    } catch (e) {
-        console.error('Refresh queue error:', e);
-    }
-}
-
-async function fetchQueueStats(){
-    try {
-        const [kanalQueue, maceQueue, kanalMatches, maceMatches] = await Promise.all([
-            supabase.from('queue').select('id', { count: 'exact', head: true }).eq('game_mode', 'KanalServer').eq('status', 'waiting'),
-            supabase.from('queue').select('id', { count: 'exact', head: true }).eq('game_mode', 'LowblockMace').eq('status', 'waiting'),
-            supabase.from('matches').select('id', { count: 'exact', head: true }).eq('game_mode', 'KanalServer').eq('status', 'pending'),
-            supabase.from('matches').select('id', { count: 'exact', head: true }).eq('game_mode', 'LowblockMace').eq('status', 'pending')
-        ]);
-        if (kanalQueue.error) throw kanalQueue.error;
-        if (maceQueue.error) throw maceQueue.error;
-        if (kanalMatches.error) throw kanalMatches.error;
-        if (maceMatches.error) throw maceMatches.error;
-        queueCountKanal.textContent = kanalQueue.count || 0;
-        queueCountMace.textContent = maceQueue.count || 0;
-        matchCountKanal.textContent = kanalMatches.count || 0;
-        matchCountMace.textContent = maceMatches.count || 0;
-    } catch (e) {
-        console.error('Stats fetch error:', e);
-    }
-}
-
-setInterval(fetchQueueStats, 5000);
-queueModalOverlay.addEventListener('click', (e) => {
-    if (e.target === queueModalOverlay) closeQueueModal();
-});
-
-/* ---------- Matchmaking Polling & Realtime ---------- */
-async function callMatchmaker(){
-    try {
-        const response = await fetch(`${SUPABASE_URL}/functions/v1/matchmake`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-        if (!response.ok) console.warn('Matchmaker error:', await response.text());
-    } catch (e) {
-        console.error('Matchmaker call failed:', e);
-    }
-}
-
-function startMatchmakingPolling(){
-    if(window.matchmakingInterval) clearInterval(window.matchmakingInterval);
-    window.matchmakingInterval = setInterval(callMatchmaker, 10000);
-    callMatchmaker();
-}
-
-let matchSubscription = null;
-function subscribeToMatches(){
-    if(matchSubscription) {
-        matchSubscription.unsubscribe();
-        matchSubscription = null;
-    }
-    if(!currentUser) return;
-    matchSubscription = supabase
-        .channel('public:matches')
-        .on('postgres_changes', {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'matches',
-        }, (payload) => {
-            const match = payload.new;
-            if (match.status === 'pending' && (match.player1_id === currentUser.id || match.player2_id === currentUser.id)) {
-                handleNewMatch(match);
-            }
-        })
-        .subscribe();
-}
-
-/* ---------- Match Modal Logic ---------- */
-const matchModalOverlay = document.getElementById('matchModalOverlay');
-const matchModalContent = document.getElementById('matchModalContent');
-let matchTimerInterval = null;
-let currentMatch = null;
-let lastMatchId = null;
-let pollInterval = null;
-
-function closeMatchModal(){
-    if(matchTimerInterval){
-        clearInterval(matchTimerInterval);
-        matchTimerInterval = null;
-    }
-    matchModalOverlay.classList.remove('active');
-    currentMatch = null;
-}
-
-async function handleNewMatch(match){
-    if (lastMatchId === match.id) return;
-    lastMatchId = match.id;
-    closeMatchModal();
-    currentMatch = match;
-    
-    // Refresh queue status to update button (they are no longer in queue)
-    refreshQueueStatus();
-    
-    const isPlayer1 = match.player1_id === currentUser.id;
-    const opponentId = isPlayer1 ? match.player2_id : match.player1_id;
-    const { data: opponent, error } = await supabase
-        .from('players')
-        .select('name')
-        .eq('id', opponentId)
-        .maybeSingle();
-    if (error || !opponent) {
-        console.error('Failed to fetch opponent:', error);
-        return;
-    }
-    const modeLabel = match.game_mode === 'KanalServer' ? 'Kanal Server' : 'Lowblock Mace';
-    const modeIcon = match.game_mode === 'KanalServer' ? HELMET_ICON_URL : MACE_ICON_URL;
-    const kitImg = match.game_mode === 'KanalServer' ? KANAL_KIT_IMG : LOWBLOCK_KIT_IMG;
-    showAcceptScreen(match, opponent, modeLabel, modeIcon, kitImg);
-    startMatchTimer(30, match, opponent, modeLabel, modeIcon, kitImg);
-}
-
-function showAcceptScreen(match, opponent, modeLabel, modeIcon, kitImg){
-    const html = `
-        <div class="match-modal-title">Match found for:</div>
-        <div class="match-modal-subtitle">
-            <img src="${modeIcon}" alt="${modeLabel}"> ${modeLabel}
-        </div>
-        <div class="match-timer-text" id="matchTimerText">You have 30 seconds to accept</div>
-        <div class="match-kit-image"><img src="${kitImg}" alt="${modeLabel} Kit"></div>
-        <button class="match-accept-btn" id="matchAcceptBtn">Accept</button>
-        <div class="match-status-msg" id="matchStatusMsg"></div>
-    `;
-    matchModalContent.innerHTML = html;
-    matchModalOverlay.classList.add('active');
-
-    document.getElementById('matchAcceptBtn').addEventListener('click', async () => {
-        const btn = document.getElementById('matchAcceptBtn');
-        btn.disabled = true;
-        btn.textContent = 'Waiting for opponent...';
-        try {
-            const response = await fetch(`${SUPABASE_URL}/functions/v1/accept-match`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ match_id: match.id, player_id: currentUser.id })
+        // ---------- Admin Edit ----------
+        adminEditBtn.addEventListener("click", () => {
+            const tbody = adminTableBody;
+            tbody.innerHTML = "";
+            allPlayers.forEach(p => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${p.name}</td>
+                    <td>
+                        <select data-player="${p.id}" data-mode="KanalServer" class="admin-tier-select">
+                            ${[1,2,3,4,5].map(t => `<option value="${t}" ${p.KanalServer_tier === t ? 'selected' : ''}>T${t}</option>`).join('')}
+                            <option value="" ${p.KanalServer_tier === null ? 'selected' : ''}>None</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" data-player="${p.id}" data-mode="KanalServer" class="admin-pos-input" value="${p.KanalServer_plus ? 1 : 2}" min="1" max="999">
+                    </td>
+                    <td>
+                        <select data-player="${p.id}" data-mode="LowblockMace" class="admin-tier-select">
+                            ${[1,2,3,4,5].map(t => `<option value="${t}" ${p.LowblockMace_tier === t ? 'selected' : ''}>T${t}</option>`).join('')}
+                            <option value="" ${p.LowblockMace_tier === null ? 'selected' : ''}>None</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" data-player="${p.id}" data-mode="LowblockMace" class="admin-pos-input" value="${p.LowblockMace_plus ? 1 : 2}" min="1" max="999">
+                    </td>
+                `;
+                tbody.appendChild(tr);
             });
-            if (!response.ok) throw new Error(await response.text());
-            const data = await response.json();
-            if (!data.success) {
-                btn.textContent = 'Failed';
-                btn.disabled = false;
-            }
-        } catch (err) {
-            console.error('Accept error:', err);
-            btn.textContent = 'Error';
-            btn.disabled = false;
-        }
-    });
-}
+            adminModalOverlay.classList.add("active");
+        });
 
-function startMatchTimer(seconds, match, opponent, modeLabel, modeIcon, kitImg){
-    let remaining = seconds;
-    const timerEl = document.getElementById('matchTimerText');
-    if (timerEl) timerEl.textContent = `You have ${remaining} seconds to accept`;
-    if (matchTimerInterval) clearInterval(matchTimerInterval);
-    matchTimerInterval = setInterval(async () => {
-        // Check if both players have accepted
-        const { data: updatedMatch, error } = await supabase
-            .from('matches')
-            .select('player1_accepted, player2_accepted, status')
-            .eq('id', match.id)
-            .single();
-        if (error) {
-            console.error('Error checking match status:', error);
-        } else if (updatedMatch.player1_accepted && updatedMatch.player2_accepted) {
-            // Both accepted – stop timer and show ready screen
-            clearInterval(matchTimerInterval);
-            matchTimerInterval = null;
-            await showReadyScreen(updatedMatch);
-            return;
-        }
-        remaining--;
-        if (timerEl) timerEl.textContent = `You have ${remaining} seconds to accept`;
-        if (remaining <= 0) {
-            clearInterval(matchTimerInterval);
-            matchTimerInterval = null;
-            handleTimeout(match, opponent, modeLabel, modeIcon, kitImg);
-        }
-    }, 1000);
-}
+        adminCloseBtn.addEventListener("click", () => {
+            adminModalOverlay.classList.remove("active");
+        });
 
-async function handleTimeout(match, opponent, modeLabel, modeIcon, kitImg){
-    const { data: updatedMatch, error } = await supabase
-        .from('matches')
-        .select('player1_accepted, player2_accepted, player1_id, player2_id')
-        .eq('id', match.id)
-        .single();
-    if (error) {
-        console.error('Error fetching match status:', error);
-        return;
-    }
-    const p1Accepted = updatedMatch.player1_accepted;
-    const p2Accepted = updatedMatch.player2_accepted;
-    const isPlayer1Current = match.player1_id === currentUser.id;
-    const iAccepted = isPlayer1Current ? p1Accepted : p2Accepted;
-    const opponentAccepted = isPlayer1Current ? p2Accepted : p1Accepted;
-
-    // Determine who didn't accept
-    let penalizedPlayers = [];
-    if (!p1Accepted) penalizedPlayers.push(match.player1_id);
-    if (!p2Accepted) penalizedPlayers.push(match.player2_id);
-
-    // Apply penalties to non-acceptors
-    for (const pid of penalizedPlayers) {
-        try {
-            await fetch(`${SUPABASE_URL}/functions/v1/penalize-player`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ player_id: pid, game_mode: match.game_mode })
+        adminSaveBtn.addEventListener("click", async () => {
+            const selects = document.querySelectorAll(".admin-tier-select");
+            const inputs = document.querySelectorAll(".admin-pos-input");
+            const updates = {};
+            selects.forEach(sel => {
+                const pid = sel.dataset.player;
+                const mode = sel.dataset.mode;
+                const tier = sel.value ? parseInt(sel.value) : null;
+                if (!updates[pid]) updates[pid] = {};
+                updates[pid][`${mode}_tier`] = tier;
             });
-        } catch (e) {
-            console.error('Penalty error:', e);
-        }
-    }
+            inputs.forEach(inp => {
+                const pid = inp.dataset.player;
+                const mode = inp.dataset.mode;
+                const pos = parseInt(inp.value) || 0;
+                if (!updates[pid]) updates[pid] = {};
+                updates[pid][`${mode}_plus`] = pos === 1;
+                updates[pid][`${mode}_pos`] = pos;
+            });
 
-    // Build status message
-    let statusMsg = '';
-    if (iAccepted && !opponentAccepted) {
-        statusMsg = 'Opponent didn\'t accept.';
-    } else if (!iAccepted && opponentAccepted) {
-        statusMsg = 'You didn\'t accept. You lost 5 elo.';
-    } else if (!iAccepted && !opponentAccepted) {
-        statusMsg = 'Both players didn\'t accept. Both lost 5 elo.';
-    }
-
-    showResultScreen(match, opponent, modeLabel, modeIcon, kitImg, statusMsg);
-}
-
-function showResultScreen(match, opponent, modeLabel, modeIcon, kitImg, statusMsg){
-    const html = `
-        <div style="font-size:24px; color:#ff8a8a; margin:12px 0;">${statusMsg}</div>
-        <div class="match-result-buttons">
-            <button class="match-result-btn requeue" id="requeueBtn">🔄 Requeue</button>
-            <button class="match-result-btn exit" id="exitBtn">✖ Exit</button>
-        </div>
-    `;
-    matchModalContent.innerHTML = html;
-    document.getElementById('requeueBtn').addEventListener('click', async () => {
-        closeMatchModal();
-        openQueueModal();
-        await joinQueue(match.game_mode);
-    });
-    document.getElementById('exitBtn').addEventListener('click', () => {
-        closeMatchModal();
-    });
-}
-
-function subscribeToMatchUpdates(matchId){
-    const channel = supabase
-        .channel(`match-${matchId}`)
-        .on('postgres_changes', {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'matches',
-            filter: `id=eq.${matchId}`
-        }, async (payload) => {
-            const updated = payload.new;
-            if (updated.status === 'accepted' || (updated.player1_accepted && updated.player2_accepted)) {
-                if (matchTimerInterval) {
-                    clearInterval(matchTimerInterval);
-                    matchTimerInterval = null;
-                }
-                await showReadyScreen(updated);
-            }
-        })
-        .subscribe();
-    return channel;
-}
-
-const originalHandleNewMatch = handleNewMatch;
-handleNewMatch = async function(match) {
-    await originalHandleNewMatch(match);
-    const channel = subscribeToMatchUpdates(match.id);
-    if (window.matchChannel) window.matchChannel.unsubscribe();
-    window.matchChannel = channel;
-};
-
-async function showReadyScreen(match){
-    const isPlayer1 = match.player1_id === currentUser.id;
-    const opponentId = isPlayer1 ? match.player2_id : match.player1_id;
-    const { data: opponent, error } = await supabase
-        .from('players')
-        .select('name')
-        .eq('id', opponentId)
-        .maybeSingle();
-    if (error) return;
-    const modeLabel = match.game_mode === 'KanalServer' ? 'Kanal Server' : 'Lowblock Mace';
-    const modeIcon = match.game_mode === 'KanalServer' ? HELMET_ICON_URL : MACE_ICON_URL;
-    const kitName = match.game_mode === 'KanalServer' ? 'Kanal Server Kit' : 'Lowblock Mace Kit';
-    const copyKitCmd = match.game_mode === 'KanalServer' ? '/copykit Zjg4M' : '/copykit N2ZhZ';
-    const pots = match.game_mode === 'KanalServer'
-        ? '3x Fire Resistance, 9x Strength, 12x TnT Minecarts, Bow (Power 5, Flame, Unbreaking 3, Infinity), 64 Windcharges, 64 Golden Apples'
-        : '6x Fire Resistance + 21x Strength 2';
-    const head1 = avatarUrl(currentUser.name, 64);
-    const head2 = avatarUrl(opponent.name, 64);
-    const html = `
-        <div style="font-size:16px; color:#a9b6ff; margin-bottom:10px;">Both players have accepted!</div>
-        <div class="match-ready-title">
-            <img src="${modeIcon}" alt="${modeLabel}"> Kit: ${modeLabel}
-        </div>
-        <div class="match-ready-players">
-            <div class="match-player-box">
-                <img src="${head1}" alt="${currentUser.name}">
-                <div class="name">${currentUser.name}</div>
-            </div>
-            <div class="match-vs">vs</div>
-            <div class="match-player-box">
-                <img src="${head2}" alt="${opponent.name}">
-                <div class="name">${opponent.name}</div>
-            </div>
-        </div>
-        <div class="match-server-info">
-            Join the server <strong>eu.stray.gg</strong>
-            <button class="copy-btn" id="copyServerBtn" title="Copy Address">📋</button>
-        </div>
-        <div class="match-kit-instruction">
-            Go to sandbox and use <strong>/rtp</strong> and select plains.
-            Select <span class="copy-kit" id="copyKitBtn" title="Click to copy kit">"${kitName}"</span>
-            and select your enderchest layout with <span style="color:#ffcc00;">"${pots}"</span>.
-            <br><span style="color:#8b8b96; font-size:13px;">/tpahere or accept the tpahere of your opponent to fight.</span>
-        </div>
-        <div class="match-rules">First to 4! Only rekit after a fight!</div>
-        <div class="match-rules-sub">Fighting may commence after both players used their first potion!</div>
-        <button class="match-finished-btn" id="matchFinishedBtn">✅ Match finished</button>
-    `;
-    matchModalContent.innerHTML = html;
-    document.getElementById('copyServerBtn').addEventListener('click', () => {
-        navigator.clipboard.writeText('eu.stray.gg');
-        alert('Copied: eu.stray.gg');
-    });
-    document.getElementById('copyKitBtn').addEventListener('click', () => {
-        navigator.clipboard.writeText(copyKitCmd);
-        alert(`Copied: ${copyKitCmd}`);
-    });
-    document.getElementById('matchFinishedBtn').addEventListener('click', () => {
-        closeMatchModal();
-    });
-}
-
-/* ---------- Fallback polling for matches (in case Realtime fails) ---------- */
-function startPollingMatches() {
-    if (pollInterval) clearInterval(pollInterval);
-    pollInterval = setInterval(async () => {
-        if (!currentUser) return;
-        try {
-            const { data, error } = await supabase
-                .from('matches')
-                .select('*')
-                .or(`player1_id.eq.${currentUser.id},player2_id.eq.${currentUser.id}`)
-                .eq('status', 'pending')
-                .order('created_at', { ascending: false })
-                .limit(1);
-            if (error) throw error;
-            if (data && data.length > 0) {
-                const match = data[0];
-                if (lastMatchId !== match.id) {
-                    handleNewMatch(match);
+            for (const pid of Object.keys(updates)) {
+                const player = allPlayers.find(p => p.id === parseInt(pid));
+                if (player) {
+                    Object.assign(player, updates[pid]);
                 }
             }
-        } catch (e) {
-            // Silent fail
+            render();
+            adminModalOverlay.classList.remove("active");
+            alert("Changes saved locally. To persist, you need to add columns to the players table and update via Supabase.");
+        });
+
+        // ---------- Init ----------
+        renderTabMenu();
+        setTitle(currentBoard);
+
+        async function loadPlayers() {
+            const { data, error } = await supabase.from("players").select("*");
+            if (error) {
+                list.innerHTML = "Error loading data";
+                toggleBtn.style.display = "none";
+                return;
+            }
+            allPlayers = data;
+            render();
+            if (currentUser) {
+                const fresh = allPlayers.find(p => p.name.toLowerCase() === currentUser.name.toLowerCase());
+                if (fresh) currentUser = fresh;
+            }
         }
-    }, 5000);
-}
 
-/* ---------- Leaderboard data loading ---------- */
-renderTabMenu();
-setTitle(currentBoard);
-
-async function loadPlayers(){
-    const { data, error } = await supabase.from("players").select("*");
-    if(error){
-        list.innerHTML = "Error loading data";
-        toggleBtn.style.display = "none";
-        return;
-    }
-    allPlayers = data.map(p => ({
-        ...p,
-        __total: (Number(p.KanalServer) || 0) + (Number(p.LowblockMace) || 0)
-    }));
-    render();
-    if(currentUser){
-        const fresh = allPlayers.find(p => p.name.toLowerCase() === currentUser.name.toLowerCase());
-        if(fresh) currentUser = fresh;
-    }
-}
-
-loadPlayers();
-setInterval(loadPlayers, 5000);
-</script>
+        loadPlayers();
+        setInterval(loadPlayers, 5000);
+    </script>
 </body>
 </html>
