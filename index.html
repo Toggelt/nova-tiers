@@ -2564,6 +2564,7 @@
             adminModalOverlay.classList.remove("active");
         });
 
+        // ---------- FIXED SAVE BUTTON ----------
         adminSaveBtn.addEventListener("click", async () => {
             // Gather data from the edit player tab
             const selects = document.querySelectorAll('.ap-tier-select');
@@ -2610,19 +2611,15 @@
                 }
             }
 
-            // Build the data to upsert into the database
+            // Build the data to upsert into the database – only the manual columns
             const updatesToDb = allPlayers.map(p => {
                 const record = {
                     id: p.id,
-                    name: p.name,
-                    kanal: p.KanalServer,
-                    mace: p.LowblockMace,
                     kanal_manual_tier: p.KanalServer_manual_tier ?? null,
                     kanal_manual_plus: p.KanalServer_manual_plus ?? false,
                     mace_manual_tier: p.LowblockMace_manual_tier ?? null,
                     mace_manual_plus: p.LowblockMace_manual_plus ?? false
                 };
-                // Also keep pos fields if you want to persist them, but user only asked for tier/plus
                 return record;
             });
 
@@ -2639,8 +2636,8 @@
 
                 alert('Changes saved successfully to the database!');
                 adminModalOverlay.classList.remove('active');
-                // Optionally reload to ensure fresh data
-                await loadPlayers();
+                await loadPlayers(); // refresh data
+                render(); // re-render the UI
             } catch (err) {
                 alert('Error saving: ' + err.message);
             }
@@ -2660,9 +2657,7 @@
             allPlayers = data;
             allPlayers.forEach(p => {
                 SUB_BOARDS.forEach(mode => {
-                    // Map database column names to our internal property names
-                    // For KanalServer: kolumn name 'kanal_manual_tier' -> KanalServer_manual_tier
-                    // For LowblockMace: 'mace_manual_tier' -> LowblockMace_manual_tier
+                    // Map database column names to internal properties
                     const modeLower = mode === 'KanalServer' ? 'kanal' : 'mace';
                     p[`${mode}_manual_tier`] = p[`${modeLower}_manual_tier`] ?? null;
                     p[`${mode}_manual_plus`] = p[`${modeLower}_manual_plus`] ?? false;
