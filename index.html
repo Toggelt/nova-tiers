@@ -2330,7 +2330,6 @@
                 const row = document.createElement("div");
                 row.className = "admin-player-row";
 
-                // For each mode, get current tier (manual if exists, else auto)
                 const modes = [
                     { mode: "KanalServer", label: "Kanal" },
                     { mode: "LowblockMace", label: "Mace" }
@@ -2362,7 +2361,6 @@
                 row.innerHTML = html;
                 grid.appendChild(row);
 
-                // Add event listeners to enable/disable plus checkbox based on dropdown
                 const selects = row.querySelectorAll('.ap-tier-select');
                 const checks = row.querySelectorAll('.ap-plus-check');
                 selects.forEach((sel, idx) => {
@@ -2370,8 +2368,6 @@
                         const check = checks[idx];
                         if (sel.value) {
                             check.disabled = false;
-                            // If the tier was None and we select a tier, we may want to keep plus state as is (unchecked by default)
-                            // but we keep current state.
                         } else {
                             check.disabled = true;
                             check.checked = false;
@@ -2388,7 +2384,6 @@
 
             const modeField = mode || lbEditMode;
 
-            // Get current tier data for selected mode
             const sorted = [...allPlayers]
                 .filter(p => p[modeField] !== null && p[modeField] !== undefined)
                 .sort((a, b) => b[modeField] - a[modeField]);
@@ -2468,7 +2463,6 @@
                 container.appendChild(col);
             }
 
-            // Add event listeners for up/down buttons
             container.querySelectorAll('.lbp-up').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -2491,7 +2485,6 @@
             const player = allPlayers.find(p => p.id === playerId);
             if (!player) return;
 
-            // Get current tier groups
             const tempPlayers = assignTiersForMode([...allPlayers], modeField);
             const tierGroups = { 1: [], 2: [], 3: [], 4: [], 5: [] };
             tempPlayers.forEach(p => {
@@ -2537,7 +2530,6 @@
 
         function openAdminModal() {
             adminModalOverlay.classList.add("active");
-            // Ensure tiers are computed
             allPlayers = assignTiersForMode(allPlayers, "KanalServer");
             allPlayers = assignTiersForMode(allPlayers, "LowblockMace");
             renderAdminPlayerTab();
@@ -2554,7 +2546,6 @@
             document.getElementById('adminTabLeaderboard').classList.toggle('active', tab === 'leaderboard');
         }
 
-        // Admin tab switching
         adminModalTabs.addEventListener('click', (e) => {
             const tabEl = e.target.closest('.admin-modal-tab');
             if (tabEl) {
@@ -2562,7 +2553,6 @@
             }
         });
 
-        // Leaderboard mode switch
         lbModeSelect.addEventListener('change', () => {
             lbEditMode = lbModeSelect.value;
             renderAdminLeaderboardTab(lbEditMode);
@@ -2594,11 +2584,11 @@
                 updates[pid][`${mode}_manual_plus`] = chk.checked;
             });
 
-            // Preserve pos data from leaderboard tab (already in allPlayers)
-            // Apply updates
+            // Apply updates to allPlayers
             for (const pid of Object.keys(updates)) {
                 const player = allPlayers.find(p => p.id === parseInt(pid));
                 if (player) {
+                    // Preserve pos data
                     const posData = {};
                     SUB_BOARDS.forEach(mode => {
                         if (player[`${mode}_pos`] !== undefined) {
@@ -2620,9 +2610,40 @@
                 }
             }
 
-            render();
-            adminModalOverlay.classList.remove("active");
-            alert("Changes saved locally. To persist to database, update the players table with manual_tier and manual_plus columns.");
+            // Build the data to upsert into the database
+            const updatesToDb = allPlayers.map(p => {
+                const record = {
+                    id: p.id,
+                    name: p.name,
+                    kanal: p.KanalServer,
+                    mace: p.LowblockMace,
+                    kanal_manual_tier: p.KanalServer_manual_tier ?? null,
+                    kanal_manual_plus: p.KanalServer_manual_plus ?? false,
+                    mace_manual_tier: p.LowblockMace_manual_tier ?? null,
+                    mace_manual_plus: p.LowblockMace_manual_plus ?? false
+                };
+                // Also keep pos fields if you want to persist them, but user only asked for tier/plus
+                return record;
+            });
+
+            try {
+                const { error } = await supabase
+                    .from('players')
+                    .upsert(updatesToDb, { onConflict: 'id' });
+
+                if (error) {
+                    console.error('Save error:', error);
+                    alert('Failed to save changes: ' + error.message);
+                    return;
+                }
+
+                alert('Changes saved successfully to the database!');
+                adminModalOverlay.classList.remove('active');
+                // Optionally reload to ensure fresh data
+                await loadPlayers();
+            } catch (err) {
+                alert('Error saving: ' + err.message);
+            }
         });
 
         // ---------- Init ----------
@@ -2639,8 +2660,12 @@
             allPlayers = data;
             allPlayers.forEach(p => {
                 SUB_BOARDS.forEach(mode => {
-                    if (p[`${mode}_manual_tier`] === undefined) p[`${mode}_manual_tier`] = null;
-                    if (p[`${mode}_manual_plus`] === undefined) p[`${mode}_manual_plus`] = false;
+                    // Map database column names to our internal property names
+                    // For KanalServer: kolumn name 'kanal_manual_tier' -> KanalServer_manual_tier
+                    // For LowblockMace: 'mace_manual_tier' -> LowblockMace_manual_tier
+                    const modeLower = mode === 'KanalServer' ? 'kanal' : 'mace';
+                    p[`${mode}_manual_tier`] = p[`${modeLower}_manual_tier`] ?? null;
+                    p[`${mode}_manual_plus`] = p[`${modeLower}_manual_plus`] ?? false;
                     if (p[`${mode}_pos`] === undefined) p[`${mode}_pos`] = 0;
                     if (p[`${mode}_manual_pos`] === undefined) p[`${mode}_manual_pos`] = null;
                 });
