@@ -1102,7 +1102,7 @@
             background: #131318;
             border-radius: 16px;
             padding: 30px;
-            width: 900px;
+            width: 1100px;
             max-width: 100%;
             max-height: 90vh;
             overflow-y: auto;
@@ -1189,7 +1189,7 @@
             font-size: 13px;
         }
         .admin-player-row select {
-            width: 80px;
+            width: 90px;
         }
         .admin-player-row .ap-label {
             font-size: 12px;
@@ -1210,6 +1210,26 @@
         }
 
         /* Edit Leaderboard tab */
+        .admin-lb-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .admin-lb-toolbar label {
+            font-weight: 600;
+            color: #8b8b96;
+            font-size: 14px;
+        }
+        .admin-lb-toolbar select {
+            background: #1c1c22;
+            border: 1px solid #2c2c34;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
         .admin-lb-container {
             display: flex;
             flex-wrap: wrap;
@@ -1434,12 +1454,19 @@
             <!-- Tab: Edit Leaderboard -->
             <div class="admin-tab-content" id="adminTabLeaderboard">
                 <div class="admin-status" id="adminLBStatus">Loading leaderboard...</div>
+                <div class="admin-lb-toolbar">
+                    <label for="lbModeSelect">Leaderboard:</label>
+                    <select id="lbModeSelect">
+                        <option value="KanalServer">Kanal Server</option>
+                        <option value="LowblockMace">Lowblock Mace</option>
+                    </select>
+                </div>
                 <div class="admin-lb-container" id="adminLBContainer"></div>
             </div>
 
             <div class="admin-actions">
-                <button class="admin-save-btn" id="adminSaveBtn">💾 Save All</button>
-                <button class="admin-close-btn" id="adminCloseBtn">✖ Close</button>
+                <button class="admin-save-btn" id="adminSaveBtn">Save</button>
+                <button class="admin-close-btn" id="adminCloseBtn">Close</button>
             </div>
         </div>
     </div>
@@ -1491,6 +1518,7 @@
         const NUM_MODES = SUB_BOARDS.length;
         let currentBoard = "Overall";
         let adminTab = "player";
+        let lbEditMode = "KanalServer";
 
         const list = document.getElementById("list");
         const toggleBtn = document.getElementById("toggleBtn");
@@ -1510,6 +1538,7 @@
         const adminLBStatus = document.getElementById("adminLBStatus");
         const adminSaveBtn = document.getElementById("adminSaveBtn");
         const adminCloseBtn = document.getElementById("adminCloseBtn");
+        const lbModeSelect = document.getElementById("lbModeSelect");
 
         // ---------- Utility ----------
         function iconMarkup(board) {
@@ -1581,7 +1610,7 @@
 
         // -------- Tier assignment with manual override support --------
         function assignTiersForMode(players, modeField) {
-            // First, build a map of manual tiers from the players
+            // Build manual map
             const manualMap = {};
             players.forEach(p => {
                 const mt = p[`${modeField}_manual_tier`];
@@ -1591,7 +1620,6 @@
                 }
             });
 
-            // Sort players by ELO descending for automatic tier assignment
             const sorted = [...players]
                 .filter(p => p[modeField] !== null && p[modeField] !== undefined)
                 .sort((a, b) => b[modeField] - a[modeField]);
@@ -1606,7 +1634,6 @@
                 }));
             }
 
-            // Divide into 5 equal groups (tiers) based on ELO
             const tierSize = Math.ceil(total / 5);
             const tiers = [];
             for (let i = 0; i < 5; i++) {
@@ -1617,26 +1644,20 @@
                 }
             }
 
-            // Build result with manual overrides
             const result = players.map(p => {
                 let tierNum = null;
                 let isPlus = false;
                 let pos = 9999;
 
-                // Check if player has manual tier
                 if (p.id in manualMap) {
                     tierNum = manualMap[p.id].tier;
                     isPlus = manualMap[p.id].plus;
-                    // For manual tier, pos is based on ELO within the manual tier group
-                    // We'll compute this later
                 } else {
-                    // Automatic tier assignment
                     for (let t = 0; t < tiers.length; t++) {
                         const group = tiers[t];
                         const idx = group.findIndex(g => g.id === p.id);
                         if (idx !== -1) {
                             tierNum = t + 1;
-                            // Top third rule: only apply when group has >= 3 players, floor division
                             const groupSize = group.length;
                             if (groupSize >= 3) {
                                 const plusCount = Math.floor(groupSize / 3);
@@ -1656,8 +1677,7 @@
                 };
             });
 
-            // For players with manual tier, compute their pos within the manual tier group
-            // Group players by manual tier and sort by ELO
+            // Compute pos for manual tiers by grouping and sorting by ELO
             const manualGroups = {};
             result.forEach(p => {
                 const tier = p[`${modeField}_tier`];
@@ -1676,19 +1696,6 @@
                 });
             });
 
-            // Also compute pos for automatic tiers (already set above)
-            // But we need to make sure pos is set for all players
-            result.forEach(p => {
-                const tier = p[`${modeField}_tier`];
-                if (tier !== null && tier !== undefined && !(p.id in manualMap)) {
-                    // Already has pos from the loop above
-                } else if (p.id in manualMap && p[`${modeField}_tier`] !== null) {
-                    // Already set in manualGroups loop
-                } else {
-                    p[`${modeField}_pos`] = 9999;
-                }
-            });
-
             return result;
         }
 
@@ -1705,7 +1712,6 @@
             return total;
         }
 
-        // Get title
         function getPlayerTitle(points, player, allPlayers) {
             const isNova = (() => {
                 const kanalSorted = allPlayers.filter(p => p.KanalServer !== null && p.KanalServer !== undefined)
@@ -2324,29 +2330,39 @@
                 const row = document.createElement("div");
                 row.className = "admin-player-row";
 
-                const kanalManual = p.KanalServer_manual_tier !== null && p.KanalServer_manual_tier !== undefined;
-                const maceManual = p.LowblockMace_manual_tier !== null && p.LowblockMace_manual_tier !== undefined;
+                // For each mode, get current tier (manual if exists, else auto)
+                const modes = [
+                    { mode: "KanalServer", label: "Kanal" },
+                    { mode: "LowblockMace", label: "Mace" }
+                ];
 
-                row.innerHTML = `
+                let html = `
                     <div class="ap-avatar"><img src="${avatarUrl(p.name, 28)}" alt="" onerror="this.style.display='none'"></div>
                     <span class="ap-name">${p.name}</span>
-                    <span class="ap-mode-label">Kanal</span>
-                    <select class="ap-tier-select" data-player="${p.id}" data-mode="KanalServer">
-                        <option value="">None</option>
-                        ${[1,2,3,4,5].map(t => `<option value="${t}" ${p.KanalServer_manual_tier === t ? 'selected' : ''}>Tier ${t}</option>`).join('')}
-                    </select>
-                    <input type="checkbox" class="ap-plus-check" data-player="${p.id}" data-mode="KanalServer" ${p.KanalServer_manual_plus ? 'checked' : ''} ${!kanalManual ? 'disabled' : ''}>
-                    <span class="ap-label">+</span>
-                    <span class="ap-mode-label" style="margin-left:12px;">Mace</span>
-                    <select class="ap-tier-select" data-player="${p.id}" data-mode="LowblockMace">
-                        <option value="">None</option>
-                        ${[1,2,3,4,5].map(t => `<option value="${t}" ${p.LowblockMace_manual_tier === t ? 'selected' : ''}>Tier ${t}</option>`).join('')}
-                    </select>
-                    <input type="checkbox" class="ap-plus-check" data-player="${p.id}" data-mode="LowblockMace" ${p.LowblockMace_manual_plus ? 'checked' : ''} ${!maceManual ? 'disabled' : ''}>
-                    <span class="ap-label">+</span>
                 `;
 
-                // Enable/disable plus checkbox when tier changes
+                modes.forEach(({ mode, label }) => {
+                    const manualTier = p[`${mode}_manual_tier`];
+                    const autoTier = p[`${mode}_tier`];
+                    const currentTier = (manualTier !== null && manualTier !== undefined) ? manualTier : autoTier;
+                    const currentPlus = (manualTier !== null && manualTier !== undefined) ? (p[`${mode}_manual_plus`] || false) : (p[`${mode}_plus`] || false);
+                    const hasManual = manualTier !== null && manualTier !== undefined;
+
+                    html += `
+                        <span class="ap-mode-label">${label}</span>
+                        <select class="ap-tier-select" data-player="${p.id}" data-mode="${mode}">
+                            <option value="">None</option>
+                            ${[1,2,3,4,5].map(t => `<option value="${t}" ${currentTier === t ? 'selected' : ''}>Tier ${t}</option>`).join('')}
+                        </select>
+                        <input type="checkbox" class="ap-plus-check" data-player="${p.id}" data-mode="${mode}" ${currentPlus ? 'checked' : ''} ${currentTier !== null && currentTier !== undefined ? '' : 'disabled'}>
+                        <span class="ap-label">+</span>
+                    `;
+                });
+
+                row.innerHTML = html;
+                grid.appendChild(row);
+
+                // Add event listeners to enable/disable plus checkbox based on dropdown
                 const selects = row.querySelectorAll('.ap-tier-select');
                 const checks = row.querySelectorAll('.ap-plus-check');
                 selects.forEach((sel, idx) => {
@@ -2354,29 +2370,29 @@
                         const check = checks[idx];
                         if (sel.value) {
                             check.disabled = false;
+                            // If the tier was None and we select a tier, we may want to keep plus state as is (unchecked by default)
+                            // but we keep current state.
                         } else {
                             check.disabled = true;
                             check.checked = false;
                         }
                     });
                 });
-
-                grid.appendChild(row);
             });
         }
 
-        function renderAdminLeaderboardTab() {
+        function renderAdminLeaderboardTab(mode) {
             const container = adminLBContainer;
             container.innerHTML = "";
             adminLBStatus.textContent = "Drag up/down to reorder within tiers";
 
-            // Get current tier data for KanalServer (the primary view)
-            const modeField = "KanalServer";
+            const modeField = mode || lbEditMode;
+
+            // Get current tier data for selected mode
             const sorted = [...allPlayers]
                 .filter(p => p[modeField] !== null && p[modeField] !== undefined)
                 .sort((a, b) => b[modeField] - a[modeField]);
 
-            // Assign tiers to get current grouping
             const tempPlayers = assignTiersForMode([...allPlayers], modeField);
             const tierGroups = { 1: [], 2: [], 3: [], 4: [], 5: [] };
             tempPlayers.forEach(p => {
@@ -2386,7 +2402,6 @@
                 }
             });
 
-            // Sort within each tier by pos
             for (let t = 1; t <= 5; t++) {
                 tierGroups[t].sort((a, b) => {
                     const aPos = a[`${modeField}_pos`] || 9999;
@@ -2459,7 +2474,7 @@
                     e.stopPropagation();
                     const playerId = parseInt(btn.dataset.player);
                     const tier = parseInt(btn.dataset.tier);
-                    movePlayerInTier(playerId, tier, -1);
+                    movePlayerInTier(playerId, tier, -1, modeField);
                 });
             });
             container.querySelectorAll('.lbp-down').forEach(btn => {
@@ -2467,17 +2482,14 @@
                     e.stopPropagation();
                     const playerId = parseInt(btn.dataset.player);
                     const tier = parseInt(btn.dataset.tier);
-                    movePlayerInTier(playerId, tier, 1);
+                    movePlayerInTier(playerId, tier, 1, modeField);
                 });
             });
         }
 
-        function movePlayerInTier(playerId, tier, direction) {
-            // Find the player
+        function movePlayerInTier(playerId, tier, direction, modeField) {
             const player = allPlayers.find(p => p.id === playerId);
             if (!player) return;
-
-            const modeField = "KanalServer";
 
             // Get current tier groups
             const tempPlayers = assignTiersForMode([...allPlayers], modeField);
@@ -2504,37 +2516,32 @@
             const newIdx = idx + direction;
             if (newIdx < 0 || newIdx >= group.length) return;
 
-            // Swap positions
             const other = group[newIdx];
             const posA = player[`${modeField}_pos`] || 0;
             const posB = other[`${modeField}_pos`] || 0;
 
-            // Update positions in allPlayers
             const pA = allPlayers.find(p => p.id === playerId);
             const pB = allPlayers.find(p => p.id === other.id);
             if (pA && pB) {
                 pA[`${modeField}_pos`] = posB;
                 pB[`${modeField}_pos`] = posA;
-                // Also store in the manual pos field for persistence
                 pA[`${modeField}_manual_pos`] = posB;
                 pB[`${modeField}_manual_pos`] = posA;
             }
 
-            // Re-render the admin leaderboard tab
-            renderAdminLeaderboardTab();
-            // Also update the main view if currently on the right board
-            if (currentBoard === "KanalServer" || currentBoard === "Overall") {
+            renderAdminLeaderboardTab(modeField);
+            if (currentBoard === modeField || currentBoard === "Overall") {
                 render();
             }
         }
 
         function openAdminModal() {
-            // Populate player data from allPlayers
-            adminPlayerData = allPlayers.map(p => ({ ...p }));
             adminModalOverlay.classList.add("active");
+            // Ensure tiers are computed
+            allPlayers = assignTiersForMode(allPlayers, "KanalServer");
+            allPlayers = assignTiersForMode(allPlayers, "LowblockMace");
             renderAdminPlayerTab();
-            renderAdminLeaderboardTab();
-            // Set default tab
+            renderAdminLeaderboardTab(lbEditMode);
             switchAdminTab('player');
         }
 
@@ -2553,6 +2560,12 @@
             if (tabEl) {
                 switchAdminTab(tabEl.dataset.tab);
             }
+        });
+
+        // Leaderboard mode switch
+        lbModeSelect.addEventListener('change', () => {
+            lbEditMode = lbModeSelect.value;
+            renderAdminLeaderboardTab(lbEditMode);
         });
 
         adminEditBtn.addEventListener("click", openAdminModal);
@@ -2581,14 +2594,11 @@
                 updates[pid][`${mode}_manual_plus`] = chk.checked;
             });
 
-            // Also gather pos data from the leaderboard tab (already in allPlayers)
-            // The positions are stored in allPlayers via the movePlayerInTier function
-
-            // Apply updates to allPlayers
+            // Preserve pos data from leaderboard tab (already in allPlayers)
+            // Apply updates
             for (const pid of Object.keys(updates)) {
                 const player = allPlayers.find(p => p.id === parseInt(pid));
                 if (player) {
-                    // Preserve pos data
                     const posData = {};
                     SUB_BOARDS.forEach(mode => {
                         if (player[`${mode}_pos`] !== undefined) {
@@ -2599,7 +2609,6 @@
                         }
                     });
                     Object.assign(player, updates[pid]);
-                    // Restore pos data if not overwritten
                     SUB_BOARDS.forEach(mode => {
                         if (posData[`${mode}_pos`] !== undefined && player[`${mode}_pos`] === undefined) {
                             player[`${mode}_pos`] = posData[`${mode}_pos`];
@@ -2611,7 +2620,6 @@
                 }
             }
 
-            // Re-render
             render();
             adminModalOverlay.classList.remove("active");
             alert("Changes saved locally. To persist to database, update the players table with manual_tier and manual_plus columns.");
@@ -2629,7 +2637,6 @@
                 return;
             }
             allPlayers = data;
-            // Initialize manual fields if they don't exist
             allPlayers.forEach(p => {
                 SUB_BOARDS.forEach(mode => {
                     if (p[`${mode}_manual_tier`] === undefined) p[`${mode}_manual_tier`] = null;
