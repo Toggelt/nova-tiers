@@ -1574,6 +1574,7 @@
         }
 
         // ---------- Tier system ----------
+        // UPDATED POINTS: Tier 4+ = 75, Tier 4 = 50, Tier 5+ = 25, Tier 5 = 15
         const TIER_POINTS = {
             "1+": 1000,
             "1": 800,
@@ -1581,10 +1582,10 @@
             "2": 400,
             "3+": 250,
             "3": 150,
-            "4+": 50,
-            "4": 25,
-            "5+": 15,
-            "5": 10
+            "4+": 75,
+            "4": 50,
+            "5+": 25,
+            "5": 15
         };
 
         const TIER_COLORS = {
@@ -2564,7 +2565,7 @@
             adminModalOverlay.classList.remove("active");
         });
 
-        // ---------- FIXED SAVE BUTTON ----------
+        // ---------- SAVE BUTTON ----------
         adminSaveBtn.addEventListener("click", async () => {
             // Gather data from the edit player tab
             const selects = document.querySelectorAll('.ap-tier-select');
@@ -2611,7 +2612,7 @@
                 }
             }
 
-            // Build the data to upsert into the database – only the manual columns
+            // Build the data to upsert – only the manual columns
             const updatesToDb = allPlayers.map(p => {
                 const record = {
                     id: p.id,
@@ -2657,7 +2658,6 @@
             allPlayers = data;
             allPlayers.forEach(p => {
                 SUB_BOARDS.forEach(mode => {
-                    // Map database column names to internal properties
                     const modeLower = mode === 'KanalServer' ? 'kanal' : 'mace';
                     p[`${mode}_manual_tier`] = p[`${modeLower}_manual_tier`] ?? null;
                     p[`${mode}_manual_plus`] = p[`${modeLower}_manual_plus`] ?? false;
