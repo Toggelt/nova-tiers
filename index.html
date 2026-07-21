@@ -30,13 +30,8 @@
             z-index: 100;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-end;
             padding: 0 30px;
-        }
-        .top-fixed-bar .left-group {
-            display: flex;
-            align-items: center;
-            gap: 16px;
         }
         .top-fixed-bar .login-wrapper {
             display: flex;
@@ -178,26 +173,6 @@
             background: #1f3348;
         }
 
-        /* Admin edit button */
-        .admin-edit-btn {
-            background: #1a2a3a;
-            border: 1px solid #2a4a6a;
-            color: #8ab4f8;
-            padding: 5px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.15s ease;
-            font-family: Arial, sans-serif;
-        }
-        .admin-edit-btn:hover {
-            background: #1f3348;
-        }
-        .admin-edit-btn.hidden {
-            display: none;
-        }
-
         /* ---------- Container ---------- */
         .container {
             position: relative;
@@ -292,7 +267,7 @@
             color: #fff;
         }
         .tab-item.active span.tab-label {
-            color: #a9b6ff;
+            color: #ffffff;
         }
 
         .top-bar {
@@ -303,7 +278,7 @@
             margin-bottom: 14px;
         }
 
-        /* Info tooltip - 20% larger */
+        /* Info tooltip */
         .info-btn-wrapper {
             position: relative;
         }
@@ -540,7 +515,7 @@
             padding: 6px 2px;
         }
 
-        /* Player row (Overall) */
+        /* Player row (Overall) - 20% taller */
         .player {
             display: flex;
             align-items: stretch;
@@ -550,6 +525,7 @@
             overflow: hidden;
             cursor: pointer;
             transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+            min-height: 110px;
         }
         .player:hover {
             transform: scale(1.035);
@@ -564,7 +540,7 @@
             padding: 18px 32px 18px 20px;
             background: #22222a;
             clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
-            min-width: 140px;
+            min-width: 150px;
         }
         .rank-num {
             font-size: 32px;
@@ -574,8 +550,8 @@
             width: 32px;
         }
         .avatar {
-            width: 46px;
-            height: 46px;
+            width: 50px;
+            height: 50px;
             border-radius: 8px;
             background: #000;
             display: flex;
@@ -595,12 +571,48 @@
         .info {
             flex: 1;
             display: flex;
-            align-items: center;
-            padding: 0 20px;
-            font-size: 26px;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 12px 20px;
+            gap: 12px;
+        }
+        .player-name {
+            font-size: 26px;         /* reverted to original large size */
             font-weight: 700;
             letter-spacing: 0.3px;
             font-family: 'Bahnschrift', Arial, sans-serif;
+            line-height: 1.2;
+        }
+        .player-title-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .player-title-badge {
+            background: #191920;
+            border: 1px solid #2c2c34;
+            border-radius: 6px;
+            padding: 4px 14px;        /* slightly larger padding */
+            display: flex;
+            align-items: center;
+            height: 32px;             /* increased */
+        }
+        .player-title-text {
+            font-size: 16px;         /* larger title text */
+            font-weight: 900;
+            font-family: 'Bahnschrift', Arial, sans-serif;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+        .player-points {
+            font-size: 16px;         /* larger points text */
+            font-weight: 600;
+            color: #8b8b96;
+            white-space: nowrap;
         }
         .elo-wrap {
             display: flex;
@@ -609,7 +621,6 @@
             padding: 0 26px;
         }
 
-        /* mini tier icons – short form T1+, T1, etc. */
         .mini-tiers-row {
             display: flex;
             align-items: center;
@@ -649,10 +660,8 @@
             color: #8b8b96;
             letter-spacing: 0.3px;
             text-align: center;
-            min-width: 32px;
-        }
-        .mini-tier-tip {
-            display: none;
+            width: 40px;
+            box-sizing: border-box;
         }
         .global-mini-tip {
             position: fixed;
@@ -682,7 +691,7 @@
             margin-top: 2px;
         }
 
-        /* Tier Columns – headers "Tier 1", "Tier 2", etc. */
+        /* Tier Columns */
         .tier-columns {
             display: flex;
             flex-wrap: wrap;
@@ -699,21 +708,11 @@
             flex-direction: column;
             background: #14141a;
         }
-        .tier-column-1 {
-            background: #2a2a1a;
-        }
-        .tier-column-2 {
-            background: #2a2a30;
-        }
-        .tier-column-3 {
-            background: #2a221a;
-        }
-        .tier-column-4 {
-            background: #22222a;
-        }
-        .tier-column-5 {
-            background: #22222a;
-        }
+        .tier-column-1 { background: #2a2a1a; }
+        .tier-column-2 { background: #2a2a30; }
+        .tier-column-3 { background: #2a221a; }
+        .tier-column-4 { background: #22222a; }
+        .tier-column-5 { background: #22222a; }
 
         .tier-header {
             text-align: center;
@@ -738,6 +737,7 @@
             padding: 4px 8px;
             transition: background 0.2s;
             cursor: pointer;
+            border: 1px solid transparent;
         }
         .tier-player:hover {
             background: #2a2a36;
@@ -779,29 +779,17 @@
             flex-shrink: 0;
         }
         .tier-player .tier-badge.plus {
-            background: #1a3a2a;
-            color: #6bff6b;
+            background: #1a3a5a;
+            color: #6bb6ff;
+            border: 1px solid #4a8af4;
         }
 
-        /* Rank colours for overall */
-        .rank-1 .rank-flag {
-            background: linear-gradient(100deg, #f4c744, #c99a1e);
-        }
-        .rank-1 .rank-num {
-            color: #3a2c00;
-        }
-        .rank-2 .rank-flag {
-            background: linear-gradient(100deg, #d6d9dd, #9ea3aa);
-        }
-        .rank-2 .rank-num {
-            color: #2b2e33;
-        }
-        .rank-3 .rank-flag {
-            background: linear-gradient(100deg, #d98b45, #a85f24);
-        }
-        .rank-3 .rank-num {
-            color: #3a2000;
-        }
+        .rank-1 .rank-flag { background: linear-gradient(100deg, #f4c744, #c99a1e); }
+        .rank-1 .rank-num { color: #3a2c00; }
+        .rank-2 .rank-flag { background: linear-gradient(100deg, #d6d9dd, #9ea3aa); }
+        .rank-2 .rank-num { color: #2b2e33; }
+        .rank-3 .rank-flag { background: linear-gradient(100deg, #d98b45, #a85f24); }
+        .rank-3 .rank-num { color: #3a2000; }
 
         .toggle-btn {
             display: block;
@@ -904,21 +892,9 @@
             text-transform: uppercase;
             z-index: 5;
         }
-        .role-player {
-            color: #c9c9d1;
-            border: 1px solid #5a5a64;
-            background: #202024;
-        }
-        .role-developer {
-            color: #ff5c5c;
-            border: 1px solid #7a2323;
-            background: #241414;
-        }
-        .role-owner {
-            color: #5be6e6;
-            border: 1px solid #1f6b70;
-            background: #132628;
-        }
+        .role-player { color: #c9c9d1; border: 1px solid #5a5a64; background: #202024; }
+        .role-developer { color: #ff5c5c; border: 1px solid #7a2323; background: #241414; }
+        .role-owner { color: #5be6e6; border: 1px solid #1f6b70; background: #132628; }
 
         .title-section {
             display: flex;
@@ -1084,315 +1060,24 @@
             display: block;
         }
 
-        /* ---------- Admin Edit Modal ---------- */
-        .admin-modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1500;
-            padding: 20px;
+        .mini-tier-wrap.no-tier .mini-tier-circle {
+            border-color: #454b54;
+            opacity: 0.5;
         }
-        .admin-modal-overlay.active {
-            display: flex;
-        }
-        .admin-modal-box {
-            background: #131318;
-            border-radius: 16px;
-            padding: 30px;
-            width: 1100px;
-            max-width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            border: 1px solid #2a4a6a;
-            box-shadow: 0 0 40px rgba(42, 74, 106, 0.3);
-        }
-        .admin-modal-box h2 {
-            margin-top: 0;
-            margin-bottom: 16px;
-            font-family: 'Orbitron', Arial, sans-serif;
-            font-size: 22px;
-            text-align: center;
-        }
-        .admin-modal-tabs {
-            display: flex;
-            border-bottom: 1px solid #2c2c34;
-            margin-bottom: 16px;
-        }
-        .admin-modal-tab {
-            padding: 8px 20px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 14px;
-            color: #8b8b96;
-            border-bottom: 3px solid transparent;
-            transition: color 0.2s, border-color 0.2s;
-        }
-        .admin-modal-tab:hover {
-            color: #c9c9d1;
-        }
-        .admin-modal-tab.active {
-            color: #fff;
-            border-bottom-color: #4a8af4;
-        }
-        .admin-tab-content {
-            display: none;
-        }
-        .admin-tab-content.active {
-            display: block;
-        }
-
-        /* Edit Player tab */
-        .admin-player-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            max-height: 55vh;
-            overflow-y: auto;
-        }
-        .admin-player-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #1c1c22;
-            border-radius: 6px;
-            padding: 6px 12px;
-            border: 1px solid #2c2c34;
-        }
-        .admin-player-row .ap-name {
-            font-weight: 700;
-            min-width: 120px;
-            font-size: 14px;
-        }
-        .admin-player-row .ap-avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 5px;
-            overflow: hidden;
-            flex-shrink: 0;
-            image-rendering: pixelated;
-        }
-        .admin-player-row .ap-avatar img {
-            width: 100%;
-            height: 100%;
-            image-rendering: pixelated;
-        }
-        .admin-player-row select,
-        .admin-player-row input[type="checkbox"] {
-            background: #131318;
-            border: 1px solid #2c2c34;
-            color: #fff;
-            padding: 4px 6px;
-            border-radius: 4px;
-            font-size: 13px;
-        }
-        .admin-player-row select {
-            width: 90px;
-        }
-        .admin-player-row .ap-label {
-            font-size: 12px;
-            color: #8b8b96;
-            margin: 0 2px;
-        }
-        .admin-player-row input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #4a8af4;
-            cursor: pointer;
-        }
-        .admin-player-row .ap-mode-label {
-            font-weight: 600;
-            color: #a9b6ff;
-            font-size: 12px;
-            min-width: 40px;
-        }
-
-        /* Edit Leaderboard tab */
-        .admin-lb-toolbar {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        .admin-lb-toolbar label {
-            font-weight: 600;
-            color: #8b8b96;
-            font-size: 14px;
-        }
-        .admin-lb-toolbar select {
-            background: #1c1c22;
-            border: 1px solid #2c2c34;
-            color: #fff;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .admin-lb-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-            max-height: 55vh;
-            overflow-y: auto;
-            padding: 4px 0;
-        }
-        .admin-lb-column {
-            flex: 0 0 200px;
-            min-width: 160px;
-            background: #14141a;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid #2c2c34;
-        }
-        .admin-lb-column .lb-header {
-            text-align: center;
-            font-weight: 800;
-            padding: 8px 4px;
-            font-size: 16px;
-            background: #1c1c22;
-            border-bottom: 1px solid #2c2c34;
-        }
-        .admin-lb-column .lb-players {
-            padding: 4px;
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-        .admin-lb-player {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: #1a1a22;
-            border-radius: 5px;
-            padding: 4px 6px;
-            font-size: 13px;
-            border: 1px solid #2c2c34;
-        }
-        .admin-lb-player .lbp-avatar {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            overflow: hidden;
-            flex-shrink: 0;
-            image-rendering: pixelated;
-        }
-        .admin-lb-player .lbp-avatar img {
-            width: 100%;
-            height: 100%;
-            image-rendering: pixelated;
-        }
-        .admin-lb-player .lbp-name {
-            flex: 1;
-            font-weight: 600;
-            font-size: 13px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .admin-lb-player .lbp-badge {
-            font-size: 10px;
-            font-weight: 800;
-            padding: 1px 6px;
-            border-radius: 10px;
-            background: #1a3a2a;
-            color: #6bff6b;
-        }
-        .admin-lb-player .lbp-arrows {
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
-        }
-        .admin-lb-player .lbp-arrows button {
-            background: #2a2a36;
-            border: none;
-            color: #c9c9d1;
-            width: 22px;
-            height: 18px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.15s;
-            padding: 0;
-        }
-        .admin-lb-player .lbp-arrows button:hover {
-            background: #3a3a4a;
-        }
-        .admin-lb-player .lbp-arrows button:disabled {
-            opacity: 0.25;
-            cursor: not-allowed;
-        }
-        .admin-lb-player .lbp-arrows button:disabled:hover {
-            background: #2a2a36;
-        }
-        .admin-lb-player.lbp-manual {
-            border-color: #4a6a8a;
-        }
-        .admin-lb-player.lbp-manual .lbp-name {
-            color: #8ab4f8;
-        }
-
-        .admin-actions {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 16px;
-        }
-        .admin-save-btn {
-            background: #2a6a3a;
-            border: 2px solid #4a9a5a;
-            color: #fff;
-            font-weight: 800;
-            font-size: 18px;
-            padding: 10px 30px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .admin-save-btn:hover {
-            background: #3a7a4a;
-        }
-        .admin-close-btn {
-            background: #3a3a44;
-            border: 2px solid #4a4a5a;
-            color: #fff;
-            font-weight: 700;
-            font-size: 16px;
-            padding: 8px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .admin-close-btn:hover {
-            background: #4a4a5a;
-        }
-        .admin-status {
-            text-align: center;
-            color: #8b8b96;
-            font-size: 13px;
-            padding: 8px;
+        .mini-tier-wrap.no-tier .mini-tier-circle img {
+            opacity: 0.4;
         }
     </style>
 </head>
 <body>
 
-    <!-- Fixed top bar -->
     <div class="top-fixed-bar">
-        <div class="left-group">
-            <button class="admin-edit-btn hidden" id="adminEditBtn">✎ Edit Tiers</button>
-        </div>
         <div class="login-wrapper">
             <button class="login-btn" id="loginBtn">Log in</button>
             <div class="login-panel" id="loginPanel"></div>
         </div>
     </div>
 
-    <!-- Leaderboard container -->
     <div class="container">
         <div class="tab-menu" id="tabMenu"></div>
         <div class="top-bar">
@@ -1436,41 +1121,6 @@
         </div>
     </div>
 
-    <!-- Admin Edit Modal -->
-    <div class="admin-modal-overlay" id="adminModalOverlay">
-        <div class="admin-modal-box">
-            <h2>✎ Edit Tiers</h2>
-            <div class="admin-modal-tabs" id="adminModalTabs">
-                <span class="admin-modal-tab active" data-tab="player">Edit Player</span>
-                <span class="admin-modal-tab" data-tab="leaderboard">Edit Leaderboard</span>
-            </div>
-
-            <!-- Tab: Edit Player -->
-            <div class="admin-tab-content active" id="adminTabPlayer">
-                <div class="admin-status" id="adminPlayerStatus">Loading players...</div>
-                <div class="admin-player-grid" id="adminPlayerGrid"></div>
-            </div>
-
-            <!-- Tab: Edit Leaderboard -->
-            <div class="admin-tab-content" id="adminTabLeaderboard">
-                <div class="admin-status" id="adminLBStatus">Loading leaderboard...</div>
-                <div class="admin-lb-toolbar">
-                    <label for="lbModeSelect">Leaderboard:</label>
-                    <select id="lbModeSelect">
-                        <option value="KanalServer">Kanal Server</option>
-                        <option value="LowblockMace">Lowblock Mace</option>
-                    </select>
-                </div>
-                <div class="admin-lb-container" id="adminLBContainer"></div>
-            </div>
-
-            <div class="admin-actions">
-                <button class="admin-save-btn" id="adminSaveBtn">Save</button>
-                <button class="admin-close-btn" id="adminCloseBtn">Close</button>
-            </div>
-        </div>
-    </div>
-
     <div class="global-mini-tip" id="globalMiniTip"></div>
 
     <script type="module">
@@ -1489,36 +1139,13 @@
         const OVERALL_ICON_URL = "https://github.com/Toggelt/nova-tiers/blob/main/assets/636879664591858480.png?raw=true";
 
         const LEADERBOARDS = {
-            Overall: {
-                key: "Overall",
-                field: "__overall_tier",
-                label: "Overall",
-                title: "Overall Leaderboard",
-                icon: OVERALL_ICON_URL,
-                emoji: null
-            },
-            KanalServer: {
-                key: "KanalServer",
-                field: "KanalServer",
-                label: "Kanal Server",
-                title: "Kanal Server Leaderboard",
-                icon: HELMET_ICON_URL,
-                emoji: "⛑️"
-            },
-            LowblockMace: {
-                key: "LowblockMace",
-                field: "LowblockMace",
-                label: "Lowblock Mace",
-                title: "Lowblock Mace Leaderboard",
-                icon: MACE_ICON_URL,
-                emoji: "🔨"
-            }
+            Overall: { key: "Overall", label: "Overall", title: "Overall Leaderboard", icon: OVERALL_ICON_URL, emoji: null },
+            KanalServer: { key: "KanalServer", label: "Kanal Server", title: "Kanal Server Leaderboard", icon: HELMET_ICON_URL, emoji: "⛑️" },
+            LowblockMace: { key: "LowblockMace", label: "Lowblock Mace", title: "Lowblock Mace Leaderboard", icon: MACE_ICON_URL, emoji: "🔨" }
         };
         const SUB_BOARDS = ["KanalServer", "LowblockMace"];
         const NUM_MODES = SUB_BOARDS.length;
         let currentBoard = "Overall";
-        let adminTab = "player";
-        let lbEditMode = "KanalServer";
 
         const list = document.getElementById("list");
         const toggleBtn = document.getElementById("toggleBtn");
@@ -1527,25 +1154,110 @@
         const titleText = document.getElementById("titleText");
         const infoTooltip = document.getElementById("infoTooltip");
 
-        const adminEditBtn = document.getElementById("adminEditBtn");
-        const adminModalOverlay = document.getElementById("adminModalOverlay");
-        const adminModalTabs = document.getElementById("adminModalTabs");
-        const adminTabPlayer = document.getElementById("adminTabPlayer");
-        const adminTabLeaderboard = document.getElementById("adminTabLeaderboard");
-        const adminPlayerGrid = document.getElementById("adminPlayerGrid");
-        const adminLBContainer = document.getElementById("adminLBContainer");
-        const adminPlayerStatus = document.getElementById("adminPlayerStatus");
-        const adminLBStatus = document.getElementById("adminLBStatus");
-        const adminSaveBtn = document.getElementById("adminSaveBtn");
-        const adminCloseBtn = document.getElementById("adminCloseBtn");
-        const lbModeSelect = document.getElementById("lbModeSelect");
+        const TIER_POINTS = {
+            "1+": 1000, "1": 800,
+            "2+": 600,  "2": 400,
+            "3+": 250,  "3": 150,
+            "4+": 75,   "4": 50,
+            "5+": 25,   "5": 15
+        };
+        const TIER_COLORS = {
+            "1+": "#ffd700", "1": "#e6c15c",
+            "2+": "#c9c9d1", "2": "#a9a9b2",
+            "3+": "#cd7f32", "3": "#b5793c",
+            "4+": "#c4ccff", "4": "#a9b6ff",
+            "5+": "#8a9ae0", "5": "#6a7bc7"
+        };
+        const TIER_LIGHT_COLORS = {
+            1: "#ffd54f",
+            2: "#e0e0e0",
+            3: "#e0a86c",
+            4: "#d0d8ff",
+            5: "#9fb0f0"
+        };
+        const TIER_ORDER = { "1+": 0, "1": 1, "2+": 2, "2": 3, "3+": 4, "3": 5, "4+": 6, "4": 7, "5+": 8, "5": 9, "none": 10 };
 
-        // ---------- Utility ----------
+        function shortTierLabel(tierNum, plus) { return `T${tierNum}${plus ? '+' : ''}`; }
+        function fullTierLabel(tierNum, plus) { return `Tier ${tierNum}${plus ? '+' : ''}`; }
+
+        function recomputePlus() {
+            SUB_BOARDS.forEach(mode => {
+                const groups = {};
+                allPlayers.forEach(p => {
+                    const tier = p[`${mode}_tier`];
+                    if (tier != null) {
+                        if (!groups[tier]) groups[tier] = [];
+                        groups[tier].push(p);
+                    }
+                });
+                if (groups[1]) {
+                    groups[1].forEach(p => p[`_computed_plus_${mode}`] = false);
+                }
+                for (let tier = 2; tier <= 5; tier++) {
+                    const group = groups[tier] || [];
+                    group.sort((a, b) => (a[`${mode}_pos`] ?? 0) - (b[`${mode}_pos`] ?? 0));
+                    const plusCount = Math.floor(group.length / 3);
+                    group.forEach((p, idx) => {
+                        p[`_computed_plus_${mode}`] = idx < plusCount;
+                    });
+                }
+                allPlayers.forEach(p => {
+                    if (p[`${mode}_tier`] == null) p[`_computed_plus_${mode}`] = false;
+                });
+            });
+        }
+
+        function computePlayerPoints(player) {
+            let total = 0;
+            SUB_BOARDS.forEach(key => {
+                const tier = player[`${key}_tier`];
+                if (tier != null && tier >= 1 && tier <= 5) {
+                    const plus = player[`_computed_plus_${key}`];
+                    const keyStr = plus ? `${tier}+` : `${tier}`;
+                    total += TIER_POINTS[keyStr] || 0;
+                }
+            });
+            return total;
+        }
+
+        function getPlayerTitle(points, player) {
+            const isNova = (() => {
+                const kanalSorted = allPlayers
+                    .filter(p => p.KanalServer_tier != null)
+                    .sort((a, b) => (b.KanalServer_tier - a.KanalServer_tier) || (b._computed_plus_KanalServer ? 1 : 0) - (a._computed_plus_KanalServer ? 1 : 0));
+                const maceSorted = allPlayers
+                    .filter(p => p.LowblockMace_tier != null)
+                    .sort((a, b) => (b.LowblockMace_tier - a.LowblockMace_tier) || (b._computed_plus_LowblockMace ? 1 : 0) - (a._computed_plus_LowblockMace ? 1 : 0));
+                if (kanalSorted.length === 0 || maceSorted.length === 0) return false;
+                return kanalSorted[0].id === player.id && maceSorted[0].id === player.id;
+            })();
+            if (isNova) return "Nova";
+            const required = { Divine: 400 * NUM_MODES, Celestial: 300 * NUM_MODES, Eternal: 200 * NUM_MODES, Ascendant: 100 * NUM_MODES };
+            if (points >= required.Divine) return "Divine";
+            if (points >= required.Celestial) return "Celestial";
+            if (points >= required.Eternal) return "Eternal";
+            if (points >= required.Ascendant) return "Ascendant";
+            return null;
+        }
+
+        const TITLE_COLORS = {
+            Nova: "linear-gradient(100deg, #c190ec, #a13ca5)",
+            Divine: "linear-gradient(100deg, #cbd4ec, #6468ab)",
+            Celestial: "linear-gradient(100deg, #fac140, #c34513)",
+            Eternal: "linear-gradient(100deg, #f8ab86, #cb322b)",
+            Ascendant: "linear-gradient(100deg, #d67638, #b0483c)"
+        };
+        const TITLE_REQUIREMENTS = {
+            Nova: "Rank #1 in all gamemodes",
+            Divine: `Get ${400 * NUM_MODES}+ points`,
+            Celestial: `Get ${300 * NUM_MODES}+ points`,
+            Eternal: `Get ${200 * NUM_MODES}+ points`,
+            Ascendant: `Get ${100 * NUM_MODES}+ points`
+        };
+
         function iconMarkup(board) {
-            if (board.icon) {
-                return `<img src="${board.icon}" alt="${board.label}" style="width:32px;height:32px;image-rendering:pixelated;">`;
-            }
-            return `<span class="emoji-icon">${board.emoji}</span>`;
+            return board.icon ? `<img src="${board.icon}" alt="${board.label}" style="width:32px;height:32px;image-rendering:pixelated;">`
+                               : `<span class="emoji-icon">${board.emoji}</span>`;
         }
 
         function renderTabMenu() {
@@ -1573,448 +1285,48 @@
             render();
         }
 
-        // ---------- Tier system ----------
-        // UPDATED POINTS: Tier 4+ = 75, Tier 4 = 50, Tier 5+ = 25, Tier 5 = 15
-        const TIER_POINTS = {
-            "1+": 1000,
-            "1": 800,
-            "2+": 600,
-            "2": 400,
-            "3+": 250,
-            "3": 150,
-            "4+": 75,
-            "4": 50,
-            "5+": 25,
-            "5": 15
-        };
-
-        const TIER_COLORS = {
-            "1+": "#ffd700",
-            "1": "#e6c15c",
-            "2+": "#c9c9d1",
-            "2": "#a9a9b2",
-            "3+": "#cd7f32",
-            "3": "#b5793c",
-            "4+": "#7d8b99",
-            "4": "#6b7480",
-            "5+": "#5a6572",
-            "5": "#454b54"
-        };
-
-        function shortTierLabel(tierNum, plus) {
-            return `T${tierNum}${plus ? '+' : ''}`;
-        }
-
-        function fullTierLabel(tierNum, plus) {
-            return `Tier ${tierNum}${plus ? '+' : ''}`;
-        }
-
-        // -------- Tier assignment with manual override support --------
-        function assignTiersForMode(players, modeField) {
-            // Build manual map
-            const manualMap = {};
-            players.forEach(p => {
-                const mt = p[`${modeField}_manual_tier`];
-                const mp = p[`${modeField}_manual_plus`] || false;
-                if (mt !== null && mt !== undefined && mt >= 1 && mt <= 5) {
-                    manualMap[p.id] = { tier: mt, plus: mp };
-                }
-            });
-
-            const sorted = [...players]
-                .filter(p => p[modeField] !== null && p[modeField] !== undefined)
-                .sort((a, b) => b[modeField] - a[modeField]);
-
-            const total = sorted.length;
-            if (total === 0) {
-                return players.map(p => ({
-                    ...p,
-                    [`${modeField}_tier`]: p.id in manualMap ? manualMap[p.id].tier : null,
-                    [`${modeField}_plus`]: p.id in manualMap ? manualMap[p.id].plus : false,
-                    [`${modeField}_pos`]: 0
-                }));
-            }
-
-            const tierSize = Math.ceil(total / 5);
-            const tiers = [];
-            for (let i = 0; i < 5; i++) {
-                const start = i * tierSize;
-                const end = Math.min(start + tierSize, total);
-                if (start < total) {
-                    tiers.push(sorted.slice(start, end));
-                }
-            }
-
-            const result = players.map(p => {
-                let tierNum = null;
-                let isPlus = false;
-                let pos = 9999;
-
-                if (p.id in manualMap) {
-                    tierNum = manualMap[p.id].tier;
-                    isPlus = manualMap[p.id].plus;
-                } else {
-                    for (let t = 0; t < tiers.length; t++) {
-                        const group = tiers[t];
-                        const idx = group.findIndex(g => g.id === p.id);
-                        if (idx !== -1) {
-                            tierNum = t + 1;
-                            const groupSize = group.length;
-                            if (groupSize >= 3) {
-                                const plusCount = Math.floor(groupSize / 3);
-                                if (idx < plusCount) isPlus = true;
-                            }
-                            pos = idx;
-                            break;
-                        }
-                    }
-                }
-
-                return {
-                    ...p,
-                    [`${modeField}_tier`]: tierNum,
-                    [`${modeField}_plus`]: isPlus,
-                    [`${modeField}_pos`]: pos
-                };
-            });
-
-            // Compute pos for manual tiers by grouping and sorting by ELO
-            const manualGroups = {};
-            result.forEach(p => {
-                const tier = p[`${modeField}_tier`];
-                if (tier !== null && tier !== undefined && p.id in manualMap) {
-                    if (!manualGroups[tier]) manualGroups[tier] = [];
-                    manualGroups[tier].push(p);
-                }
-            });
-
-            Object.keys(manualGroups).forEach(tierKey => {
-                const tier = parseInt(tierKey);
-                const group = manualGroups[tier];
-                group.sort((a, b) => b[modeField] - a[modeField]);
-                group.forEach((p, idx) => {
-                    p[`${modeField}_pos`] = idx;
-                });
-            });
-
-            return result;
-        }
-
-        function computePlayerPoints(player) {
-            let total = 0;
-            SUB_BOARDS.forEach(key => {
-                const tier = player[`${key}_tier`];
-                const plus = player[`${key}_plus`];
-                if (tier !== null && tier !== undefined) {
-                    const keyStr = plus ? `${tier}+` : `${tier}`;
-                    total += TIER_POINTS[keyStr] || 0;
-                }
-            });
-            return total;
-        }
-
-        function getPlayerTitle(points, player, allPlayers) {
-            const isNova = (() => {
-                const kanalSorted = allPlayers.filter(p => p.KanalServer !== null && p.KanalServer !== undefined)
-                    .sort((a, b) => b.KanalServer - a.KanalServer);
-                const maceSorted = allPlayers.filter(p => p.LowblockMace !== null && p.LowblockMace !== undefined)
-                    .sort((a, b) => b.LowblockMace - a.LowblockMace);
-                if (kanalSorted.length === 0 || maceSorted.length === 0) return false;
-                return kanalSorted[0].id === player.id && maceSorted[0].id === player.id;
-            })();
-            if (isNova) return "Nova";
-
-            const required = {
-                Divine: 400 * NUM_MODES,
-                Celestial: 300 * NUM_MODES,
-                Eternal: 200 * NUM_MODES,
-                Ascendant: 100 * NUM_MODES
-            };
-            if (points >= required.Divine) return "Divine";
-            if (points >= required.Celestial) return "Celestial";
-            if (points >= required.Eternal) return "Eternal";
-            if (points >= required.Ascendant) return "Ascendant";
-            return null;
-        }
-
-        const TITLE_COLORS = {
-            Nova: "linear-gradient(100deg, #c190ec, #a13ca5)",
-            Divine: "linear-gradient(100deg, #cbd4ec, #6468ab)",
-            Celestial: "linear-gradient(100deg, #fac140, #c34513)",
-            Eternal: "linear-gradient(100deg, #f8ab86, #cb322b)",
-            Ascendant: "linear-gradient(100deg, #d67638, #b0483c)"
-        };
-
-        const TITLE_REQUIREMENTS = {
-            Nova: "Rank #1 in all gamemodes",
-            Divine: `Get ${400 * NUM_MODES}+ points`,
-            Celestial: `Get ${300 * NUM_MODES}+ points`,
-            Eternal: `Get ${200 * NUM_MODES}+ points`,
-            Ascendant: `Get ${100 * NUM_MODES}+ points`
-        };
-
-        // ---------- Render info tooltip ----------
-        let infoTab = 'titles';
-
-        function renderInfoTooltip() {
-            const titlesHtml = `
-                <div class="info-tooltip-title">Titles</div>
-                ${Object.keys(TITLE_REQUIREMENTS).map(name => {
-                    const grad = TITLE_COLORS[name];
-                    const desc = TITLE_REQUIREMENTS[name];
-                    return `
-                        <div class="info-tooltip-row title-row">
-                            <span class="title-word title-grad" style="background-image:${grad}">${name}</span>
-                            <span class="title-desc">${desc}</span>
-                        </div>
-                    `;
-                }).join('')}
-            `;
-
-            const tierOrder = ["1+", "1", "2+", "2", "3+", "3", "4+", "4", "5+", "5"];
-            const pointsHtml = `
-                <div class="info-tooltip-title">Points</div>
-                ${tierOrder.map(key => {
-                    const color = TIER_COLORS[key];
-                    const pts = TIER_POINTS[key];
-                    const display = key.includes('+') ? `Tier ${key}` : `Tier ${key}`;
-                    return `
-                        <div class="info-tooltip-row points-row">
-                            <span class="tier-name" style="color:${color}">${display}</span>
-                            <span class="tier-pts">${pts} points</span>
-                        </div>
-                    `;
-                }).join('')}
-            `;
-
-            const tabsHtml = `
-                <div class="tooltip-tabs">
-                    <span class="tooltip-tab ${infoTab === 'titles' ? 'active' : ''}" data-tab="titles">Titles</span>
-                    <span class="tooltip-tab ${infoTab === 'points' ? 'active' : ''}" data-tab="points">Points</span>
-                </div>
-                <div class="tooltip-content ${infoTab === 'titles' ? '' : 'hidden'}" id="tooltipTitles">${titlesHtml}</div>
-                <div class="tooltip-content ${infoTab === 'points' ? '' : 'hidden'}" id="tooltipPoints">${pointsHtml}</div>
-            `;
-
-            infoTooltip.innerHTML = tabsHtml;
-            infoTooltip.classList.add("overall-tooltip");
-
-            infoTooltip.querySelectorAll('.tooltip-tab').forEach(tab => {
-                tab.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    infoTab = tab.dataset.tab;
-                    infoTooltip.querySelectorAll('.tooltip-tab').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    infoTooltip.querySelector('#tooltipTitles').classList.toggle('hidden', infoTab !== 'titles');
-                    infoTooltip.querySelector('#tooltipPoints').classList.toggle('hidden', infoTab !== 'points');
-                });
-            });
-
-            document.getElementById('infoBtn').addEventListener('click', (e) => {
-                e.stopPropagation();
-                infoTooltip.classList.toggle('active');
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!infoTooltip.contains(e.target) && e.target !== document.getElementById('infoBtn')) {
-                    infoTooltip.classList.remove('active');
-                }
-            });
-        }
-
-        // ---------- Roles, rankClass, avatar ----------
-        function getRole(name) {
-            if (name === "TestingCheats") return { label: "Developer", cls: "role-developer" };
-            if (name === "cutekiss") return { label: "Tierlist Owner", cls: "role-owner" };
-            return { label: "Player", cls: "role-player" };
-        }
-
-        function rankClass(rank) {
-            if (rank === 1) return "rank-1";
-            if (rank === 2) return "rank-2";
-            if (rank === 3) return "rank-3";
-            return "";
-        }
-
-        function avatarUrl(name, size) {
-            return `https://mc-heads.net/avatar/${encodeURIComponent(name)}/${size}`;
-        }
-
-        function getSortedPlayers(field) {
-            if (field === "__overall_tier") {
-                return [...allPlayers]
-                    .filter(p => SUB_BOARDS.some(key => p[key] !== null && p[key] !== undefined))
-                    .map(p => {
-                        const points = computePlayerPoints(p);
-                        return { ...p, __overall_tier: points };
-                    })
-                    .sort((a, b) => b.__overall_tier - a.__overall_tier);
-            } else {
-                return [...allPlayers]
-                    .filter(p => p[field] !== null && p[field] !== undefined)
-                    .sort((a, b) => b[field] - a[field]);
-            }
-        }
-
-        // ---------- Render ----------
-        function render() {
-            const board = LEADERBOARDS[currentBoard];
-            const field = board.field;
-            const isOverall = currentBoard === "Overall";
-
-            allPlayers = assignTiersForMode(allPlayers, "KanalServer");
-            allPlayers = assignTiersForMode(allPlayers, "LowblockMace");
-
-            const sorted = getSortedPlayers(field);
-
-            list.innerHTML = "";
-            if (sorted.length === 0) {
-                list.innerHTML = `<div class="placeholder-card"><div class="ph-dot"></div>No players on this leaderboard yet</div>`;
-                toggleBtn.style.display = "none";
-                return;
-            }
-
-            if (isOverall) {
-                renderInfoTooltip();
-
-                const playersToShow = expanded ? sorted : sorted.slice(0, COLLAPSED_COUNT);
-                playersToShow.forEach((p, i) => {
-                    const rank = i + 1;
-                    const points = p.__overall_tier;
-                    const div = document.createElement("div");
-                    div.className = `player ${rankClass(rank)}`;
-                    div.innerHTML = `
-                        <div class="rank-flag">
-                            <span class="rank-num">${rank}.</span>
-                            <div class="avatar">
-                                <img src="${avatarUrl(p.name, 38)}" alt="${p.name}" onerror="this.parentElement.innerHTML='?'">
-                            </div>
-                        </div>
-                        <div class="info">${p.name}</div>
-                        <div class="elo-wrap">
-                            <div class="mini-tiers-row">${renderMiniTierIcons(p)}</div>
-                        </div>
-                    `;
-                    div.addEventListener("click", () => openProfile(p));
-                    list.appendChild(div);
-                });
-                if (sorted.length > COLLAPSED_COUNT) {
-                    toggleBtn.style.display = "block";
-                    toggleBtn.textContent = expanded ? "Show less" : `Show all (${sorted.length})`;
-                } else {
-                    toggleBtn.style.display = "none";
-                }
-            } else {
-                const modeField = field;
-                const tierGroups = { 1: [], 2: [], 3: [], 4: [], 5: [] };
-                sorted.forEach(p => {
-                    const tier = p[`${modeField}_tier`];
-                    if (tier !== null && tier !== undefined && tier >= 1 && tier <= 5) {
-                        tierGroups[tier].push(p);
-                    }
-                });
-
-                for (let t = 1; t <= 5; t++) {
-                    tierGroups[t].sort((a, b) => {
-                        const aPos = a[`${modeField}_pos`] || 9999;
-                        const bPos = b[`${modeField}_pos`] || 9999;
-                        if (aPos !== bPos) return aPos - bPos;
-                        return b[modeField] - a[modeField];
-                    });
-                }
-
-                const columnsDiv = document.createElement("div");
-                columnsDiv.className = "tier-columns";
-
-                const tierNames = { 1: "Tier 1", 2: "Tier 2", 3: "Tier 3", 4: "Tier 4", 5: "Tier 5" };
-                const tierColorMap = {
-                    1: TIER_COLORS["1+"],
-                    2: TIER_COLORS["2+"],
-                    3: TIER_COLORS["3+"],
-                    4: TIER_COLORS["4+"],
-                    5: TIER_COLORS["5+"]
-                };
-                const tierBgClass = {
-                    1: "tier-column-1",
-                    2: "tier-column-2",
-                    3: "tier-column-3",
-                    4: "tier-column-4",
-                    5: "tier-column-5"
-                };
-
-                for (let t = 1; t <= 5; t++) {
-                    const players = tierGroups[t] || [];
-                    const col = document.createElement("div");
-                    col.className = `tier-column ${tierBgClass[t]}`;
-
-                    const header = document.createElement("div");
-                    header.className = "tier-header";
-                    header.style.color = tierColorMap[t] || "#fff";
-                    header.textContent = tierNames[t];
-                    col.appendChild(header);
-
-                    const playersDiv = document.createElement("div");
-                    playersDiv.className = "tier-players";
-
-                    players.forEach(p => {
-                        const isPlus = p[`${modeField}_plus`];
-                        const playerDiv = document.createElement("div");
-                        playerDiv.className = `tier-player${isPlus ? ' plus' : ''}`;
-                        const isManual = p[`${modeField}_manual_tier`] !== null && p[`${modeField}_manual_tier`] !== undefined;
-                        playerDiv.innerHTML = `
-                            <div class="tier-avatar">
-                                <img src="${avatarUrl(p.name, 28)}" alt="${p.name}" onerror="this.parentElement.innerHTML='?'">
-                            </div>
-                            <span class="tier-name">${p.name}${isManual ? ' ✎' : ''}</span>
-                            <span class="tier-badge ${isPlus ? 'plus' : ''}">${isPlus ? '+' : ''}</span>
-                        `;
-                        playerDiv.addEventListener("click", () => openProfile(p));
-                        playersDiv.appendChild(playerDiv);
-                    });
-
-                    col.appendChild(playersDiv);
-                    columnsDiv.appendChild(col);
-                }
-
-                list.appendChild(columnsDiv);
-                toggleBtn.style.display = "none";
-            }
-        }
-
         function renderMiniTierIcons(player) {
             const entries = [];
             SUB_BOARDS.forEach(key => {
                 const tier = player[`${key}_tier`];
-                const plus = player[`${key}_plus`];
-                if (tier === null || tier === undefined) return;
-                const tierStr = plus ? `${tier}+` : `${tier}`;
-                const points = TIER_POINTS[tierStr] || 0;
+                const plus = player[`_computed_plus_${key}`];
                 const board = LEADERBOARDS[key];
-                entries.push({ board, tierStr, points, tierNum: tier, plus });
+                entries.push({ tier, plus, board });
             });
-            const order = ["1+", "1", "2+", "2", "3+", "3", "4+", "4", "5+", "5"];
-            entries.sort((a, b) => order.indexOf(a.tierStr) - order.indexOf(b.tierStr));
+            entries.sort((a, b) => {
+                const keyA = a.tier != null ? (a.plus ? `${a.tier}+` : `${a.tier}`) : "none";
+                const keyB = b.tier != null ? (b.plus ? `${b.tier}+` : `${b.tier}`) : "none";
+                return TIER_ORDER[keyA] - TIER_ORDER[keyB];
+            });
 
             let html = "";
-            entries.forEach(({ board, tierStr, points, tierNum, plus }) => {
-                const color = TIER_COLORS[tierStr];
-                const fullLabel = fullTierLabel(tierNum, plus);
-                const tipText = `${fullLabel} – (${points} points)`;
-                const labelStyle = `border-color:${color}; background:#1a1a22; color:${color};`;
-                const displayLabel = shortTierLabel(tierNum, plus);
-                html += `
-                    <div class="mini-tier-wrap" data-tip="${tipText}">
-                        <div class="mini-tier-circle" style="border-color:${color}">
-                            <img src="${board.icon}" alt="${board.label}" style="width:24px;height:24px;image-rendering:pixelated;">
-                        </div>
-                        <div class="mini-tier-label" style="${labelStyle}">${displayLabel}</div>
-                    </div>
-                `;
+            entries.forEach(({ tier, plus, board }) => {
+                if (tier != null && tier >= 1 && tier <= 5) {
+                    const tierStr = plus ? `${tier}+` : `${tier}`;
+                    const color = TIER_COLORS[tierStr];
+                    const fullLabel = fullTierLabel(tier, plus);
+                    const displayLabel = shortTierLabel(tier, plus);
+                    const tipText = `${fullLabel} – (${TIER_POINTS[tierStr]} points)`;
+                    html += `
+                        <div class="mini-tier-wrap" data-tip="${tipText}">
+                            <div class="mini-tier-circle" style="border-color:${color}">
+                                <img src="${board.icon}" alt="${board.label}">
+                            </div>
+                            <div class="mini-tier-label" style="border-color:${color}; color:${color};">${displayLabel}</div>
+                        </div>`;
+                } else {
+                    html += `
+                        <div class="mini-tier-wrap no-tier" data-tip="No Tier">
+                            <div class="mini-tier-circle">
+                                <img src="${board.icon}" alt="${board.label}">
+                            </div>
+                            <div class="mini-tier-label">-</div>
+                        </div>`;
+                }
             });
             return html;
         }
 
-        // Global tooltip
         const globalMiniTip = document.getElementById("globalMiniTip");
         list.addEventListener("mouseover", (e) => {
             const wrap = e.target.closest(".mini-tier-wrap");
@@ -2022,12 +1334,7 @@
                 const tip = wrap.getAttribute("data-tip");
                 if (!tip) return;
                 const parts = tip.split(' – ');
-                const tierLabel = parts[0] || tip;
-                const pointsLabel = parts[1] || '';
-                globalMiniTip.innerHTML = `
-                    <div class="tip-tier">${tierLabel}</div>
-                    ${pointsLabel ? `<div class="tip-points">${pointsLabel}</div>` : ''}
-                `;
+                globalMiniTip.innerHTML = `<div class="tip-tier">${parts[0]}</div>${parts[1] ? `<div class="tip-points">${parts[1]}</div>` : ''}`;
                 globalMiniTip.style.display = "block";
                 const rect = wrap.getBoundingClientRect();
                 globalMiniTip.style.left = (rect.left + rect.width / 2) + "px";
@@ -2035,20 +1342,161 @@
             }
         });
         list.addEventListener("mouseout", (e) => {
-            const wrap = e.target.closest(".mini-tier-wrap");
-            if (wrap && !wrap.contains(e.relatedTarget)) {
+            if (!e.target.closest(".mini-tier-wrap")?.contains(e.relatedTarget))
                 globalMiniTip.style.display = "none";
+        });
+        document.addEventListener("scroll", () => { globalMiniTip.style.display = "none"; }, true);
+
+        function render() {
+            const isOverall = currentBoard === "Overall";
+            list.innerHTML = "";
+
+            if (isOverall) {
+                renderInfoTooltip();
+                const sorted = [...allPlayers]
+                    .filter(p => SUB_BOARDS.some(key => p[`${key}_tier`] != null))
+                    .map(p => {
+                        const points = computePlayerPoints(p);
+                        return { ...p, __points: points, __title: getPlayerTitle(points, p) };
+                    })
+                    .sort((a, b) => b.__points - a.__points);
+
+                if (sorted.length === 0) {
+                    list.innerHTML = `<div style="text-align:center;padding:30px;color:#8b8b96;">No players on this leaderboard yet</div>`;
+                    toggleBtn.style.display = "none";
+                    return;
+                }
+                const playersToShow = expanded ? sorted : sorted.slice(0, COLLAPSED_COUNT);
+                playersToShow.forEach((p, i) => {
+                    const rank = i + 1;
+                    const div = document.createElement("div");
+                    div.className = `player ${rankClass(rank)}`;
+                    const titleGrad = p.__title ? TITLE_COLORS[p.__title] : null;
+                    div.innerHTML = `
+                        <div class="rank-flag">
+                            <span class="rank-num">${rank}.</span>
+                            <div class="avatar"><img src="${avatarUrl(p.name, 38)}" alt="${p.name}" onerror="this.parentElement.innerHTML='?'"></div>
+                        </div>
+                        <div class="info">
+                            <div class="player-name">${p.name}</div>
+                            <div class="player-title-row">
+                                ${p.__title ? `<div class="player-title-badge"><span class="player-title-text" style="background-image:${titleGrad}">${p.__title}</span></div>` : ''}
+                                <span class="player-points">(${p.__points} points)</span>
+                            </div>
+                        </div>
+                        <div class="elo-wrap"><div class="mini-tiers-row">${renderMiniTierIcons(p)}</div></div>`;
+                    div.addEventListener("click", () => openProfile(p));
+                    list.appendChild(div);
+                });
+                toggleBtn.style.display = sorted.length > COLLAPSED_COUNT ? "block" : "none";
+                toggleBtn.textContent = expanded ? "Show less" : `Show all (${sorted.length})`;
+            } else {
+                const modeField = currentBoard;
+                const playersWithTier = allPlayers.filter(p => p[`${modeField}_tier`] != null);
+                const tierGroups = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+                playersWithTier.forEach(p => {
+                    const tier = p[`${modeField}_tier`];
+                    if (tier >= 1 && tier <= 5) tierGroups[tier].push(p);
+                });
+                for (let t = 1; t <= 5; t++) {
+                    tierGroups[t].sort((a, b) => (a[`${modeField}_pos`] ?? 0) - (b[`${modeField}_pos`] ?? 0));
+                }
+                const columnsDiv = document.createElement("div");
+                columnsDiv.className = "tier-columns";
+                const tierNames = { 1: "Tier 1", 2: "Tier 2", 3: "Tier 3", 4: "Tier 4", 5: "Tier 5" };
+                const tierColorMap = { 1: TIER_COLORS["1+"], 2: TIER_COLORS["2+"], 3: TIER_COLORS["3+"], 4: TIER_COLORS["4+"], 5: TIER_COLORS["5+"] };
+                const tierBgClass = { 1: "tier-column-1", 2: "tier-column-2", 3: "tier-column-3", 4: "tier-column-4", 5: "tier-column-5" };
+                for (let t = 1; t <= 5; t++) {
+                    const players = tierGroups[t];
+                    const col = document.createElement("div");
+                    col.className = `tier-column ${tierBgClass[t]}`;
+                    col.innerHTML = `<div class="tier-header" style="color:${tierColorMap[t]}">${tierNames[t]}</div>`;
+                    const playersDiv = document.createElement("div");
+                    playersDiv.className = "tier-players";
+                    players.forEach(p => {
+                        const plus = p[`_computed_plus_${modeField}`];
+                        const div = document.createElement("div");
+                        div.className = `tier-player${plus ? ' plus' : ''}`;
+                        if (plus) {
+                            const lightColor = TIER_LIGHT_COLORS[t];
+                            div.style.border = `1px solid ${lightColor}`;
+                        }
+                        let badgeHtml;
+                        if (plus) {
+                            const lightColor = TIER_LIGHT_COLORS[t];
+                            badgeHtml = `<span class="tier-badge plus" style="background:${lightColor}; color:#1a1a1a; border:1px solid ${lightColor};">+</span>`;
+                        } else {
+                            badgeHtml = `<span class="tier-badge"></span>`;
+                        }
+                        div.innerHTML = `
+                            <div class="tier-avatar"><img src="${avatarUrl(p.name, 28)}" alt="${p.name}" onerror="this.parentElement.innerHTML='?'"></div>
+                            <span class="tier-name">${p.name}</span>
+                            ${badgeHtml}`;
+                        div.addEventListener("click", () => openProfile(p));
+                        playersDiv.appendChild(div);
+                    });
+                    col.appendChild(playersDiv);
+                    columnsDiv.appendChild(col);
+                }
+                list.appendChild(columnsDiv);
+                toggleBtn.style.display = "none";
             }
-        });
-        list.addEventListener("scroll", () => { globalMiniTip.style.display = "none"; });
-        window.addEventListener("scroll", () => { globalMiniTip.style.display = "none"; }, true);
+        }
 
-        toggleBtn.addEventListener("click", () => {
-            expanded = !expanded;
-            render();
-        });
+        let infoTab = 'titles';
+        function renderInfoTooltip() {
+            const titlesHtml = Object.keys(TITLE_REQUIREMENTS).map(name =>
+                `<div class="info-tooltip-row title-row">
+                    <span class="title-word title-grad" style="background-image:${TITLE_COLORS[name]}">${name}</span>
+                    <span class="title-desc">${TITLE_REQUIREMENTS[name]}</span>
+                </div>`).join('');
 
-        // ---------- Profile Modal ----------
+            const tierOrder = ["1+", "1", "2+", "2", "3+", "3", "4+", "4", "5+", "5"];
+            const pointsHtml = tierOrder.map(key => {
+                const color = TIER_COLORS[key];
+                const pts = TIER_POINTS[key];
+                const display = `Tier ${key}`;
+                return `
+                    <div class="info-tooltip-row points-row">
+                        <span class="tier-name" style="color:${color}">${display}</span>
+                        <span class="tier-pts">${pts} points</span>
+                    </div>`;
+            }).join('');
+
+            infoTooltip.innerHTML = `
+                <div class="tooltip-tabs">
+                    <span class="tooltip-tab ${infoTab === 'titles' ? 'active' : ''}" data-tab="titles">Titles</span>
+                    <span class="tooltip-tab ${infoTab === 'points' ? 'active' : ''}" data-tab="points">Points</span>
+                </div>
+                <div class="tooltip-content ${infoTab === 'titles' ? '' : 'hidden'}" id="tooltipTitles">
+                    <div class="info-tooltip-title">Titles</div>${titlesHtml}
+                </div>
+                <div class="tooltip-content ${infoTab === 'points' ? '' : 'hidden'}" id="tooltipPoints">
+                    <div class="info-tooltip-title">Points</div>${pointsHtml}
+                </div>`;
+            infoTooltip.classList.add("overall-tooltip");
+            infoTooltip.querySelectorAll('.tooltip-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    infoTab = tab.dataset.tab;
+                    infoTooltip.querySelectorAll('.tooltip-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.getElementById('tooltipTitles').classList.toggle('hidden', infoTab !== 'titles');
+                    document.getElementById('tooltipPoints').classList.toggle('hidden', infoTab !== 'points');
+                });
+            });
+        }
+
+        function getRole(name) {
+            if (name === "TestingCheats") return { label: "Developer", cls: "role-developer" };
+            if (name === "cutekiss") return { label: "Tierlist Owner", cls: "role-owner" };
+            return { label: "Player", cls: "role-player" };
+        }
+        function rankClass(rank) {
+            if (rank === 1) return "rank-1"; if (rank === 2) return "rank-2"; if (rank === 3) return "rank-3"; return "";
+        }
+        function avatarUrl(name, size) { return `https://mc-heads.net/avatar/${encodeURIComponent(name)}/${size}`; }
+
         const modalOverlay = document.getElementById("modalOverlay");
         const modalClose = document.getElementById("modalClose");
         const modalAvatar = document.getElementById("modalAvatar");
@@ -2059,37 +1507,46 @@
         const tiersRow = document.getElementById("tiersRow");
         const titleTooltip = document.getElementById("titleTooltip");
 
-        function renderTierIcons(player) {
-            const order = ["1+", "1", "2+", "2", "3+", "3", "4+", "4", "5+", "5"];
+        function renderProfileTiers(player) {
             const entries = [];
             SUB_BOARDS.forEach(key => {
                 const tier = player[`${key}_tier`];
-                const plus = player[`${key}_plus`];
-                if (tier === null || tier === undefined) return;
-                const tierStr = plus ? `${tier}+` : `${tier}`;
+                const plus = player[`_computed_plus_${key}`];
                 const board = LEADERBOARDS[key];
-                const points = TIER_POINTS[tierStr] || 0;
-                entries.push({ board, tierStr, points, tierNum: tier, plus });
+                entries.push({ tier, plus, board });
             });
-            entries.sort((a, b) => order.indexOf(a.tierStr) - order.indexOf(b.tierStr));
+            entries.sort((a, b) => {
+                const keyA = a.tier != null ? (a.plus ? `${a.tier}+` : `${a.tier}`) : "none";
+                const keyB = b.tier != null ? (b.plus ? `${b.tier}+` : `${b.tier}`) : "none";
+                return TIER_ORDER[keyA] - TIER_ORDER[keyB];
+            });
 
             let html = "";
-            entries.forEach(({ board, tierStr, points, tierNum, plus }) => {
-                const color = TIER_COLORS[tierStr];
-                const fullLabel = fullTierLabel(tierNum, plus);
-                const displayLabel = shortTierLabel(tierNum, plus);
-                html += `
-                    <div class="tier-icon-wrap">
-                        <div class="tier-icon-circle" style="border-color:${color}">
-                            <img src="${board.icon}" alt="${board.label}" style="width:30px;height:30px;image-rendering:pixelated;">
-                        </div>
-                        <div class="tier-icon-label" style="color:${color}">${displayLabel}</div>
-                        <div class="tier-elo-tip">
-                            <div class="tip-tier">${fullLabel}</div>
-                            <div class="tip-points">(${points} points)</div>
-                        </div>
-                    </div>
-                `;
+            entries.forEach(({ tier, plus, board }) => {
+                if (tier != null && tier >= 1 && tier <= 5) {
+                    const tierStr = plus ? `${tier}+` : `${tier}`;
+                    const color = TIER_COLORS[tierStr];
+                    html += `
+                        <div class="tier-icon-wrap">
+                            <div class="tier-icon-circle" style="border-color:${color}">
+                                <img src="${board.icon}" alt="${board.label}" style="width:30px;height:30px;">
+                            </div>
+                            <div class="tier-icon-label" style="color:${color}">${shortTierLabel(tier, plus)}</div>
+                            <div class="tier-elo-tip">
+                                <div class="tip-tier">${fullTierLabel(tier, plus)}</div>
+                                <div class="tip-points">(${TIER_POINTS[tierStr]} points)</div>
+                            </div>
+                        </div>`;
+                } else {
+                    html += `
+                        <div class="tier-icon-wrap" style="opacity:0.6">
+                            <div class="tier-icon-circle" style="border-color:#454b54">
+                                <img src="${board.icon}" alt="${board.label}" style="width:30px;height:30px;">
+                            </div>
+                            <div class="tier-icon-label" style="color:#8b8b96">No Tier</div>
+                            <div class="tier-elo-tip"><div class="tip-tier">No Tier</div></div>
+                        </div>`;
+                }
             });
             tiersRow.innerHTML = html;
         }
@@ -2100,47 +1557,32 @@
             const role = getRole(player.name);
             modalRoleBadge.textContent = role.label;
             modalRoleBadge.className = `role-badge ${role.cls}`;
-
             const totalPoints = computePlayerPoints(player);
-            const title = getPlayerTitle(totalPoints, player, allPlayers);
-
+            const title = getPlayerTitle(totalPoints, player);
             const titleSection = document.getElementById("titleSection");
             if (title) {
-                const grad = TITLE_COLORS[title];
                 modalTitleText.textContent = title;
-                modalTitleText.style.backgroundImage = grad;
+                modalTitleText.style.backgroundImage = TITLE_COLORS[title];
                 titleTooltip.textContent = TITLE_REQUIREMENTS[title] || "";
                 titleSection.style.display = "flex";
             } else {
                 titleSection.style.display = "none";
             }
-
-            const overallSorted = getSortedPlayers("__overall_tier");
-            const overallRank = overallSorted.findIndex(p => p.name === player.name) + 1;
-            modalPositionCard.className = `position-card ${rankClass(overallRank)}`;
+            const overallSorted = [...allPlayers]
+                .filter(p => SUB_BOARDS.some(key => p[`${key}_tier`] != null))
+                .map(p => ({ ...p, __points: computePlayerPoints(p) }))
+                .sort((a, b) => b.__points - a.__points);
+            const rank = overallSorted.findIndex(p => p.id === player.id) + 1;
+            modalPositionCard.className = `position-card ${rankClass(rank)}`;
             modalPositionCard.innerHTML = `
-                <div class="rank-flag">
-                    <span class="rank-num">${overallRank}.</span>
-                </div>
-                <div class="pos-info">
-                    <span class="pos-overall">Overall</span>
-                    <span class="pos-points">(${totalPoints} Points)</span>
-                </div>
-            `;
-
-            renderTierIcons(player);
+                <div class="rank-flag"><span class="rank-num">${rank}.</span></div>
+                <div class="pos-info"><span class="pos-overall">Overall</span><span class="pos-points">(${totalPoints} Points)</span></div>`;
+            renderProfileTiers(player);
             modalOverlay.classList.add("active");
         }
+        modalClose.addEventListener("click", () => modalOverlay.classList.remove("active"));
+        modalOverlay.addEventListener("click", (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove("active"); });
 
-        function closeProfile() {
-            modalOverlay.classList.remove("active");
-        }
-        modalClose.addEventListener("click", closeProfile);
-        modalOverlay.addEventListener("click", (e) => {
-            if (e.target === modalOverlay) closeProfile();
-        });
-
-        // ---------- Search ----------
         const searchBtn = document.getElementById("searchBtn");
         const searchPanel = document.getElementById("searchPanel");
         const searchWrapper = document.getElementById("searchWrapper");
@@ -2160,35 +1602,23 @@
                 const row = document.createElement("div");
                 row.className = "search-result-item";
                 row.innerHTML = `<img src="${avatarUrl(p.name, 26)}" alt="" onerror="this.style.display='none'"><span>${p.name}</span>`;
-                row.addEventListener("click", () => {
-                    searchPanel.classList.remove("active");
-                    openProfile(p);
-                });
+                row.addEventListener("click", () => { searchPanel.classList.remove("active"); openProfile(p); });
                 searchResults.appendChild(row);
             });
         }
-
         searchBtn.addEventListener("click", (e) => {
             e.stopPropagation();
-            const willOpen = !searchPanel.classList.contains("active");
             searchPanel.classList.toggle("active");
-            if (willOpen) {
-                searchInput.value = "";
-                renderSearchResults("");
-                setTimeout(() => searchInput.focus(), 30);
-            }
+            if (searchPanel.classList.contains("active")) { searchInput.value = ""; renderSearchResults(""); setTimeout(() => searchInput.focus(), 30); }
         });
         searchInput.addEventListener("input", () => renderSearchResults(searchInput.value));
-        searchInput.addEventListener("click", (e) => e.stopPropagation());
+        searchInput.addEventListener("click", e => e.stopPropagation());
 
-        // ---------- Login ----------
         const loginBtn = document.getElementById("loginBtn");
         const loginPanel = document.getElementById("loginPanel");
         const loginWrapper = document.querySelector(".login-wrapper");
 
-        function buildEmail(username) {
-            return username.toLowerCase() + "@minecraft.local";
-        }
+        function buildEmail(username) { return username.toLowerCase() + "@minecraft.local"; }
 
         function renderLoggedOutPanel() {
             loginPanel.innerHTML = `
@@ -2196,20 +1626,16 @@
                 <input type="text" id="loginUsername" placeholder="Username" autocomplete="off">
                 <input type="password" id="loginPassword" placeholder="Password" autocomplete="off">
                 <button class="login-submit" id="loginSubmit">Log in</button>
-                <div class="login-error" id="loginError">Invalid username or password.</div>
-            `;
+                <div class="login-error" id="loginError">Invalid username or password.</div>`;
             document.getElementById("loginSubmit").addEventListener("click", attemptLogin);
-            document.getElementById("loginPassword").addEventListener("keydown", (e) => {
-                if (e.key === "Enter") attemptLogin();
-            });
+            document.getElementById("loginPassword").addEventListener("keydown", (e) => { if (e.key === "Enter") attemptLogin(); });
         }
 
         function renderLoggedInPanel() {
             loginPanel.innerHTML = `
                 <div class="logged-name">${currentUser.name}</div>
                 <button class="profile-btn" id="profileBtn">Show Player Profile</button>
-                <button class="logout-btn" id="logoutBtn">Log out</button>
-            `;
+                <button class="logout-btn" id="logoutBtn">Log out</button>`;
             document.getElementById("logoutBtn").addEventListener("click", logout);
             document.getElementById("profileBtn").addEventListener("click", () => {
                 loginPanel.classList.remove("active");
@@ -2225,28 +1651,20 @@
             if (!username || !password) return;
             const email = buildEmail(username);
             try {
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                const { error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) throw error;
                 const { data: playerData, error: playerError } = await supabase
-                    .from("players")
-                    .select("*")
-                    .ilike("name", username)
-                    .maybeSingle();
+                    .from("players").select("*").ilike("name", username).maybeSingle();
                 if (playerError || !playerData) {
                     await supabase.auth.signOut();
-                    errorEl.textContent = "Account exists but no player profile found. Contact admin.";
+                    errorEl.textContent = "Player profile not found. Contact admin.";
                     errorEl.style.display = "block";
                     return;
                 }
-                currentUser = playerData;
+                currentUser = mapPlayer(playerData);
                 updateLoginButton();
                 renderLoggedInPanel();
                 loginPanel.classList.remove("active");
-                if (currentUser.name === "TestingCheats" || currentUser.name === "cutekiss") {
-                    adminEditBtn.classList.remove("hidden");
-                } else {
-                    adminEditBtn.classList.add("hidden");
-                }
             } catch (err) {
                 errorEl.textContent = "Invalid username or password.";
                 errorEl.style.display = "block";
@@ -2259,16 +1677,12 @@
             updateLoginButton();
             renderLoggedOutPanel();
             loginPanel.classList.remove("active");
-            adminEditBtn.classList.add("hidden");
         }
 
         function updateLoginButton() {
             if (currentUser) {
                 loginBtn.classList.add("logged-in");
-                loginBtn.innerHTML = `
-                    <div class="login-face"><img src="${avatarUrl(currentUser.name, 26)}" alt=""></div>
-                    ${currentUser.name}
-                `;
+                loginBtn.innerHTML = `<div class="login-face"><img src="${avatarUrl(currentUser.name, 26)}" alt=""></div>${currentUser.name}`;
             } else {
                 loginBtn.classList.remove("logged-in");
                 loginBtn.textContent = "Log in";
@@ -2278,20 +1692,12 @@
         async function restoreSession() {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
-                const user = session.user;
-                const username = user.email.replace(/@minecraft\.local$/, '');
-                const { data: playerData, error } = await supabase
-                    .from("players")
-                    .select("*")
-                    .ilike("name", username)
-                    .maybeSingle();
+                const username = session.user.email.replace(/@minecraft\.local$/, '');
+                const { data: playerData, error } = await supabase.from("players").select("*").ilike("name", username).maybeSingle();
                 if (!error && playerData) {
-                    currentUser = playerData;
+                    currentUser = mapPlayer(playerData);
                     updateLoginButton();
                     renderLoggedInPanel();
-                    if (currentUser.name === "TestingCheats" || currentUser.name === "cutekiss") {
-                        adminEditBtn.classList.remove("hidden");
-                    }
                 } else {
                     await supabase.auth.signOut();
                     currentUser = null;
@@ -2305,11 +1711,7 @@
             }
         }
 
-        loginBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            loginPanel.classList.toggle("active");
-        });
-
+        loginBtn.addEventListener("click", (e) => { e.stopPropagation(); loginPanel.classList.toggle("active"); });
         document.addEventListener("click", (e) => {
             if (!loginWrapper.contains(e.target)) loginPanel.classList.remove("active");
             if (!searchWrapper.contains(e.target)) searchPanel.classList.remove("active");
@@ -2318,353 +1720,24 @@
         renderLoggedOutPanel();
         restoreSession();
 
-        // ---------- Admin Edit ----------
-        let adminPlayerData = [];
-        let adminLBData = [];
-
-        function renderAdminPlayerTab() {
-            const grid = adminPlayerGrid;
-            grid.innerHTML = "";
-            adminPlayerStatus.textContent = `${allPlayers.length} players`;
-
-            allPlayers.forEach(p => {
-                const row = document.createElement("div");
-                row.className = "admin-player-row";
-
-                const modes = [
-                    { mode: "KanalServer", label: "Kanal" },
-                    { mode: "LowblockMace", label: "Mace" }
-                ];
-
-                let html = `
-                    <div class="ap-avatar"><img src="${avatarUrl(p.name, 28)}" alt="" onerror="this.style.display='none'"></div>
-                    <span class="ap-name">${p.name}</span>
-                `;
-
-                modes.forEach(({ mode, label }) => {
-                    const manualTier = p[`${mode}_manual_tier`];
-                    const autoTier = p[`${mode}_tier`];
-                    const currentTier = (manualTier !== null && manualTier !== undefined) ? manualTier : autoTier;
-                    const currentPlus = (manualTier !== null && manualTier !== undefined) ? (p[`${mode}_manual_plus`] || false) : (p[`${mode}_plus`] || false);
-                    const hasManual = manualTier !== null && manualTier !== undefined;
-
-                    html += `
-                        <span class="ap-mode-label">${label}</span>
-                        <select class="ap-tier-select" data-player="${p.id}" data-mode="${mode}">
-                            <option value="">None</option>
-                            ${[1,2,3,4,5].map(t => `<option value="${t}" ${currentTier === t ? 'selected' : ''}>Tier ${t}</option>`).join('')}
-                        </select>
-                        <input type="checkbox" class="ap-plus-check" data-player="${p.id}" data-mode="${mode}" ${currentPlus ? 'checked' : ''} ${currentTier !== null && currentTier !== undefined ? '' : 'disabled'}>
-                        <span class="ap-label">+</span>
-                    `;
-                });
-
-                row.innerHTML = html;
-                grid.appendChild(row);
-
-                const selects = row.querySelectorAll('.ap-tier-select');
-                const checks = row.querySelectorAll('.ap-plus-check');
-                selects.forEach((sel, idx) => {
-                    sel.addEventListener('change', () => {
-                        const check = checks[idx];
-                        if (sel.value) {
-                            check.disabled = false;
-                        } else {
-                            check.disabled = true;
-                            check.checked = false;
-                        }
-                    });
-                });
-            });
-        }
-
-        function renderAdminLeaderboardTab(mode) {
-            const container = adminLBContainer;
-            container.innerHTML = "";
-            adminLBStatus.textContent = "Drag up/down to reorder within tiers";
-
-            const modeField = mode || lbEditMode;
-
-            const sorted = [...allPlayers]
-                .filter(p => p[modeField] !== null && p[modeField] !== undefined)
-                .sort((a, b) => b[modeField] - a[modeField]);
-
-            const tempPlayers = assignTiersForMode([...allPlayers], modeField);
-            const tierGroups = { 1: [], 2: [], 3: [], 4: [], 5: [] };
-            tempPlayers.forEach(p => {
-                const tier = p[`${modeField}_tier`];
-                if (tier !== null && tier !== undefined && tier >= 1 && tier <= 5) {
-                    tierGroups[tier].push(p);
-                }
-            });
-
-            for (let t = 1; t <= 5; t++) {
-                tierGroups[t].sort((a, b) => {
-                    const aPos = a[`${modeField}_pos`] || 9999;
-                    const bPos = b[`${modeField}_pos`] || 9999;
-                    return aPos - bPos;
-                });
-            }
-
-            const tierNames = { 1: "Tier 1", 2: "Tier 2", 3: "Tier 3", 4: "Tier 4", 5: "Tier 5" };
-            const tierColorMap = {
-                1: TIER_COLORS["1+"],
-                2: TIER_COLORS["2+"],
-                3: TIER_COLORS["3+"],
-                4: TIER_COLORS["4+"],
-                5: TIER_COLORS["5+"]
+        function mapPlayer(dbRow) {
+            return {
+                id: dbRow.id,
+                name: dbRow.name,
+                KanalServer_tier: dbRow.kanal_tier ?? null,
+                KanalServer_plus: dbRow.kanal_plus ?? false,
+                KanalServer_pos: dbRow.kanal_pos ?? 0,
+                LowblockMace_tier: dbRow.lowblockmace_tier ?? null,
+                LowblockMace_plus: dbRow.lowblockmace_plus ?? false,
+                LowblockMace_pos: dbRow.lowblockmace_pos ?? 0
             };
-            const tierBgClass = {
-                1: "tier-column-1",
-                2: "tier-column-2",
-                3: "tier-column-3",
-                4: "tier-column-4",
-                5: "tier-column-5"
-            };
-
-            for (let t = 1; t <= 5; t++) {
-                const players = tierGroups[t] || [];
-                const col = document.createElement("div");
-                col.className = `admin-lb-column ${tierBgClass[t]}`;
-
-                const header = document.createElement("div");
-                header.className = "lb-header";
-                header.style.color = tierColorMap[t] || "#fff";
-                header.textContent = tierNames[t];
-                col.appendChild(header);
-
-                const playersDiv = document.createElement("div");
-                playersDiv.className = "lb-players";
-
-                players.forEach((p, idx) => {
-                    const isPlus = p[`${modeField}_plus`];
-                    const isManual = p[`${modeField}_manual_tier`] !== null && p[`${modeField}_manual_tier`] !== undefined;
-                    const playerDiv = document.createElement("div");
-                    playerDiv.className = `admin-lb-player${isManual ? ' lbp-manual' : ''}`;
-                    playerDiv.dataset.playerId = p.id;
-                    playerDiv.dataset.tier = t;
-                    playerDiv.dataset.index = idx;
-
-                    const canMoveUp = idx > 0;
-                    const canMoveDown = idx < players.length - 1;
-
-                    playerDiv.innerHTML = `
-                        <div class="lbp-avatar"><img src="${avatarUrl(p.name, 24)}" alt="" onerror="this.style.display='none'"></div>
-                        <span class="lbp-name">${p.name}${isManual ? ' ✎' : ''}</span>
-                        ${isPlus ? '<span class="lbp-badge">+</span>' : ''}
-                        <div class="lbp-arrows">
-                            <button class="lbp-up" data-player="${p.id}" data-tier="${t}" ${!canMoveUp ? 'disabled' : ''}>▲</button>
-                            <button class="lbp-down" data-player="${p.id}" data-tier="${t}" ${!canMoveDown ? 'disabled' : ''}>▼</button>
-                        </div>
-                    `;
-                    playersDiv.appendChild(playerDiv);
-                });
-
-                col.appendChild(playersDiv);
-                container.appendChild(col);
-            }
-
-            container.querySelectorAll('.lbp-up').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const playerId = parseInt(btn.dataset.player);
-                    const tier = parseInt(btn.dataset.tier);
-                    movePlayerInTier(playerId, tier, -1, modeField);
-                });
-            });
-            container.querySelectorAll('.lbp-down').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const playerId = parseInt(btn.dataset.player);
-                    const tier = parseInt(btn.dataset.tier);
-                    movePlayerInTier(playerId, tier, 1, modeField);
-                });
-            });
         }
-
-        function movePlayerInTier(playerId, tier, direction, modeField) {
-            const player = allPlayers.find(p => p.id === playerId);
-            if (!player) return;
-
-            const tempPlayers = assignTiersForMode([...allPlayers], modeField);
-            const tierGroups = { 1: [], 2: [], 3: [], 4: [], 5: [] };
-            tempPlayers.forEach(p => {
-                const pt = p[`${modeField}_tier`];
-                if (pt !== null && pt !== undefined && pt >= 1 && pt <= 5) {
-                    tierGroups[pt].push(p);
-                }
-            });
-
-            for (let t = 1; t <= 5; t++) {
-                tierGroups[t].sort((a, b) => {
-                    const aPos = a[`${modeField}_pos`] || 9999;
-                    const bPos = b[`${modeField}_pos`] || 9999;
-                    return aPos - bPos;
-                });
-            }
-
-            const group = tierGroups[tier] || [];
-            const idx = group.findIndex(p => p.id === playerId);
-            if (idx === -1) return;
-
-            const newIdx = idx + direction;
-            if (newIdx < 0 || newIdx >= group.length) return;
-
-            const other = group[newIdx];
-            const posA = player[`${modeField}_pos`] || 0;
-            const posB = other[`${modeField}_pos`] || 0;
-
-            const pA = allPlayers.find(p => p.id === playerId);
-            const pB = allPlayers.find(p => p.id === other.id);
-            if (pA && pB) {
-                pA[`${modeField}_pos`] = posB;
-                pB[`${modeField}_pos`] = posA;
-                pA[`${modeField}_manual_pos`] = posB;
-                pB[`${modeField}_manual_pos`] = posA;
-            }
-
-            renderAdminLeaderboardTab(modeField);
-            if (currentBoard === modeField || currentBoard === "Overall") {
-                render();
-            }
-        }
-
-        function openAdminModal() {
-            adminModalOverlay.classList.add("active");
-            allPlayers = assignTiersForMode(allPlayers, "KanalServer");
-            allPlayers = assignTiersForMode(allPlayers, "LowblockMace");
-            renderAdminPlayerTab();
-            renderAdminLeaderboardTab(lbEditMode);
-            switchAdminTab('player');
-        }
-
-        function switchAdminTab(tab) {
-            adminTab = tab;
-            document.querySelectorAll('.admin-modal-tab').forEach(el => {
-                el.classList.toggle('active', el.dataset.tab === tab);
-            });
-            document.getElementById('adminTabPlayer').classList.toggle('active', tab === 'player');
-            document.getElementById('adminTabLeaderboard').classList.toggle('active', tab === 'leaderboard');
-        }
-
-        adminModalTabs.addEventListener('click', (e) => {
-            const tabEl = e.target.closest('.admin-modal-tab');
-            if (tabEl) {
-                switchAdminTab(tabEl.dataset.tab);
-            }
-        });
-
-        lbModeSelect.addEventListener('change', () => {
-            lbEditMode = lbModeSelect.value;
-            renderAdminLeaderboardTab(lbEditMode);
-        });
-
-        adminEditBtn.addEventListener("click", openAdminModal);
-
-        adminCloseBtn.addEventListener("click", () => {
-            adminModalOverlay.classList.remove("active");
-        });
-
-        // ---------- SAVE BUTTON ----------
-        adminSaveBtn.addEventListener("click", async () => {
-            // Gather data from the edit player tab
-            const selects = document.querySelectorAll('.ap-tier-select');
-            const checks = document.querySelectorAll('.ap-plus-check');
-
-            const updates = {};
-            selects.forEach(sel => {
-                const pid = parseInt(sel.dataset.player);
-                const mode = sel.dataset.mode;
-                const tier = sel.value ? parseInt(sel.value) : null;
-                if (!updates[pid]) updates[pid] = {};
-                updates[pid][`${mode}_manual_tier`] = tier;
-            });
-            checks.forEach(chk => {
-                const pid = parseInt(chk.dataset.player);
-                const mode = chk.dataset.mode;
-                if (!updates[pid]) updates[pid] = {};
-                updates[pid][`${mode}_manual_plus`] = chk.checked;
-            });
-
-            // Apply updates to allPlayers
-            for (const pid of Object.keys(updates)) {
-                const player = allPlayers.find(p => p.id === parseInt(pid));
-                if (player) {
-                    // Preserve pos data
-                    const posData = {};
-                    SUB_BOARDS.forEach(mode => {
-                        if (player[`${mode}_pos`] !== undefined) {
-                            posData[`${mode}_pos`] = player[`${mode}_pos`];
-                        }
-                        if (player[`${mode}_manual_pos`] !== undefined) {
-                            posData[`${mode}_manual_pos`] = player[`${mode}_manual_pos`];
-                        }
-                    });
-                    Object.assign(player, updates[pid]);
-                    SUB_BOARDS.forEach(mode => {
-                        if (posData[`${mode}_pos`] !== undefined && player[`${mode}_pos`] === undefined) {
-                            player[`${mode}_pos`] = posData[`${mode}_pos`];
-                        }
-                        if (posData[`${mode}_manual_pos`] !== undefined && player[`${mode}_manual_pos`] === undefined) {
-                            player[`${mode}_manual_pos`] = posData[`${mode}_manual_pos`];
-                        }
-                    });
-                }
-            }
-
-            // Build the data to upsert – only the manual columns
-            const updatesToDb = allPlayers.map(p => {
-                const record = {
-                    id: p.id,
-                    kanal_manual_tier: p.KanalServer_manual_tier ?? null,
-                    kanal_manual_plus: p.KanalServer_manual_plus ?? false,
-                    mace_manual_tier: p.LowblockMace_manual_tier ?? null,
-                    mace_manual_plus: p.LowblockMace_manual_plus ?? false
-                };
-                return record;
-            });
-
-            try {
-                const { error } = await supabase
-                    .from('players')
-                    .upsert(updatesToDb, { onConflict: 'id' });
-
-                if (error) {
-                    console.error('Save error:', error);
-                    alert('Failed to save changes: ' + error.message);
-                    return;
-                }
-
-                alert('Changes saved successfully to the database!');
-                adminModalOverlay.classList.remove('active');
-                await loadPlayers(); // refresh data
-                render(); // re-render the UI
-            } catch (err) {
-                alert('Error saving: ' + err.message);
-            }
-        });
-
-        // ---------- Init ----------
-        renderTabMenu();
-        setTitle(currentBoard);
 
         async function loadPlayers() {
             const { data, error } = await supabase.from("players").select("*");
-            if (error) {
-                list.innerHTML = "Error loading data";
-                toggleBtn.style.display = "none";
-                return;
-            }
-            allPlayers = data;
-            allPlayers.forEach(p => {
-                SUB_BOARDS.forEach(mode => {
-                    const modeLower = mode === 'KanalServer' ? 'kanal' : 'mace';
-                    p[`${mode}_manual_tier`] = p[`${modeLower}_manual_tier`] ?? null;
-                    p[`${mode}_manual_plus`] = p[`${modeLower}_manual_plus`] ?? false;
-                    if (p[`${mode}_pos`] === undefined) p[`${mode}_pos`] = 0;
-                    if (p[`${mode}_manual_pos`] === undefined) p[`${mode}_manual_pos`] = null;
-                });
-            });
+            if (error) { list.innerHTML = "Error loading data"; toggleBtn.style.display = "none"; return; }
+            allPlayers = data.map(mapPlayer);
+            recomputePlus();
             render();
             if (currentUser) {
                 const fresh = allPlayers.find(p => p.name.toLowerCase() === currentUser.name.toLowerCase());
@@ -2672,6 +1745,15 @@
             }
         }
 
+        toggleBtn.addEventListener("click", () => { expanded = !expanded; render(); });
+
+        document.getElementById("infoBtn").addEventListener("click", (e) => { e.stopPropagation(); infoTooltip.classList.toggle("active"); });
+        document.addEventListener("click", (e) => {
+            if (!infoTooltip.contains(e.target) && e.target !== document.getElementById("infoBtn")) infoTooltip.classList.remove("active");
+        });
+
+        renderTabMenu();
+        setTitle(currentBoard);
         loadPlayers();
         setInterval(loadPlayers, 5000);
     </script>
