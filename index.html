@@ -515,7 +515,7 @@
             padding: 6px 2px;
         }
 
-        /* Player row (Overall) - 20% taller */
+        /* Player row (Overall) */
         .player {
             display: flex;
             align-items: stretch;
@@ -525,7 +525,7 @@
             overflow: hidden;
             cursor: pointer;
             transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-            min-height: 110px;
+            min-height: 99px;               /* 10% less tall than 110px */
         }
         .player:hover {
             transform: scale(1.035);
@@ -550,14 +550,14 @@
             width: 32px;
         }
         .avatar {
-            width: 50px;
-            height: 50px;
+            width: 60px;                     /* larger avatar */
+            height: 60px;
             border-radius: 8px;
             background: #000;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 26px;                 /* slightly larger fallback */
             color: #666;
             flex-shrink: 0;
             overflow: hidden;
@@ -572,12 +572,12 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            padding: 12px 20px;
-            gap: 12px;
+            justify-content: center;         /* rows perfectly centered */
+            padding: 0 20px;
+            gap: 12px;                      /* equal to top/bottom padding */
         }
         .player-name {
-            font-size: 26px;         /* reverted to original large size */
+            font-size: 26px;
             font-weight: 700;
             letter-spacing: 0.3px;
             font-family: 'Bahnschrift', Arial, sans-serif;
@@ -592,13 +592,13 @@
             background: #191920;
             border: 1px solid #2c2c34;
             border-radius: 6px;
-            padding: 4px 14px;        /* slightly larger padding */
+            padding: 4px 14px;
             display: flex;
             align-items: center;
-            height: 32px;             /* increased */
+            height: 32px;
         }
         .player-title-text {
-            font-size: 16px;         /* larger title text */
+            font-size: 16px;
             font-weight: 900;
             font-family: 'Bahnschrift', Arial, sans-serif;
             letter-spacing: 0.3px;
@@ -609,7 +609,7 @@
             -webkit-text-fill-color: transparent;
         }
         .player-points {
-            font-size: 16px;         /* larger points text */
+            font-size: 16px;
             font-weight: 600;
             color: #8b8b96;
             white-space: nowrap;
