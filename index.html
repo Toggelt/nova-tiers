@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Kanal Server Leaderboard</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://github.com/Toggelt/nova-tiers/blob/main/assets/103366-removebg-preview.png?raw=true">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Merriweather+Sans:wght@700;800&display=swap" rel="stylesheet">
     <style>
         /* ---------- Base & fixed top bar ---------- */
         * {
@@ -17,21 +19,39 @@
             font-family: Arial, sans-serif;
             background: #0b0b0e;
             color: #fff;
-            padding-top: 60px;
+            padding-top: 300px;      /* increased to match larger top bar */
         }
         .top-fixed-bar {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 60px;
+            height: 300px;          /* taller to accommodate larger elements */
             background: #0b0b0e;
             border-bottom: 1px solid #232329;
             z-index: 100;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
-            padding: 0 30px;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .top-bar-image {
+            height: 132px;          /* 3x previous (44px) */
+            width: auto;
+            border-radius: 10px;    /* rounded edges */
+            object-fit: contain;
+        }
+        .top-bar-title {
+            font-family: 'Merriweather Sans', Arial, sans-serif;
+            font-weight: 800;
+            font-size: 90px;        /* 2.5x previous (36px) */
+            color: #ffffff;
+            letter-spacing: 1px;
         }
         .top-fixed-bar .login-wrapper {
             display: flex;
@@ -42,9 +62,9 @@
             background: #1c1c22;
             border: 1px solid #2c2c34;
             color: #c9c9d1;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 13px;
+            padding: 12px 32px;
+            border-radius: 30px;
+            font-size: 20px;
             font-weight: 700;
             font-family: Arial, sans-serif;
             cursor: pointer;
@@ -52,18 +72,18 @@
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
             display: flex;
             align-items: center;
-            gap: 7px;
+            gap: 10px;
         }
         .top-fixed-bar .login-btn:hover {
             background: #26262e;
         }
         .top-fixed-bar .login-btn.logged-in {
-            padding: 5px 16px 5px 5px;
+            padding: 10px 32px 10px 10px;
         }
         .top-fixed-bar .login-face {
-            width: 26px;
-            height: 26px;
-            border-radius: 6px;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
             overflow: hidden;
             background: #000;
             flex-shrink: 0;
@@ -76,13 +96,13 @@
         }
         .top-fixed-bar .login-panel {
             position: absolute;
-            top: calc(100% + 6px);
+            top: calc(100% + 8px);
             right: 0;
             background: #191920;
             border: 1px solid #2c2c34;
             border-radius: 10px;
-            padding: 16px;
-            width: 220px;
+            padding: 20px;
+            width: 260px;
             display: none;
             z-index: 200;
             box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
@@ -104,9 +124,9 @@
             border: 1px solid #2c2c34;
             border-radius: 7px;
             color: #fff;
-            padding: 8px 10px;
-            font-size: 13px;
-            margin-bottom: 8px;
+            padding: 10px 12px;
+            font-size: 14px;
+            margin-bottom: 10px;
             font-family: Arial, sans-serif;
         }
         .top-fixed-bar .login-panel input:focus {
@@ -118,10 +138,10 @@
             background: #3a3a44;
             border: none;
             color: #fff;
-            padding: 9px;
+            padding: 12px;
             border-radius: 7px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 14px;
             cursor: pointer;
             margin-top: 2px;
             transition: background 0.15s ease;
@@ -131,7 +151,7 @@
         }
         .top-fixed-bar .login-error {
             color: #ff6b6b;
-            font-size: 12px;
+            font-size: 13px;
             margin-top: 6px;
             display: none;
         }
@@ -140,10 +160,10 @@
             background: #241414;
             border: 1px solid #7a2323;
             color: #ff8a8a;
-            padding: 9px;
+            padding: 12px;
             border-radius: 7px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 14px;
             cursor: pointer;
             transition: background 0.15s ease;
         }
@@ -151,9 +171,9 @@
             background: #2e1818;
         }
         .top-fixed-bar .login-panel .logged-name {
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             color: #fff;
         }
         .top-fixed-bar .profile-btn {
@@ -161,19 +181,19 @@
             background: #1a2a3a;
             border: 1px solid #2a4a6a;
             color: #8ab4f8;
-            padding: 9px;
+            padding: 12px;
             border-radius: 7px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 14px;
             cursor: pointer;
             transition: background 0.15s ease;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         .top-fixed-bar .profile-btn:hover {
             background: #1f3348;
         }
 
-        /* ---------- Container ---------- */
+        /* ---------- Container (unchanged) ---------- */
         .container {
             position: relative;
             z-index: 1;
@@ -525,7 +545,7 @@
             overflow: hidden;
             cursor: pointer;
             transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-            min-height: 99px;               /* 10% less tall than 110px */
+            min-height: 99px;
         }
         .player:hover {
             transform: scale(1.035);
@@ -550,14 +570,14 @@
             width: 32px;
         }
         .avatar {
-            width: 60px;                     /* larger avatar */
+            width: 60px;
             height: 60px;
             border-radius: 8px;
             background: #000;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;                 /* slightly larger fallback */
+            font-size: 26px;
             color: #666;
             flex-shrink: 0;
             overflow: hidden;
@@ -572,9 +592,9 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;         /* rows perfectly centered */
+            justify-content: center;
             padding: 0 20px;
-            gap: 12px;                      /* equal to top/bottom padding */
+            gap: 12px;
         }
         .player-name {
             font-size: 26px;
@@ -1072,6 +1092,10 @@
 <body>
 
     <div class="top-fixed-bar">
+        <div class="top-bar-left">
+            <img class="top-bar-image" src="https://github.com/Toggelt/nova-tiers/blob/main/assets/IMG_20260619_105801.jpg?raw=true" alt="Nova">
+            <div class="top-bar-title">Nova Tiers</div>
+        </div>
         <div class="login-wrapper">
             <button class="login-btn" id="loginBtn">Log in</button>
             <div class="login-panel" id="loginPanel"></div>
