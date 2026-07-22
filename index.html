@@ -7,14 +7,10 @@
     <link rel="icon" type="image/png" href="https://github.com/Toggelt/nova-tiers/blob/main/assets/103366-removebg-preview.png?raw=true">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Merriweather+Sans:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Merriweather+Sans:wght@700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         /* ---------- Base & fixed top bar ---------- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: Arial, sans-serif;
             background: #0b0b0e;
@@ -23,786 +19,207 @@
         }
         .top-fixed-bar {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 150px;
+            top: 0; left: 0; width: 100%; height: 150px;
             background: #0b0b0e;
             border-bottom: 1px solid #232329;
             z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 40px;
         }
-        .top-bar-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .top-bar-image {
-            width: 100px;          /* set to 100px */
-            height: 100px;         /* set to 100px */
-            border-radius: 10px;
-            object-fit: contain;   /* keep image inside without distortion */
-        }
-        .top-bar-title {
-            font-family: 'Merriweather Sans', Arial, sans-serif;
-            font-weight: 800;
-            font-size: 45px;
-            color: #ffffff;
-            letter-spacing: 1px;
-        }
-        .top-fixed-bar .login-wrapper {
-            display: flex;
-            align-items: center;
-            position: relative;
-        }
-        .top-fixed-bar .login-btn {
+        .top-bar-left { display: flex; align-items: center; gap: 16px; }
+        .top-bar-image { width: 100px; height: 100px; border-radius: 10px; object-fit: contain; }
+        .top-bar-title { font-family: 'Merriweather Sans', sans-serif; font-weight: 800; font-size: 45px; color: #fff; letter-spacing: 1px; }
+        .top-bar-right { display: flex; align-items: center; gap: 20px; }
+
+        /* Version dropdown - box style, Minecraft font, same height as login button */
+        .version-dropdown { position: relative; }
+        .version-btn {
+            height: 60px; /* same as login button height */
             background: #1c1c22;
             border: 1px solid #2c2c34;
             color: #c9c9d1;
-            padding: 12px 32px;
-            border-radius: 30px;
-            font-size: 20px;
-            font-weight: 700;
-            font-family: Arial, sans-serif;
-            cursor: pointer;
-            transition: background 0.15s ease;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .top-fixed-bar .login-btn:hover {
-            background: #26262e;
-        }
-        .top-fixed-bar .login-btn.logged-in {
-            padding: 10px 32px 10px 10px;
-        }
-        .top-fixed-bar .login-face {
-            width: 40px;
-            height: 40px;
+            padding: 0 20px;
             border-radius: 8px;
-            overflow: hidden;
-            background: #000;
-            flex-shrink: 0;
-            image-rendering: pixelated;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+            justify-content: center;
+            transition: background 0.15s;
+            min-width: 160px;
+            box-sizing: border-box;
         }
-        .top-fixed-bar .login-face img {
-            width: 100%;
-            height: 100%;
-            image-rendering: pixelated;
-        }
-        .top-fixed-bar .login-panel {
+        .version-btn:hover { background: #26262e; }
+        .version-btn img { width: 28px; height: 28px; image-rendering: pixelated; }
+        .version-btn span { flex: 1; text-align: center; }
+
+        .version-options {
             position: absolute;
-            top: calc(100% + 8px);
-            right: 0;
-            background: #191920;
+            top: calc(100% + 2px);
+            left: 0;
+            width: 100%;
+            background: #1c1c22;
             border: 1px solid #2c2c34;
-            border-radius: 10px;
-            padding: 20px;
-            width: 260px;
+            border-radius: 0 0 8px 8px;
+            overflow: hidden;
             display: none;
             z-index: 200;
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
-        .top-fixed-bar .login-panel.active {
-            display: block;
-        }
-        .top-fixed-bar .login-panel-title {
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            color: #8b8b96;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-        .top-fixed-bar .login-panel input {
-            width: 100%;
-            background: #131318;
-            border: 1px solid #2c2c34;
-            border-radius: 7px;
-            color: #fff;
-            padding: 10px 12px;
-            font-size: 14px;
-            margin-bottom: 10px;
-            font-family: Arial, sans-serif;
-        }
-        .top-fixed-bar .login-panel input:focus {
-            outline: none;
-            border-color: #4a4a5c;
-        }
-        .top-fixed-bar .login-submit {
-            width: 100%;
-            background: #3a3a44;
-            border: none;
-            color: #fff;
-            padding: 12px;
-            border-radius: 7px;
-            font-weight: 700;
-            font-size: 14px;
+        .version-options.active { display: block; }
+        .version-option {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 20px;
             cursor: pointer;
-            margin-top: 2px;
-            transition: background 0.15s ease;
-        }
-        .top-fixed-bar .login-submit:hover {
-            background: #464652;
-        }
-        .top-fixed-bar .login-error {
-            color: #ff6b6b;
-            font-size: 13px;
-            margin-top: 6px;
-            display: none;
-        }
-        .top-fixed-bar .logout-btn {
-            width: 100%;
-            background: #241414;
-            border: 1px solid #7a2323;
-            color: #ff8a8a;
-            padding: 12px;
-            border-radius: 7px;
-            font-weight: 700;
+            font-family: 'Press Start 2P', cursive;
             font-size: 14px;
-            cursor: pointer;
-            transition: background 0.15s ease;
+            color: #c9c9d1;
+            transition: background 0.15s;
+            justify-content: center;
         }
-        .top-fixed-bar .logout-btn:hover {
-            background: #2e1818;
-        }
-        .top-fixed-bar .login-panel .logged-name {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: #fff;
-        }
-        .top-fixed-bar .profile-btn {
-            width: 100%;
-            background: #1a2a3a;
-            border: 1px solid #2a4a6a;
-            color: #8ab4f8;
-            padding: 12px;
-            border-radius: 7px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.15s ease;
-            margin-bottom: 10px;
-        }
-        .top-fixed-bar .profile-btn:hover {
-            background: #1f3348;
-        }
+        .version-option:hover { background: #26262e; }
+        .version-option img { width: 24px; height: 24px; image-rendering: pixelated; }
 
-        /* ---------- Container (unchanged) ---------- */
+        .login-wrapper { position: relative; }
+        .login-btn {
+            background: #1c1c22; border: 1px solid #2c2c34; color: #c9c9d1;
+            padding: 12px 32px; border-radius: 30px; font-size: 20px; font-weight: 700;
+            font-family: Arial, sans-serif; cursor: pointer; transition: background 0.15s;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.35); display: flex; align-items: center; gap: 10px;
+            height: 60px;
+        }
+        .login-btn:hover { background: #26262e; }
+        .login-btn.logged-in { padding: 10px 32px 10px 10px; }
+        .login-face { width: 40px; height: 40px; border-radius: 8px; overflow: hidden; background: #000; flex-shrink: 0; image-rendering: pixelated; }
+        .login-face img { width: 100%; height: 100%; image-rendering: pixelated; }
+        .login-panel {
+            position: absolute; top: calc(100% + 8px); right: 0; background: #191920;
+            border: 1px solid #2c2c34; border-radius: 10px; padding: 20px; width: 260px;
+            display: none; z-index: 200; box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+        }
+        .login-panel.active { display: block; }
+        .login-panel-title { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #8b8b96; text-transform: uppercase; margin-bottom: 10px; }
+        .login-panel input { width: 100%; background: #131318; border: 1px solid #2c2c34; border-radius: 7px; color: #fff; padding: 10px 12px; font-size: 14px; margin-bottom: 10px; font-family: Arial; }
+        .login-panel input:focus { outline: none; border-color: #4a4a5c; }
+        .login-submit { width: 100%; background: #3a3a44; border: none; color: #fff; padding: 12px; border-radius: 7px; font-weight: 700; font-size: 14px; cursor: pointer; }
+        .login-submit:hover { background: #464652; }
+        .login-error { color: #ff6b6b; font-size: 13px; margin-top: 6px; display: none; }
+        .logout-btn { width: 100%; background: #241414; border: 1px solid #7a2323; color: #ff8a8a; padding: 12px; border-radius: 7px; font-weight: 700; font-size: 14px; cursor: pointer; }
+        .logout-btn:hover { background: #2e1818; }
+        .login-panel .logged-name { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #fff; }
+        .profile-btn { width: 100%; background: #1a2a3a; border: 1px solid #2a4a6a; color: #8ab4f8; padding: 12px; border-radius: 7px; font-weight: 700; font-size: 14px; cursor: pointer; margin-bottom: 10px; }
+        .profile-btn:hover { background: #1f3348; }
+
+        /* Container */
         .container {
-            position: relative;
-            z-index: 1;
-            width: 1250px;
-            max-width: 100%;
-            background: #131318;
-            padding: 20px;
-            border-radius: 14px;
-            border: 1px solid #232329;
-            margin: 20px auto;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+            position: relative; z-index: 1; width: 1250px; max-width: 100%;
+            background: #26262e; padding: 0; padding-bottom: 20px;
+            border-radius: 0 0 14px 14px; border: 1px solid #232329;
+            margin: 20px auto; box-shadow: 0 0 30px rgba(0,0,0,0.4); overflow: visible;
         }
-        h2 {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            white-space: nowrap;
-            text-align: center;
-            margin-top: 4px;
-            margin-bottom: 18px;
-            letter-spacing: 2px;
-            font-weight: 800;
-            text-transform: uppercase;
-            font-family: 'Orbitron', Arial, sans-serif;
+        .tab-bar { display: flex; width: 100%; height: 70px; margin: 0; background: #1c1c22; border-bottom: 1px solid #2c2c34; }
+        .tab-button {
+            flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+            cursor: pointer; color: #8b8b96; background: #1c1c22; border: none;
+            border-right: 1px solid #2c2c34; transition: background 0.15s, color 0.15s;
+            user-select: none; font-size: 15px; font-weight: 700; letter-spacing: 0.4px;
+            font-family: Arial, sans-serif; border-radius: 8px 8px 0 0;
         }
-        .title-icon {
-            width: 42px;
-            height: 42px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .title-icon img {
-            width: 100%;
-            height: 100%;
-            image-rendering: pixelated;
-        }
-        .title-icon .emoji-icon {
-            font-size: 34px;
-            line-height: 1;
-        }
+        .tab-button:last-child { border-right: none; }
+        .tab-button:hover { background: #22222a; color: #c9c9d1; }
+        .tab-button.active { background: #26262e; color: #fff; }
+        .tab-button.active span.tab-label { color: #fff; }
+        .tab-button img { image-rendering: pixelated; }
+        .tab-label { font-size: 15px; font-weight: 700; letter-spacing: 0.4px; white-space: nowrap; }
 
-        .tab-menu {
+        .top-bar { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin: 14px 20px; }
+        h2 { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0 0 18px; letter-spacing: 2px; font-weight: 800; text-transform: uppercase; font-family: 'Orbitron', sans-serif; padding: 0 20px; }
+        .title-icon { width: 42px; height: 42px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .title-icon img { width: 100%; height: 100%; image-rendering: pixelated; }
+
+        /* Info & Search */
+        .info-btn-wrapper { position: relative; }
+        .info-btn { display: flex; align-items: center; gap: 7px; background: #1c1c22; border: 1px solid #2c2c34; color: #c9c9d1; padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; }
+        .info-btn:hover { background: #26262e; }
+        .info-icon { width: 16px; height: 16px; border-radius: 50%; background: #3a3a44; color: #fff; font-size: 11px; font-weight: 800; font-style: italic; display: flex; align-items: center; justify-content: center; }
+        .info-tooltip { position: absolute; top: calc(100% + 8px); right: 0; background: #191920; border: 1px solid #2c2c34; border-radius: 10px; padding: 12px 16px; min-width: 180px; display: none; z-index: 50; }
+        .info-tooltip.active { display: block; }
+        .info-tooltip.overall-tooltip { min-width: 336px; padding: 17px 24px; }
+        .search-btn-wrapper { position: relative; }
+        .search-btn { display: flex; align-items: center; gap: 7px; background: #1c1c22; border: 1px solid #2c2c34; color: #c9c9d1; padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; }
+        .search-btn:hover { background: #26262e; }
+        .search-btn svg { width: 14px; height: 14px; stroke: currentColor; }
+        .search-panel { position: absolute; top: calc(100% + 8px); right: 0; background: #191920; border: 1px solid #2c2c34; border-radius: 10px; padding: 14px; width: 250px; display: none; z-index: 70; }
+        .search-panel.active { display: block; }
+        .search-input { width: 100%; background: #131318; border: 1px solid #2c2c34; border-radius: 7px; color: #fff; padding: 8px 10px; font-size: 13px; margin-bottom: 10px; }
+        .search-results { max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+        .search-result-item { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 7px; cursor: pointer; font-size: 13px; font-weight: 600; }
+        .search-result-item:hover { background: #22222a; }
+        .search-result-item img { width: 26px; height: 26px; border-radius: 5px; }
+        .search-empty { color: #5c5c66; font-size: 12px; padding: 6px 2px; }
+
+        /* Overall column headers */
+        .overall-headers {
             display: flex;
-            background: #1c1c22;
-            border: 1px solid #2c2c34;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-bottom: 16px;
-        }
-        .tab-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 10px 8px 9px;
-            cursor: pointer;
-            color: #8b8b96;
-            border-right: 1px solid #2c2c34;
-            transition: background 0.15s ease, color 0.15s ease;
-            user-select: none;
-        }
-        .tab-item:last-child {
-            border-right: none;
-        }
-        .tab-item img {
-            width: 32px;
-            height: 32px;
-            image-rendering: pixelated;
-        }
-        .tab-item .emoji-icon {
-            font-size: 28px;
-            line-height: 1;
-        }
-        .tab-item span.tab-label {
+            margin: 10px 20px 0 20px;
+            padding: 0 20px;
             font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.4px;
-            white-space: nowrap;
-        }
-        .tab-item:hover {
-            background: #22222a;
-            color: #c9c9d1;
-        }
-        .tab-item.active {
-            background: #26262e;
-            color: #fff;
-        }
-        .tab-item.active span.tab-label {
-            color: #ffffff;
-        }
-
-        .top-bar {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-
-        /* Info tooltip */
-        .info-btn-wrapper {
-            position: relative;
-        }
-        .info-btn {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            background: #1c1c22;
-            border: 1px solid #2c2c34;
-            color: #c9c9d1;
-            padding: 7px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 700;
-            font-family: Arial, sans-serif;
-            cursor: pointer;
-            transition: background 0.15s ease;
-        }
-        .info-btn:hover {
-            background: #26262e;
-        }
-        .info-icon {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #3a3a44;
-            color: #fff;
-            font-size: 11px;
-            font-weight: 800;
-            font-style: italic;
-            font-family: 'Georgia', serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .info-tooltip {
-            position: absolute;
-            top: calc(100% + 8px);
-            right: 0;
-            background: #191920;
-            border: 1px solid #2c2c34;
-            border-radius: 10px;
-            padding: 12px 16px;
-            min-width: 180px;
-            display: none;
-            z-index: 50;
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
-            cursor: default;
-        }
-        .info-tooltip.active {
-            display: block;
-        }
-        .info-tooltip.overall-tooltip {
-            min-width: 336px;
-            padding: 17px 24px;
-        }
-        .info-tooltip-title {
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            color: #8b8b96;
+            font-weight: 600;
+            color: #6b6b7a;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            letter-spacing: 0.5px;
         }
-        .info-tooltip-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            font-size: 13px;
-            padding: 3px 0;
-            font-family: monospace;
+        .overall-headers .header-position {
+            width: 150px;
+            padding-left: 20px;
         }
-        .info-tooltip-row span:first-child {
-            font-weight: 800;
-        }
-        .overall-tooltip .title-row {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            padding: 4px 0;
-            font-family: monospace;
-        }
-        .overall-tooltip .title-row .title-word {
-            font-size: 17px;
-            font-weight: 900;
-            font-family: 'Bahnschrift', Arial, sans-serif;
-            letter-spacing: 0.3px;
-        }
-        .overall-tooltip .title-row .title-desc {
-            font-size: 13px;
-            color: #8b8b96;
-            font-weight: 600;
-            font-family: monospace;
-        }
-        .overall-tooltip .points-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            font-size: 13px;
-            padding: 3px 0;
-            font-family: monospace;
-        }
-        .overall-tooltip .points-row .tier-name {
-            font-weight: 800;
-        }
-        .overall-tooltip .points-row .tier-pts {
-            color: #8b8b96;
-            font-weight: 600;
-        }
-        .tooltip-tabs {
-            display: flex;
-            gap: 0;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #2c2c34;
-            padding-bottom: 6px;
-        }
-        .tooltip-tab {
+        .overall-headers .header-player {
             flex: 1;
-            text-align: center;
-            font-size: 13px;
-            font-weight: 700;
-            color: #8b8b96;
-            cursor: pointer;
-            padding: 4px 0;
-            border-radius: 4px 4px 0 0;
-            transition: background 0.15s, color 0.15s;
+            padding-left: 20px;
         }
-        .tooltip-tab:hover {
-            background: #26262e;
-            color: #c9c9d1;
-        }
-        .tooltip-tab.active {
-            color: #fff;
-            background: #2a2a36;
-        }
-        .tooltip-content {
-            display: block;
-        }
-        .tooltip-content.hidden {
-            display: none;
-        }
-
-        /* Search */
-        .search-btn-wrapper {
-            position: relative;
-        }
-        .search-btn {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            background: #1c1c22;
-            border: 1px solid #2c2c34;
-            color: #c9c9d1;
-            padding: 7px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 700;
-            font-family: Arial, sans-serif;
-            cursor: pointer;
-            transition: background 0.15s ease;
-        }
-        .search-btn:hover {
-            background: #26262e;
-        }
-        .search-btn svg {
-            width: 14px;
-            height: 14px;
-            flex-shrink: 0;
-        }
-        .search-panel {
-            position: absolute;
-            top: calc(100% + 8px);
-            right: 0;
-            background: #191920;
-            border: 1px solid #2c2c34;
-            border-radius: 10px;
-            padding: 14px;
-            width: 250px;
-            display: none;
-            z-index: 70;
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
-        }
-        .search-panel.active {
-            display: block;
-        }
-        .search-input {
-            width: 100%;
-            background: #131318;
-            border: 1px solid #2c2c34;
-            border-radius: 7px;
-            color: #fff;
-            padding: 8px 10px;
-            font-size: 13px;
-            margin-bottom: 10px;
-            font-family: Arial, sans-serif;
-        }
-        .search-input:focus {
-            outline: none;
-            border-color: #4a4a5c;
-        }
-        .search-results {
-            max-height: 220px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .search-result-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 6px 8px;
-            border-radius: 7px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        .search-result-item:hover {
-            background: #22222a;
-        }
-        .search-result-item img {
-            width: 26px;
-            height: 26px;
-            border-radius: 5px;
-            image-rendering: pixelated;
-            background: #000;
-            flex-shrink: 0;
-        }
-        .search-empty {
-            color: #5c5c66;
-            font-size: 12px;
-            padding: 6px 2px;
+        .overall-headers .header-tiers {
+            width: 150px;
+            text-align: right;
+            padding-right: 26px;
         }
 
         /* Player row (Overall) */
-        .player {
-            display: flex;
-            align-items: stretch;
-            background: #191920;
-            border-radius: 12px;
-            margin: 14px 0;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-            min-height: 99px;
-        }
-        .player:hover {
-            transform: scale(1.035);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
-            filter: brightness(1.25);
-        }
-        .rank-flag {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 18px 32px 18px 20px;
-            background: #22222a;
-            clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
-            min-width: 150px;
-        }
-        .rank-num {
-            font-size: 32px;
-            font-weight: 700;
-            font-style: italic;
-            color: #c7c7ce;
-            width: 32px;
-        }
-        .avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            color: #666;
-            flex-shrink: 0;
-            overflow: hidden;
-            image-rendering: pixelated;
-        }
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            image-rendering: pixelated;
-        }
-        .info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 0 20px;
-            gap: 12px;
-        }
-        .player-name {
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-            font-family: 'Bahnschrift', Arial, sans-serif;
-            line-height: 1.2;
-        }
-        .player-title-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .player-title-badge {
-            background: #191920;
-            border: 1px solid #2c2c34;
-            border-radius: 6px;
-            padding: 4px 14px;
-            display: flex;
-            align-items: center;
-            height: 32px;
-        }
-        .player-title-text {
-            font-size: 16px;
-            font-weight: 900;
-            font-family: 'Bahnschrift', Arial, sans-serif;
-            letter-spacing: 0.3px;
-            white-space: nowrap;
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            -webkit-text-fill-color: transparent;
-        }
-        .player-points {
-            font-size: 16px;
-            font-weight: 600;
-            color: #8b8b96;
-            white-space: nowrap;
-        }
-        .elo-wrap {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 0 26px;
-        }
+        .player { display: flex; align-items: stretch; background: #191920; border-radius: 12px; margin: 14px 20px; overflow: hidden; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, filter 0.15s; min-height: 99px; }
+        .player:hover { transform: scale(1.035); box-shadow: 0 6px 16px rgba(0,0,0,0.45); filter: brightness(1.25); }
+        .rank-flag { position: relative; display: flex; align-items: center; gap: 16px; padding: 18px 32px 18px 20px; background: #22222a; clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%); min-width: 150px; }
+        .rank-num { font-size: 32px; font-weight: 700; font-style: italic; color: #c7c7ce; width: 32px; }
+        .avatar { width: 60px; height: 60px; border-radius: 8px; background: #000; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #666; flex-shrink: 0; overflow: hidden; }
+        .avatar img { width: 100%; height: 100%; image-rendering: pixelated; }
+        .info { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 0 20px; gap: 12px; }
+        .player-name { font-size: 26px; font-weight: 700; letter-spacing: 0.3px; font-family: 'Bahnschrift', sans-serif; }
+        .player-title-row { display: flex; align-items: center; gap: 10px; }
+        .player-title-badge { background: #191920; border: 1px solid #2c2c34; border-radius: 6px; padding: 4px 14px; display: flex; align-items: center; height: 32px; }
+        .player-title-text { font-size: 16px; font-weight: 900; font-family: 'Bahnschrift', sans-serif; letter-spacing: 0.3px; white-space: nowrap; background-clip: text; -webkit-background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+        .player-points { font-size: 16px; font-weight: 600; color: #8b8b96; white-space: nowrap; }
+        .elo-wrap { display: flex; align-items: center; gap: 14px; padding: 0 26px; }
+        .mini-tiers-row { display: flex; align-items: center; gap: 18px; }
+        .mini-tier-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; cursor: default; }
+        .mini-tier-circle { width: 36px; height: 36px; border-radius: 50%; background: #131318; display: flex; align-items: center; justify-content: center; border: 2px solid #454b54; overflow: hidden; }
+        .mini-tier-circle img { width: 24px; height: 24px; }
+        .mini-tier-label { font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 4px; background: #1a1a22; border: 1px solid #454b54; color: #8b8b96; letter-spacing: 0.3px; text-align: center; width: 40px; }
+        .global-mini-tip { position: fixed; background: #0e0e12; border: 1px solid #2c2c34; border-radius: 9px; padding: 8px 16px; font-size: 18px; font-weight: 700; white-space: nowrap; display: none; z-index: 1000; pointer-events: none; transform: translate(-50%, -100%); text-align: center; line-height: 1.4; }
 
-        .mini-tiers-row {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
-        .mini-tier-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            position: relative;
-            cursor: default;
-        }
-        .mini-tier-circle {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #131318;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #454b54;
-            overflow: hidden;
-        }
-        .mini-tier-circle img {
-            width: 24px;
-            height: 24px;
-            image-rendering: pixelated;
-        }
-        .mini-tier-label {
-            font-size: 12px;
-            font-weight: 800;
-            padding: 2px 8px;
-            border-radius: 4px;
-            background: #1a1a22;
-            border: 1px solid #454b54;
-            color: #8b8b96;
-            letter-spacing: 0.3px;
-            text-align: center;
-            width: 40px;
-            box-sizing: border-box;
-        }
-        .global-mini-tip {
-            position: fixed;
-            background: #0e0e12;
-            border: 1px solid #2c2c34;
-            border-radius: 9px;
-            padding: 8px 16px;
-            font-size: 18px;
-            font-weight: 700;
-            white-space: nowrap;
-            display: none;
-            z-index: 1000;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
-            pointer-events: none;
-            transform: translate(-50%, -100%);
-            text-align: center;
-            line-height: 1.4;
-        }
-        .global-mini-tip .tip-tier {
-            font-size: 18px;
-            font-weight: 800;
-        }
-        .global-mini-tip .tip-points {
-            font-size: 13px;
-            font-weight: 600;
-            color: #8b8b96;
-            margin-top: 2px;
-        }
-
-        /* Tier Columns */
-        .tier-columns {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            justify-content: center;
-            margin-top: 8px;
-        }
-        .tier-column {
-            flex: 0 0 200px;
-            min-width: 160px;
-            border-radius: 10px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            background: #14141a;
-        }
-        .tier-column-1 { background: #2a2a1a; }
-        .tier-column-2 { background: #2a2a30; }
-        .tier-column-3 { background: #2a221a; }
-        .tier-column-4 { background: #22222a; }
-        .tier-column-5 { background: #22222a; }
-
-        .tier-header {
-            text-align: center;
-            font-size: 18px;
-            font-weight: 800;
-            padding: 10px 4px;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-        .tier-players {
-            padding: 6px 4px;
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-        .tier-player {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #16161e;
-            border-radius: 6px;
-            padding: 4px 8px;
-            transition: background 0.2s;
-            cursor: pointer;
-            border: 1px solid transparent;
-        }
-        .tier-player:hover {
-            background: #2a2a36;
-        }
-        .tier-player.plus {
-            background: #1e1e2a;
-        }
-        .tier-player.plus:hover {
-            background: #3a3a4a;
-        }
-        .tier-player .tier-avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 5px;
-            overflow: hidden;
-            flex-shrink: 0;
-            image-rendering: pixelated;
-        }
-        .tier-player .tier-avatar img {
-            width: 100%;
-            height: 100%;
-            image-rendering: pixelated;
-        }
-        .tier-player .tier-name {
-            flex: 1;
-            font-size: 14px;
-            font-weight: 600;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .tier-player .tier-badge {
-            font-size: 11px;
-            font-weight: 800;
-            padding: 1px 8px;
-            border-radius: 12px;
-            background: #2a2a36;
-            color: #a9b6ff;
-            flex-shrink: 0;
-        }
-        .tier-player .tier-badge.plus {
-            background: #1a3a5a;
-            color: #6bb6ff;
-            border: 1px solid #4a8af4;
-        }
+        /* Tier columns */
+        .tier-columns { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin: 8px 20px; }
+        .tier-column { flex: 0 0 200px; min-width: 160px; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; background: #14141a; }
+        .tier-column-1 { background: #2a2a1a; } .tier-column-2 { background: #2a2a30; } .tier-column-3 { background: #2a221a; } .tier-column-4 { background: #22222a; } .tier-column-5 { background: #22222a; }
+        .tier-header { text-align: center; font-size: 18px; font-weight: 800; padding: 10px 4px; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .tier-players { padding: 6px 4px; display: flex; flex-direction: column; gap: 3px; }
+        .tier-player { display: flex; align-items: center; gap: 8px; background: #16161e; border-radius: 6px; padding: 4px 8px; transition: background 0.2s; cursor: pointer; border: 1px solid transparent; }
+        .tier-player:hover { background: #2a2a36; }
+        .tier-player.plus { background: #1e1e2a; }
+        .tier-player.plus:hover { background: #3a3a4a; }
+        .tier-player .tier-avatar { width: 28px; height: 28px; border-radius: 5px; overflow: hidden; flex-shrink: 0; }
+        .tier-player .tier-avatar img { width: 100%; height: 100%; }
+        .tier-player .tier-name { flex: 1; font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .tier-player .tier-badge { font-size: 11px; font-weight: 800; padding: 1px 8px; border-radius: 12px; background: #2a2a36; color: #a9b6ff; flex-shrink: 0; }
+        .tier-player .tier-badge.plus { background: #1a3a5a; color: #6bb6ff; border: 1px solid #4a8af4; }
 
         .rank-1 .rank-flag { background: linear-gradient(100deg, #f4c744, #c99a1e); }
         .rank-1 .rank-num { color: #3a2c00; }
@@ -811,299 +228,75 @@
         .rank-3 .rank-flag { background: linear-gradient(100deg, #d98b45, #a85f24); }
         .rank-3 .rank-num { color: #3a2000; }
 
-        .toggle-btn {
-            display: block;
-            width: 100%;
-            margin-top: 10px;
-            padding: 10px;
-            background: #22222a;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-family: Arial, sans-serif;
-            font-weight: 600;
-            font-size: 15px;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .toggle-btn:hover {
-            background: #2e2e38;
-        }
+        .toggle-btn { display: block; width: calc(100% - 40px); margin: 10px 20px; padding: 10px; background: #22222a; color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; }
+        .toggle-btn:hover { background: #2e2e38; }
 
-        /* ---------- Profile Modal ---------- */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        .modal-box {
-            background: #131318;
-            border-radius: 16px;
-            padding: 36px;
-            width: 460px;
-            max-width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            text-align: center;
-            border: 1px solid #232329;
-            font-family: Arial, sans-serif;
-        }
-        .modal-close {
-            position: absolute;
-            top: 14px;
-            right: 14px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #22222a;
-            border: none;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-        .modal-close:hover {
-            background: #2e2e38;
-        }
-        .modal-avatar {
-            width: 110px;
-            height: 110px;
-            border-radius: 16px;
-            background: #000;
-            margin: 6px auto 16px;
-            overflow: hidden;
-            border: 2px solid #2a2a32;
-            image-rendering: pixelated;
-        }
-        .modal-avatar img {
-            width: 100%;
-            height: 100%;
-            image-rendering: pixelated;
-        }
-        .modal-name {
-            font-family: 'Bahnschrift', Arial, sans-serif;
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-        .role-badge {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            display: inline-block;
-            padding: 5px 14px;
-            border-radius: 999px;
-            font-weight: 800;
-            font-size: 11px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            z-index: 5;
-        }
+        /* Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: #131318; border-radius: 16px; padding: 36px; width: 460px; max-width: 100%; max-height: 90vh; overflow-y: auto; position: relative; text-align: center; border: 1px solid #232329; }
+        .modal-close { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%; background: #22222a; border: none; color: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .modal-close:hover { background: #2e2e38; }
+        .modal-avatar { width: 110px; height: 110px; border-radius: 16px; background: #000; margin: 6px auto 16px; overflow: hidden; border: 2px solid #2a2a32; }
+        .modal-avatar img { width: 100%; height: 100%; }
+        .modal-name { font-family: 'Bahnschrift', sans-serif; font-size: 26px; font-weight: 700; margin-bottom: 16px; }
+        .role-badge { position: absolute; top: 16px; left: 16px; padding: 5px 14px; border-radius: 999px; font-weight: 800; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
         .role-player { color: #c9c9d1; border: 1px solid #5a5a64; background: #202024; }
         .role-developer { color: #ff5c5c; border: 1px solid #7a2323; background: #241414; }
         .role-owner { color: #5be6e6; border: 1px solid #1f6b70; background: #132628; }
-
-        .title-section {
-            display: flex;
-            justify-content: center;
-            margin: 2px 0 28px;
-            position: relative;
-        }
-        .title-text-box {
-            background: #191920;
-            border: 1px solid #2c2c34;
-            border-radius: 10px;
-            height: 46px;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            cursor: default;
-            position: relative;
-        }
-        .title-badge-text {
-            font-size: 19px;
-            font-weight: 900;
-            font-family: 'Bahnschrift', Arial, sans-serif;
-            letter-spacing: 0.4px;
-            white-space: nowrap;
-            background-size: 100% 100%;
-        }
-        .title-grad {
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-        }
-        .title-tooltip {
-            position: absolute;
-            bottom: calc(100% + 8px);
-            left: 50%;
-            transform: translateX(-50%);
-            background: #0e0e12;
-            border: 1px solid #2c2c34;
-            border-radius: 8px;
-            padding: 6px 14px;
-            font-size: 14px;
-            font-weight: 700;
-            color: #a9b6ff;
-            white-space: nowrap;
-            display: none;
-            z-index: 20;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
-            pointer-events: none;
-        }
-        .title-section:hover .title-tooltip {
-            display: block;
-        }
-
-        .modal-section-label {
-            text-align: left;
-            color: #8b8b96;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-        .position-card {
-            display: flex;
-            align-items: stretch;
-            background: #191920;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 22px;
-        }
-        .position-card .rank-flag {
-            min-width: 70px;
-            padding: 12px 22px 12px 14px;
-        }
-        .position-card .pos-info {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0 14px;
-            font-weight: 700;
-            font-size: 15px;
-            flex-wrap: wrap;
-        }
-        .pos-overall {
-            color: #fff;
-            font-size: 20px;
-            font-weight: 800;
-        }
-        .pos-points {
-            color: #8b8b96;
-            font-size: 15px;
-            font-weight: 600;
-        }
-
-        .tiers-row {
-            display: flex;
-            gap: 16px;
-            justify-content: flex-start;
-            flex-wrap: wrap;
-            margin-bottom: 6px;
-        }
-        .tier-icon-wrap {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 7px;
-        }
-        .tier-icon-circle {
-            width: 54px;
-            height: 54px;
-            border-radius: 50%;
-            background: #191920;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 3px solid #454b54;
-            overflow: hidden;
-        }
-        .tier-icon-circle img {
-            width: 30px;
-            height: 30px;
-            image-rendering: pixelated;
-        }
-        .tier-icon-label {
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 0.4px;
-        }
-        .tier-elo-tip {
-            position: absolute;
-            bottom: calc(100% + 8px);
-            left: 50%;
-            transform: translateX(-50%);
-            background: #0e0e12;
-            border: 1px solid #2c2c34;
-            border-radius: 9px;
-            padding: 5px 12px;
-            font-size: 18px;
-            font-weight: 700;
-            white-space: nowrap;
-            display: none;
-            z-index: 10;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
-            pointer-events: none;
-            text-align: center;
-            line-height: 1.4;
-        }
-        .tier-elo-tip .tip-tier {
-            font-size: 18px;
-            font-weight: 800;
-        }
-        .tier-elo-tip .tip-points {
-            font-size: 13px;
-            font-weight: 600;
-            color: #8b8b96;
-            margin-top: 2px;
-        }
-        .tier-icon-wrap:hover .tier-elo-tip {
-            display: block;
-        }
-
-        .mini-tier-wrap.no-tier .mini-tier-circle {
-            border-color: #454b54;
-            opacity: 0.5;
-        }
-        .mini-tier-wrap.no-tier .mini-tier-circle img {
-            opacity: 0.4;
-        }
+        .title-section { display: flex; justify-content: center; margin: 2px 0 28px; position: relative; }
+        .title-text-box { background: #191920; border: 1px solid #2c2c34; border-radius: 10px; height: 46px; display: flex; align-items: center; padding: 0 20px; }
+        .title-badge-text { font-size: 19px; font-weight: 900; font-family: 'Bahnschrift', sans-serif; letter-spacing: 0.4px; white-space: nowrap; }
+        .title-grad { background-clip: text; -webkit-background-clip: text; color: transparent; -webkit-text-fill-color: transparent; font-weight: 800; }
+        .title-tooltip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #0e0e12; border: 1px solid #2c2c34; border-radius: 8px; padding: 6px 14px; font-size: 14px; font-weight: 700; color: #a9b6ff; white-space: nowrap; display: none; }
+        .title-section:hover .title-tooltip { display: block; }
+        .modal-section-label { text-align: left; color: #8b8b96; font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
+        .position-card { display: flex; align-items: stretch; background: #191920; border-radius: 10px; overflow: hidden; margin-bottom: 22px; }
+        .position-card .rank-flag { min-width: 70px; padding: 12px 22px 12px 14px; }
+        .position-card .pos-info { flex: 1; display: flex; align-items: center; gap: 8px; padding: 0 14px; font-weight: 700; font-size: 15px; }
+        .pos-overall { color: #fff; font-size: 20px; font-weight: 800; }
+        .pos-points { color: #8b8b96; font-size: 15px; font-weight: 600; }
+        .tiers-row { display: flex; gap: 16px; justify-content: flex-start; flex-wrap: wrap; margin-bottom: 6px; }
+        .tier-icon-wrap { position: relative; display: flex; flex-direction: column; align-items: center; gap: 7px; }
+        .tier-icon-circle { width: 54px; height: 54px; border-radius: 50%; background: #191920; display: flex; align-items: center; justify-content: center; border: 3px solid #454b54; overflow: hidden; }
+        .tier-icon-circle img { width: 30px; height: 30px; }
+        .tier-icon-label { font-size: 12px; font-weight: 800; letter-spacing: 0.4px; }
+        .tier-elo-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #0e0e12; border: 1px solid #2c2c34; border-radius: 9px; padding: 5px 12px; font-size: 18px; font-weight: 700; white-space: nowrap; display: none; }
+        .tier-icon-wrap:hover .tier-elo-tip { display: block; }
     </style>
 </head>
 <body>
-
     <div class="top-fixed-bar">
         <div class="top-bar-left">
             <img class="top-bar-image" src="https://github.com/Toggelt/nova-tiers/blob/main/assets/IMG_20260619_105801.jpg?raw=true" alt="Nova">
             <div class="top-bar-title">Nova Tiers</div>
         </div>
-        <div class="login-wrapper">
-            <button class="login-btn" id="loginBtn">Log in</button>
-            <div class="login-panel" id="loginPanel"></div>
+        <div class="top-bar-right">
+            <div class="version-dropdown" id="versionDropdown">
+                <button class="version-btn" id="versionBtn">
+                    <img src="https://github.com/Toggelt/nova-tiers/blob/main/assets/Grass_Block_JE7_BE6%20(1).png?raw=true" alt="Java" id="versionIcon">
+                    <span id="versionText">Java</span>
+                </button>
+                <div class="version-options" id="versionOptions">
+                    <div class="version-option" data-version="java">
+                        <img src="https://github.com/Toggelt/nova-tiers/blob/main/assets/Grass_Block_JE7_BE6%20(1).png?raw=true" alt="Java">
+                        <span>Java</span>
+                    </div>
+                    <div class="version-option" data-version="bedrock">
+                        <img src="https://github.com/Toggelt/nova-tiers/blob/main/assets/Bedrock_JE2_BE2.png?raw=true" alt="Bedrock">
+                        <span>Bedrock</span>
+                    </div>
+                </div>
+            </div>
+            <div class="login-wrapper">
+                <button class="login-btn" id="loginBtn">Log in</button>
+                <div class="login-panel" id="loginPanel"></div>
+            </div>
         </div>
     </div>
 
     <div class="container">
-        <div class="tab-menu" id="tabMenu"></div>
+        <div class="tab-bar" id="tabBar"></div>
         <div class="top-bar">
             <div class="info-btn-wrapper">
                 <button class="info-btn" id="infoBtn"><span class="info-icon">i</span>Info</button>
@@ -1122,6 +315,12 @@
         </div>
 
         <h2><span class="title-icon" id="titleIcon"></span><span id="titleText">Overall Leaderboard</span></h2>
+        <!-- Column headers for overall tab -->
+        <div class="overall-headers" id="overallHeaders">
+            <div class="header-position">Position</div>
+            <div class="header-player">Player</div>
+            <div class="header-tiers">Tiers</div>
+        </div>
         <div id="list">Loading...</div>
         <button id="toggleBtn" class="toggle-btn" style="display:none;">Show all</button>
     </div>
@@ -1144,7 +343,6 @@
             <div class="tiers-row" id="tiersRow"></div>
         </div>
     </div>
-
     <div class="global-mini-tip" id="globalMiniTip"></div>
 
     <script type="module">
@@ -1157,48 +355,25 @@
         let allPlayers = [];
         let expanded = false;
         let currentUser = null;
+        let currentVersion = 'java';
+        let currentBoard = 'Overall';
+        let currentProfileName = null;
 
         const HELMET_ICON_URL = "https://github.com/Toggelt/nova-tiers/blob/main/assets/netherite_helmet.png?raw=true";
         const MACE_ICON_URL = "https://github.com/Toggelt/nova-tiers/blob/main/assets/mace.png?raw=true";
         const OVERALL_ICON_URL = "https://github.com/Toggelt/nova-tiers/blob/main/assets/636879664591858480.png?raw=true";
 
         const LEADERBOARDS = {
-            Overall: { key: "Overall", label: "Overall", title: "Overall Leaderboard", icon: OVERALL_ICON_URL, emoji: null },
-            KanalServer: { key: "KanalServer", label: "Kanal Server", title: "Kanal Server Leaderboard", icon: HELMET_ICON_URL, emoji: "⛑️" },
-            LowblockMace: { key: "LowblockMace", label: "Lowblock Mace", title: "Lowblock Mace Leaderboard", icon: MACE_ICON_URL, emoji: "🔨" }
+            Overall: { key: "Overall", label: "Overall", title: "Overall Leaderboard", icon: OVERALL_ICON_URL },
+            KanalServer: { key: "KanalServer", label: "Kanal Server", title: "Kanal Server Leaderboard", icon: HELMET_ICON_URL },
+            LowblockMace: { key: "LowblockMace", label: "Lowblock Mace", title: "Lowblock Mace Leaderboard", icon: MACE_ICON_URL }
         };
         const SUB_BOARDS = ["KanalServer", "LowblockMace"];
         const NUM_MODES = SUB_BOARDS.length;
-        let currentBoard = "Overall";
 
-        const list = document.getElementById("list");
-        const toggleBtn = document.getElementById("toggleBtn");
-        const tabMenu = document.getElementById("tabMenu");
-        const titleIcon = document.getElementById("titleIcon");
-        const titleText = document.getElementById("titleText");
-        const infoTooltip = document.getElementById("infoTooltip");
-
-        const TIER_POINTS = {
-            "1+": 1000, "1": 800,
-            "2+": 600,  "2": 400,
-            "3+": 250,  "3": 150,
-            "4+": 75,   "4": 50,
-            "5+": 25,   "5": 15
-        };
-        const TIER_COLORS = {
-            "1+": "#ffd700", "1": "#e6c15c",
-            "2+": "#c9c9d1", "2": "#a9a9b2",
-            "3+": "#cd7f32", "3": "#b5793c",
-            "4+": "#c4ccff", "4": "#a9b6ff",
-            "5+": "#8a9ae0", "5": "#6a7bc7"
-        };
-        const TIER_LIGHT_COLORS = {
-            1: "#ffd54f",
-            2: "#e0e0e0",
-            3: "#e0a86c",
-            4: "#d0d8ff",
-            5: "#9fb0f0"
-        };
+        const TIER_POINTS = { "1+": 1000, "1": 800, "2+": 600, "2": 400, "3+": 250, "3": 150, "4+": 75, "4": 50, "5+": 25, "5": 15 };
+        const TIER_COLORS = { "1+": "#ffd700", "1": "#e6c15c", "2+": "#c9c9d1", "2": "#a9a9b2", "3+": "#cd7f32", "3": "#b5793c", "4+": "#c4ccff", "4": "#a9b6ff", "5+": "#8a9ae0", "5": "#6a7bc7" };
+        const TIER_LIGHT_COLORS = { 1: "#ffd54f", 2: "#e0e0e0", 3: "#e0a86c", 4: "#d0d8ff", 5: "#9fb0f0" };
         const TIER_ORDER = { "1+": 0, "1": 1, "2+": 2, "2": 3, "3+": 4, "3": 5, "4+": 6, "4": 7, "5+": 8, "5": 9, "none": 10 };
 
         function shortTierLabel(tierNum, plus) { return `T${tierNum}${plus ? '+' : ''}`; }
@@ -1209,25 +384,16 @@
                 const groups = {};
                 allPlayers.forEach(p => {
                     const tier = p[`${mode}_tier`];
-                    if (tier != null) {
-                        if (!groups[tier]) groups[tier] = [];
-                        groups[tier].push(p);
-                    }
+                    if (tier != null) { if (!groups[tier]) groups[tier] = []; groups[tier].push(p); }
                 });
-                if (groups[1]) {
-                    groups[1].forEach(p => p[`_computed_plus_${mode}`] = false);
-                }
+                if (groups[1]) groups[1].forEach(p => p[`_computed_plus_${mode}`] = false);
                 for (let tier = 2; tier <= 5; tier++) {
                     const group = groups[tier] || [];
                     group.sort((a, b) => (a[`${mode}_pos`] ?? 0) - (b[`${mode}_pos`] ?? 0));
                     const plusCount = Math.floor(group.length / 3);
-                    group.forEach((p, idx) => {
-                        p[`_computed_plus_${mode}`] = idx < plusCount;
-                    });
+                    group.forEach((p, idx) => { p[`_computed_plus_${mode}`] = idx < plusCount; });
                 }
-                allPlayers.forEach(p => {
-                    if (p[`${mode}_tier`] == null) p[`_computed_plus_${mode}`] = false;
-                });
+                allPlayers.forEach(p => { if (p[`${mode}_tier`] == null) p[`_computed_plus_${mode}`] = false; });
             });
         }
 
@@ -1246,17 +412,13 @@
 
         function getPlayerTitle(points, player) {
             const isNova = (() => {
-                const kanalSorted = allPlayers
-                    .filter(p => p.KanalServer_tier != null)
-                    .sort((a, b) => (b.KanalServer_tier - a.KanalServer_tier) || (b._computed_plus_KanalServer ? 1 : 0) - (a._computed_plus_KanalServer ? 1 : 0));
-                const maceSorted = allPlayers
-                    .filter(p => p.LowblockMace_tier != null)
-                    .sort((a, b) => (b.LowblockMace_tier - a.LowblockMace_tier) || (b._computed_plus_LowblockMace ? 1 : 0) - (a._computed_plus_LowblockMace ? 1 : 0));
+                const kanalSorted = allPlayers.filter(p => p.KanalServer_tier != null).sort((a, b) => (b.KanalServer_tier - a.KanalServer_tier) || (b._computed_plus_KanalServer ? 1 : 0) - (a._computed_plus_KanalServer ? 1 : 0));
+                const maceSorted = allPlayers.filter(p => p.LowblockMace_tier != null).sort((a, b) => (b.LowblockMace_tier - a.LowblockMace_tier) || (b._computed_plus_LowblockMace ? 1 : 0) - (a._computed_plus_LowblockMace ? 1 : 0));
                 if (kanalSorted.length === 0 || maceSorted.length === 0) return false;
                 return kanalSorted[0].id === player.id && maceSorted[0].id === player.id;
             })();
             if (isNova) return "Nova";
-            const required = { Divine: 400 * NUM_MODES, Celestial: 300 * NUM_MODES, Eternal: 200 * NUM_MODES, Ascendant: 100 * NUM_MODES };
+            const required = { Divine: 750 * NUM_MODES, Celestial: 350 * NUM_MODES, Eternal: 250 * NUM_MODES, Ascendant: 100 * NUM_MODES };
             if (points >= required.Divine) return "Divine";
             if (points >= required.Celestial) return "Celestial";
             if (points >= required.Eternal) return "Eternal";
@@ -1273,42 +435,196 @@
         };
         const TITLE_REQUIREMENTS = {
             Nova: "Rank #1 in all gamemodes",
-            Divine: `Get ${400 * NUM_MODES}+ points`,
-            Celestial: `Get ${300 * NUM_MODES}+ points`,
-            Eternal: `Get ${200 * NUM_MODES}+ points`,
+            Divine: `Get ${750 * NUM_MODES}+ points`,
+            Celestial: `Get ${350 * NUM_MODES}+ points`,
+            Eternal: `Get ${250 * NUM_MODES}+ points`,
             Ascendant: `Get ${100 * NUM_MODES}+ points`
         };
 
-        function iconMarkup(board) {
-            return board.icon ? `<img src="${board.icon}" alt="${board.label}" style="width:32px;height:32px;image-rendering:pixelated;">`
-                               : `<span class="emoji-icon">${board.emoji}</span>`;
+        // DOM refs
+        const list = document.getElementById("list");
+        const toggleBtn = document.getElementById("toggleBtn");
+        const tabBar = document.getElementById("tabBar");
+        const titleIcon = document.getElementById("titleIcon");
+        const titleText = document.getElementById("titleText");
+        const infoTooltip = document.getElementById("infoTooltip");
+        const overallHeaders = document.getElementById("overallHeaders");
+
+        // Version dropdown
+        const versionBtn = document.getElementById("versionBtn");
+        const versionIcon = document.getElementById("versionIcon");
+        const versionTextEl = document.getElementById("versionText");
+        const versionOptions = document.getElementById("versionOptions");
+        const versionDropdown = document.getElementById("versionDropdown");
+
+        const javaIcon = "https://github.com/Toggelt/nova-tiers/blob/main/assets/Grass_Block_JE7_BE6%20(1).png?raw=true";
+        const bedrockIcon = "https://github.com/Toggelt/nova-tiers/blob/main/assets/Bedrock_JE2_BE2.png?raw=true";
+
+        function setVersionUI(version) {
+            if (version === 'java') {
+                versionIcon.src = javaIcon;
+                versionTextEl.textContent = 'Java';
+            } else {
+                versionIcon.src = bedrockIcon;
+                versionTextEl.textContent = 'Bedrock';
+            }
         }
 
-        function renderTabMenu() {
-            tabMenu.innerHTML = "";
+        function toggleVersionDropdown() {
+            versionOptions.classList.toggle('active');
+        }
+
+        versionBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleVersionDropdown();
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!versionDropdown.contains(e.target)) {
+                versionOptions.classList.remove('active');
+            }
+        });
+
+        versionOptions.querySelectorAll('.version-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                const newVersion = opt.dataset.version;
+                if (newVersion === currentVersion) {
+                    versionOptions.classList.remove('active');
+                    return;
+                }
+                changeVersion(newVersion);
+                versionOptions.classList.remove('active');
+            });
+        });
+
+        function changeVersion(version) {
+            if (version === currentVersion) return;
+            currentVersion = version;
+            setVersionUI(version);
+            // Update URL
+            const pathParts = window.location.pathname.split('/').filter(Boolean);
+            if (pathParts.length >= 1 && (pathParts[0] === 'java' || pathParts[0] === 'bedrock')) {
+                pathParts[0] = version;
+            } else {
+                pathParts.unshift(version);
+            }
+            const newPath = '/' + pathParts.join('/');
+            history.pushState(null, '', newPath);
+            currentBoard = 'Overall';
+            currentProfileName = null;
+            renderTabBar();
+            setTitle(currentBoard);
+            if (version === 'java') {
+                overallHeaders.style.display = 'flex';
+                loadPlayersAndRender();
+            } else {
+                overallHeaders.style.display = 'none';
+                showBedrockComingSoon();
+            }
+            document.getElementById("modalOverlay").classList.remove('active');
+        }
+
+        function showBedrockComingSoon() {
+            list.innerHTML = `<div style="text-align:center; padding:60px; font-size:36px; color:#ff5555;">Coming soon</div>`;
+            toggleBtn.style.display = "none";
+        }
+
+        // Routing
+        function parseRoute() {
+            const path = window.location.pathname;
+            const parts = path.split('/').filter(Boolean);
+            if (parts.length === 0) {
+                history.replaceState(null, '', '/java/overall');
+                return { version: 'java', board: 'Overall', profile: null };
+            }
+            let version = 'java';
+            if (parts[0] === 'bedrock') version = 'bedrock';
+            else if (parts[0] !== 'java') {
+                history.replaceState(null, '', '/java/overall');
+                return { version: 'java', board: 'Overall', profile: null };
+            }
+            let board = 'Overall';
+            let profile = null;
+            if (parts.length >= 2) {
+                if (parts[1] === 'player' && parts.length >= 3) {
+                    profile = parts[2];
+                } else if (LEADERBOARDS[parts[1]]) {
+                    board = parts[1];
+                } else {
+                    history.replaceState(null, '', `/${version}/overall`);
+                }
+            }
+            return { version, board, profile };
+        }
+
+        function navigateTo(board, profileName) {
+            let newPath = `/${currentVersion}/${board}`;
+            if (profileName) newPath = `/${currentVersion}/player/${profileName}`;
+            if (window.location.pathname !== newPath) {
+                history.pushState(null, '', newPath);
+            }
+        }
+
+        function handleRoute() {
+            const { version, board, profile } = parseRoute();
+            if (version !== currentVersion) {
+                currentVersion = version;
+                setVersionUI(version);
+            }
+            currentBoard = board;
+            currentProfileName = profile;
+            renderTabBar();
+            setTitle(currentBoard);
+            if (version === 'bedrock') {
+                overallHeaders.style.display = 'none';
+                showBedrockComingSoon();
+                return;
+            }
+            overallHeaders.style.display = (currentBoard === 'Overall') ? 'flex' : 'none';
+            if (profile) {
+                loadPlayersAndRender().then(() => {
+                    const player = allPlayers.find(p => p.name.toLowerCase() === profile.toLowerCase());
+                    if (player) openProfile(player);
+                    else {
+                        navigateTo(board, null);
+                        history.replaceState(null, '', `/${currentVersion}/${board}`);
+                    }
+                });
+            } else {
+                loadPlayersAndRender();
+            }
+        }
+
+        window.addEventListener('popstate', () => {
+            handleRoute();
+        });
+
+        function renderTabBar() {
+            tabBar.innerHTML = "";
             Object.values(LEADERBOARDS).forEach(board => {
                 const el = document.createElement("div");
-                el.className = "tab-item" + (board.key === currentBoard ? " active" : "");
-                el.innerHTML = `${iconMarkup(board)}<span class="tab-label">${board.label}</span>`;
-                el.addEventListener("click", () => switchBoard(board.key));
-                tabMenu.appendChild(el);
+                el.className = "tab-button" + (board.key === currentBoard && !currentProfileName ? " active" : "");
+                el.innerHTML = `<img src="${board.icon}" alt="${board.label}" style="width:${board.key === 'KanalServer' ? 48 : 32}px;height:${board.key === 'KanalServer' ? 48 : 32}px;"><span class="tab-label">${board.label}</span>`;
+                el.addEventListener("click", () => {
+                    if (currentVersion === 'bedrock') return;
+                    currentProfileName = null;
+                    currentBoard = board.key;
+                    navigateTo(board.key, null);
+                    renderTabBar();
+                    setTitle(board.key);
+                    overallHeaders.style.display = (board.key === 'Overall') ? 'flex' : 'none';
+                    loadPlayersAndRender();
+                });
+                tabBar.appendChild(el);
             });
         }
 
         function setTitle(key) {
-            titleIcon.innerHTML = iconMarkup(LEADERBOARDS[key]);
+            titleIcon.innerHTML = `<img src="${LEADERBOARDS[key].icon}" alt="${LEADERBOARDS[key].label}" style="width:42px;height:42px;">`;
             titleText.textContent = LEADERBOARDS[key].title;
         }
 
-        function switchBoard(key) {
-            if (currentBoard === key) return;
-            currentBoard = key;
-            expanded = false;
-            setTitle(key);
-            renderTabMenu();
-            render();
-        }
-
+        // Render functions
         function renderMiniTierIcons(player) {
             const entries = [];
             SUB_BOARDS.forEach(key => {
@@ -1372,8 +688,13 @@
         document.addEventListener("scroll", () => { globalMiniTip.style.display = "none"; }, true);
 
         function render() {
+            if (currentVersion === 'bedrock') {
+                showBedrockComingSoon();
+                return;
+            }
             const isOverall = currentBoard === "Overall";
             list.innerHTML = "";
+            overallHeaders.style.display = isOverall ? 'flex' : 'none';
 
             if (isOverall) {
                 renderInfoTooltip();
@@ -1409,7 +730,11 @@
                             </div>
                         </div>
                         <div class="elo-wrap"><div class="mini-tiers-row">${renderMiniTierIcons(p)}</div></div>`;
-                    div.addEventListener("click", () => openProfile(p));
+                    div.addEventListener("click", () => {
+                        currentProfileName = p.name;
+                        navigateTo(currentBoard, p.name);
+                        openProfile(p);
+                    });
                     list.appendChild(div);
                 });
                 toggleBtn.style.display = sorted.length > COLLAPSED_COUNT ? "block" : "none";
@@ -1456,7 +781,11 @@
                             <div class="tier-avatar"><img src="${avatarUrl(p.name, 28)}" alt="${p.name}" onerror="this.parentElement.innerHTML='?'"></div>
                             <span class="tier-name">${p.name}</span>
                             ${badgeHtml}`;
-                        div.addEventListener("click", () => openProfile(p));
+                        div.addEventListener("click", () => {
+                            currentProfileName = p.name;
+                            navigateTo(currentBoard, p.name);
+                            openProfile(p);
+                        });
                         playersDiv.appendChild(div);
                     });
                     col.appendChild(playersDiv);
@@ -1467,10 +796,11 @@
             }
         }
 
+        // Info tooltip
         let infoTab = 'titles';
         function renderInfoTooltip() {
-            const titlesHtml = Object.keys(TITLE_REQUIREMENTS).map(name =>
-                `<div class="info-tooltip-row title-row">
+            const titlesHtml = Object.keys(TITLE_REQUIREMENTS).map(name => `
+                <div class="info-tooltip-row title-row">
                     <span class="title-word title-grad" style="background-image:${TITLE_COLORS[name]}">${name}</span>
                     <span class="title-desc">${TITLE_REQUIREMENTS[name]}</span>
                 </div>`).join('');
@@ -1521,30 +851,48 @@
         }
         function avatarUrl(name, size) { return `https://mc-heads.net/avatar/${encodeURIComponent(name)}/${size}`; }
 
-        const modalOverlay = document.getElementById("modalOverlay");
-        const modalClose = document.getElementById("modalClose");
-        const modalAvatar = document.getElementById("modalAvatar");
-        const modalName = document.getElementById("modalName");
-        const modalRoleBadge = document.getElementById("modalRoleBadge");
-        const modalTitleText = document.getElementById("modalTitleText");
-        const modalPositionCard = document.getElementById("modalPositionCard");
-        const tiersRow = document.getElementById("tiersRow");
-        const titleTooltip = document.getElementById("titleTooltip");
-
-        function renderProfileTiers(player) {
+        // Profile modal
+        function openProfile(player) {
+            const modalOverlay = document.getElementById("modalOverlay");
+            document.getElementById("modalAvatar").innerHTML = `<img src="${avatarUrl(player.name, 110)}" alt="${player.name}" onerror="this.parentElement.innerHTML='?'">`;
+            document.getElementById("modalName").textContent = player.name;
+            const role = getRole(player.name);
+            const roleBadge = document.getElementById("modalRoleBadge");
+            roleBadge.textContent = role.label;
+            roleBadge.className = `role-badge ${role.cls}`;
+            const totalPoints = computePlayerPoints(player);
+            const title = getPlayerTitle(totalPoints, player);
+            const titleSection = document.getElementById("titleSection");
+            if (title) {
+                document.getElementById("modalTitleText").textContent = title;
+                document.getElementById("modalTitleText").style.backgroundImage = TITLE_COLORS[title];
+                document.getElementById("titleTooltip").textContent = TITLE_REQUIREMENTS[title] || "";
+                titleSection.style.display = "flex";
+            } else {
+                titleSection.style.display = "none";
+            }
+            const overallSorted = allPlayers
+                .filter(p => SUB_BOARDS.some(key => p[`${key}_tier`] != null))
+                .map(p => ({ ...p, __points: computePlayerPoints(p) }))
+                .sort((a, b) => b.__points - a.__points);
+            const rank = overallSorted.findIndex(p => p.id === player.id) + 1;
+            const posCard = document.getElementById("modalPositionCard");
+            posCard.className = `position-card ${rankClass(rank)}`;
+            posCard.innerHTML = `
+                <div class="rank-flag"><span class="rank-num">${rank}.</span></div>
+                <div class="pos-info"><span class="pos-overall">Overall</span><span class="pos-points">(${totalPoints} Points)</span></div>`;
+            // Render tiers
             const entries = [];
             SUB_BOARDS.forEach(key => {
                 const tier = player[`${key}_tier`];
                 const plus = player[`_computed_plus_${key}`];
-                const board = LEADERBOARDS[key];
-                entries.push({ tier, plus, board });
+                entries.push({ tier, plus, board: LEADERBOARDS[key] });
             });
             entries.sort((a, b) => {
                 const keyA = a.tier != null ? (a.plus ? `${a.tier}+` : `${a.tier}`) : "none";
                 const keyB = b.tier != null ? (b.plus ? `${b.tier}+` : `${b.tier}`) : "none";
                 return TIER_ORDER[keyA] - TIER_ORDER[keyB];
             });
-
             let html = "";
             entries.forEach(({ tier, plus, board }) => {
                 if (tier != null && tier >= 1 && tier <= 5) {
@@ -1572,78 +920,48 @@
                         </div>`;
                 }
             });
-            tiersRow.innerHTML = html;
-        }
-
-        function openProfile(player) {
-            modalAvatar.innerHTML = `<img src="${avatarUrl(player.name, 110)}" alt="${player.name}" onerror="this.parentElement.innerHTML='?'">`;
-            modalName.textContent = player.name;
-            const role = getRole(player.name);
-            modalRoleBadge.textContent = role.label;
-            modalRoleBadge.className = `role-badge ${role.cls}`;
-            const totalPoints = computePlayerPoints(player);
-            const title = getPlayerTitle(totalPoints, player);
-            const titleSection = document.getElementById("titleSection");
-            if (title) {
-                modalTitleText.textContent = title;
-                modalTitleText.style.backgroundImage = TITLE_COLORS[title];
-                titleTooltip.textContent = TITLE_REQUIREMENTS[title] || "";
-                titleSection.style.display = "flex";
-            } else {
-                titleSection.style.display = "none";
-            }
-            const overallSorted = [...allPlayers]
-                .filter(p => SUB_BOARDS.some(key => p[`${key}_tier`] != null))
-                .map(p => ({ ...p, __points: computePlayerPoints(p) }))
-                .sort((a, b) => b.__points - a.__points);
-            const rank = overallSorted.findIndex(p => p.id === player.id) + 1;
-            modalPositionCard.className = `position-card ${rankClass(rank)}`;
-            modalPositionCard.innerHTML = `
-                <div class="rank-flag"><span class="rank-num">${rank}.</span></div>
-                <div class="pos-info"><span class="pos-overall">Overall</span><span class="pos-points">(${totalPoints} Points)</span></div>`;
-            renderProfileTiers(player);
+            document.getElementById("tiersRow").innerHTML = html;
             modalOverlay.classList.add("active");
         }
-        modalClose.addEventListener("click", () => modalOverlay.classList.remove("active"));
-        modalOverlay.addEventListener("click", (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove("active"); });
 
+        function closeProfile() {
+            document.getElementById("modalOverlay").classList.remove("active");
+            currentProfileName = null;
+            navigateTo(currentBoard, null);
+        }
+        document.getElementById("modalClose").addEventListener("click", closeProfile);
+        document.getElementById("modalOverlay").addEventListener("click", (e) => { if (e.target === document.getElementById("modalOverlay")) closeProfile(); });
+
+        // Search
         const searchBtn = document.getElementById("searchBtn");
         const searchPanel = document.getElementById("searchPanel");
-        const searchWrapper = document.getElementById("searchWrapper");
         const searchInput = document.getElementById("searchInput");
         const searchResults = document.getElementById("searchResults");
-
-        function renderSearchResults(query) {
-            const q = query.trim().toLowerCase();
-            const source = q ? allPlayers.filter(p => p.name.toLowerCase().includes(q)) : allPlayers;
-            const matches = source.slice(0, 8);
-            if (matches.length === 0) {
-                searchResults.innerHTML = `<div class="search-empty">No players found</div>`;
-                return;
-            }
-            searchResults.innerHTML = "";
-            matches.forEach(p => {
-                const row = document.createElement("div");
-                row.className = "search-result-item";
-                row.innerHTML = `<img src="${avatarUrl(p.name, 26)}" alt="" onerror="this.style.display='none'"><span>${p.name}</span>`;
-                row.addEventListener("click", () => { searchPanel.classList.remove("active"); openProfile(p); });
-                searchResults.appendChild(row);
-            });
-        }
         searchBtn.addEventListener("click", (e) => {
             e.stopPropagation();
             searchPanel.classList.toggle("active");
             if (searchPanel.classList.contains("active")) { searchInput.value = ""; renderSearchResults(""); setTimeout(() => searchInput.focus(), 30); }
         });
         searchInput.addEventListener("input", () => renderSearchResults(searchInput.value));
-        searchInput.addEventListener("click", e => e.stopPropagation());
+        function renderSearchResults(query) {
+            const q = query.trim().toLowerCase();
+            const source = q ? allPlayers.filter(p => p.name.toLowerCase().includes(q)) : allPlayers;
+            const matches = source.slice(0, 8);
+            if (matches.length === 0) { searchResults.innerHTML = '<div class="search-empty">No players found</div>'; return; }
+            searchResults.innerHTML = "";
+            matches.forEach(p => {
+                const row = document.createElement("div");
+                row.className = "search-result-item";
+                row.innerHTML = `<img src="${avatarUrl(p.name, 26)}" alt="" onerror="this.style.display='none'"><span>${p.name}</span>`;
+                row.addEventListener("click", () => { searchPanel.classList.remove("active"); currentProfileName = p.name; navigateTo(currentBoard, p.name); openProfile(p); });
+                searchResults.appendChild(row);
+            });
+        }
 
+        // Login
         const loginBtn = document.getElementById("loginBtn");
         const loginPanel = document.getElementById("loginPanel");
-        const loginWrapper = document.querySelector(".login-wrapper");
-
         function buildEmail(username) { return username.toLowerCase() + "@minecraft.local"; }
-
         function renderLoggedOutPanel() {
             loginPanel.innerHTML = `
                 <div class="login-panel-title">Player Login</div>
@@ -1654,7 +972,6 @@
             document.getElementById("loginSubmit").addEventListener("click", attemptLogin);
             document.getElementById("loginPassword").addEventListener("keydown", (e) => { if (e.key === "Enter") attemptLogin(); });
         }
-
         function renderLoggedInPanel() {
             loginPanel.innerHTML = `
                 <div class="logged-name">${currentUser.name}</div>
@@ -1663,10 +980,9 @@
             document.getElementById("logoutBtn").addEventListener("click", logout);
             document.getElementById("profileBtn").addEventListener("click", () => {
                 loginPanel.classList.remove("active");
-                if (currentUser) openProfile(currentUser);
+                if (currentUser) { currentProfileName = currentUser.name; navigateTo(currentBoard, currentUser.name); openProfile(currentUser); }
             });
         }
-
         async function attemptLogin() {
             const username = document.getElementById("loginUsername").value.trim();
             const password = document.getElementById("loginPassword").value;
@@ -1677,11 +993,10 @@
             try {
                 const { error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) throw error;
-                const { data: playerData, error: playerError } = await supabase
-                    .from("players").select("*").ilike("name", username).maybeSingle();
+                const { data: playerData, error: playerError } = await supabase.from("players").select("*").ilike("name", username).maybeSingle();
                 if (playerError || !playerData) {
                     await supabase.auth.signOut();
-                    errorEl.textContent = "Player profile not found. Contact admin.";
+                    errorEl.textContent = "Player profile not found.";
                     errorEl.style.display = "block";
                     return;
                 }
@@ -1694,7 +1009,6 @@
                 errorEl.style.display = "block";
             }
         }
-
         async function logout() {
             await supabase.auth.signOut();
             currentUser = null;
@@ -1702,7 +1016,6 @@
             renderLoggedOutPanel();
             loginPanel.classList.remove("active");
         }
-
         function updateLoginButton() {
             if (currentUser) {
                 loginBtn.classList.add("logged-in");
@@ -1712,7 +1025,11 @@
                 loginBtn.textContent = "Log in";
             }
         }
-
+        loginBtn.addEventListener("click", (e) => { e.stopPropagation(); loginPanel.classList.toggle("active"); });
+        document.addEventListener("click", (e) => {
+            if (!document.querySelector(".login-wrapper").contains(e.target)) loginPanel.classList.remove("active");
+            if (!document.querySelector(".search-btn-wrapper").contains(e.target)) searchPanel.classList.remove("active");
+        });
         async function restoreSession() {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
@@ -1734,20 +1051,12 @@
                 renderLoggedOutPanel();
             }
         }
-
-        loginBtn.addEventListener("click", (e) => { e.stopPropagation(); loginPanel.classList.toggle("active"); });
-        document.addEventListener("click", (e) => {
-            if (!loginWrapper.contains(e.target)) loginPanel.classList.remove("active");
-            if (!searchWrapper.contains(e.target)) searchPanel.classList.remove("active");
-        });
-
         renderLoggedOutPanel();
         restoreSession();
 
         function mapPlayer(dbRow) {
             return {
-                id: dbRow.id,
-                name: dbRow.name,
+                id: dbRow.id, name: dbRow.name,
                 KanalServer_tier: dbRow.kanal_tier ?? null,
                 KanalServer_plus: dbRow.kanal_plus ?? false,
                 KanalServer_pos: dbRow.kanal_pos ?? 0,
@@ -1757,9 +1066,10 @@
             };
         }
 
-        async function loadPlayers() {
+        async function loadPlayersAndRender() {
+            if (currentVersion !== 'java') return;
             const { data, error } = await supabase.from("players").select("*");
-            if (error) { list.innerHTML = "Error loading data"; toggleBtn.style.display = "none"; return; }
+            if (error) { list.innerHTML = "Error loading data"; return; }
             allPlayers = data.map(mapPlayer);
             recomputePlus();
             render();
@@ -1776,10 +1086,33 @@
             if (!infoTooltip.contains(e.target) && e.target !== document.getElementById("infoBtn")) infoTooltip.classList.remove("active");
         });
 
-        renderTabMenu();
+        // Initial load
+        const initialRoute = parseRoute();
+        currentVersion = initialRoute.version;
+        currentBoard = initialRoute.board;
+        currentProfileName = initialRoute.profile;
+        setVersionUI(currentVersion);
+        renderTabBar();
         setTitle(currentBoard);
-        loadPlayers();
-        setInterval(loadPlayers, 5000);
+        if (currentVersion === 'bedrock') {
+            overallHeaders.style.display = 'none';
+            showBedrockComingSoon();
+        } else {
+            overallHeaders.style.display = (currentBoard === 'Overall') ? 'flex' : 'none';
+            if (currentProfileName) {
+                loadPlayersAndRender().then(() => {
+                    const player = allPlayers.find(p => p.name.toLowerCase() === currentProfileName.toLowerCase());
+                    if (player) openProfile(player);
+                    else {
+                        navigateTo(currentBoard, null);
+                        history.replaceState(null, '', `/${currentVersion}/${currentBoard}`);
+                    }
+                });
+            } else {
+                loadPlayersAndRender();
+            }
+        }
+        setInterval(() => { if (currentVersion === 'java') loadPlayersAndRender(); }, 5000);
     </script>
 </body>
 </html>
