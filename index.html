@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Kanal Server Leaderboard</title>
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://github.com/Toggelt/nova-tiers/blob/main/assets/103366-removebg-preview.png?raw=true">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Merriweather+Sans:wght@700;800&display=swap" rel="stylesheet">
     <style>
-        /* Minecraft font – now uses raw.githubusercontent.com */
+        /* Minecraft font */
         @font-face {
             font-family: 'Minecraft';
             src: url('https://raw.githubusercontent.com/Toggelt/nova-tiers/main/assets/Minecraft.ttf') format('truetype');
@@ -539,14 +538,15 @@
             if (version === currentVersion) return;
             currentVersion = version;
             setVersionUI(version);
-            const pathParts = window.location.pathname.split('/').filter(Boolean);
-            if (pathParts.length >= 2 && pathParts[0] === 'nova-tiers' && (pathParts[1] === 'java' || pathParts[1] === 'bedrock')) {
-                pathParts[1] = version;
+            // Update hash
+            const hashParts = window.location.hash.replace('#', '').split('/').filter(Boolean);
+            if (hashParts.length >= 2 && hashParts[0] === 'nova-tiers') {
+                hashParts[1] = version;
             } else {
-                pathParts.splice(0, pathParts.length, 'nova-tiers', version, 'overall');
+                hashParts.splice(0, hashParts.length, 'nova-tiers', version, 'overall');
             }
-            const newPath = '/' + pathParts.join('/');
-            history.pushState(null, '', newPath);
+            const newHash = '#/' + hashParts.join('/');
+            window.location.hash = newHash;
             currentBoard = 'Overall';
             currentProfileName = null;
             renderTabBar();
@@ -566,22 +566,19 @@
             toggleBtn.style.display = "none";
         }
 
-        // Routing
+        // Routing (hash-based)
         function parseRoute() {
-            const path = window.location.pathname;
-            const parts = path.split('/').filter(Boolean);
+            const hash = window.location.hash.replace('#', '');
+            const parts = hash.split('/').filter(Boolean);
             if (parts.length === 0 || parts[0] !== 'nova-tiers') {
-                history.replaceState(null, '', '/nova-tiers/java/overall');
-                return { version: 'java', board: 'Overall', profile: null };
-            }
-            if (parts.length === 1) {
-                history.replaceState(null, '', '/nova-tiers/java/overall');
+                // set default hash
+                window.location.hash = '#/nova-tiers/java/overall';
                 return { version: 'java', board: 'Overall', profile: null };
             }
             let version = 'java';
             if (parts[1] === 'bedrock') version = 'bedrock';
             else if (parts[1] !== 'java') {
-                history.replaceState(null, '', '/nova-tiers/java/overall');
+                window.location.hash = '#/nova-tiers/java/overall';
                 return { version: 'java', board: 'Overall', profile: null };
             }
             let board = 'Overall';
@@ -592,17 +589,17 @@
                 } else if (LEADERBOARDS[parts[2]]) {
                     board = parts[2];
                 } else {
-                    history.replaceState(null, '', `/nova-tiers/${version}/overall`);
+                    window.location.hash = '#/nova-tiers/' + version + '/overall';
                 }
             }
             return { version, board, profile };
         }
 
         function navigateTo(board, profileName) {
-            let newPath = `/nova-tiers/${currentVersion}/${board}`;
-            if (profileName) newPath = `/nova-tiers/${currentVersion}/player/${profileName}`;
-            if (window.location.pathname !== newPath) {
-                history.pushState(null, '', newPath);
+            let newHash = '#/nova-tiers/' + currentVersion + '/' + board;
+            if (profileName) newHash = '#/nova-tiers/' + currentVersion + '/player/' + profileName;
+            if (window.location.hash !== newHash) {
+                window.location.hash = newHash;
             }
         }
 
@@ -628,7 +625,7 @@
                     if (player) openProfile(player);
                     else {
                         navigateTo(board, null);
-                        history.replaceState(null, '', `/nova-tiers/${currentVersion}/${board}`);
+                        history.replaceState(null, '', `#/nova-tiers/${currentVersion}/${board}`);
                     }
                 });
             } else {
@@ -636,7 +633,7 @@
             }
         }
 
-        window.addEventListener('popstate', () => {
+        window.addEventListener('hashchange', () => {
             handleRoute();
         });
 
@@ -1149,32 +1146,8 @@
             if (!infoTooltip.contains(e.target) && e.target !== document.getElementById("infoBtn")) infoTooltip.classList.remove("active");
         });
 
-        // Initial load
-        const initialRoute = parseRoute();
-        currentVersion = initialRoute.version;
-        currentBoard = initialRoute.board;
-        currentProfileName = initialRoute.profile;
-        setVersionUI(currentVersion);
-        renderTabBar();
-        setTitle(currentBoard);
-        if (currentVersion === 'bedrock') {
-            overallHeaders.style.display = 'none';
-            showBedrockComingSoon();
-        } else {
-            overallHeaders.style.display = (currentBoard === 'Overall') ? 'flex' : 'none';
-            if (currentProfileName) {
-                loadPlayersAndRender().then(() => {
-                    const player = allPlayers.find(p => p.name.toLowerCase() === currentProfileName.toLowerCase());
-                    if (player) openProfile(player);
-                    else {
-                        navigateTo(currentBoard, null);
-                        history.replaceState(null, '', `/nova-tiers/${currentVersion}/${currentBoard}`);
-                    }
-                });
-            } else {
-                loadPlayersAndRender();
-            }
-        }
+        // Initial load – trigger route handling
+        handleRoute();
         setInterval(() => { if (currentVersion === 'java') loadPlayersAndRender(); }, 5000);
     </script>
 </body>
