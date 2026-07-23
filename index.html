@@ -7,8 +7,16 @@
     <link rel="icon" type="image/png" href="https://github.com/Toggelt/nova-tiers/blob/main/assets/103366-removebg-preview.png?raw=true">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Merriweather+Sans:wght@700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Merriweather+Sans:wght@700;800&display=swap" rel="stylesheet">
     <style>
+        /* Minecraft font from GitHub */
+        @font-face {
+            font-family: 'Minecraft';
+            src: url('https://github.com/Toggelt/nova-tiers/blob/main/assets/Minecraft.ttf?raw=true') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         /* ---------- Base & fixed top bar ---------- */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -30,7 +38,7 @@
         .top-bar-title { font-family: 'Merriweather Sans', sans-serif; font-weight: 800; font-size: 45px; color: #fff; letter-spacing: 1px; }
         .top-bar-right { display: flex; align-items: center; gap: 20px; }
 
-        /* Version dropdown */
+        /* Version dropdown – Minecraft font */
         .version-dropdown { position: relative; }
         .version-btn {
             height: 60px;
@@ -39,8 +47,8 @@
             color: #c9c9d1;
             padding: 0 20px;
             border-radius: 8px;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 14px;
+            font-family: 'Minecraft', cursive;
+            font-size: 16px;
             font-weight: 700;
             cursor: pointer;
             display: flex; align-items: center; gap: 8px;
@@ -71,8 +79,8 @@
             display: flex; align-items: center; gap: 10px;
             padding: 12px 20px;
             cursor: pointer;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 14px;
+            font-family: 'Minecraft', cursive;
+            font-size: 16px;
             color: #c9c9d1;
             transition: background 0.15s;
             justify-content: center;
@@ -110,45 +118,27 @@
         .profile-btn { width: 100%; background: #1a2a3a; border: 1px solid #2a4a6a; color: #8ab4f8; padding: 12px; border-radius: 7px; font-weight: 700; font-size: 14px; cursor: pointer; margin-bottom: 10px; }
         .profile-btn:hover { background: #1f3348; }
 
-        /* ---------- Container (background back to original) ---------- */
+        /* ---------- Container ---------- */
         .container {
             position: relative; z-index: 1; width: 1250px; max-width: 100%;
-            background: #131318;            /* original container color */
+            background: #131318;
             padding: 0; padding-bottom: 20px;
             border-radius: 0 0 14px 14px; border: 1px solid #232329;
             margin: 20px auto; box-shadow: 0 0 30px rgba(0,0,0,0.4); overflow: visible;
         }
 
-        /* Tab bar – transparent, no bottom border */
-        .tab-bar {
-            display: flex;
-            width: 100%;
-            height: 70px;
-            margin: 0;
-            background: transparent;       /* see container through gaps */
-            border-bottom: none;            /* no line */
-        }
+        .tab-bar { display: flex; width: 100%; height: 70px; margin: 0; background: transparent; border-bottom: none; }
 
         .tab-button {
-            flex: 1;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            cursor: pointer; color: #8b8b96;
-            background: #1c1c22;            /* inactive tab */
-            border: none;
-            border-right: none;             /* removed border */
-            margin-right: 3px;              /* transparent gap between buttons */
-            transition: background 0.15s, color 0.15s;
-            user-select: none;
-            font-size: 15px; font-weight: 700; letter-spacing: 0.4px;
-            font-family: Arial, sans-serif;
-            border-radius: 8px 8px 0 0;
+            flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+            cursor: pointer; color: #8b8b96; background: #1c1c22; border: none;
+            margin-right: 3px; transition: background 0.15s, color 0.15s;
+            user-select: none; font-size: 15px; font-weight: 700; letter-spacing: 0.4px;
+            font-family: Arial, sans-serif; border-radius: 8px 8px 0 0;
         }
         .tab-button:last-child { margin-right: 0; }
         .tab-button:hover { background: #22222a; color: #c9c9d1; }
-        .tab-button.active {
-            background: #26262e;            /* old container color when active */
-            color: #fff;
-        }
+        .tab-button.active { background: #26262e; color: #fff; }
         .tab-button.active span.tab-label { color: #fff; }
         .tab-button img { image-rendering: pixelated; }
         .tab-label { font-size: 15px; font-weight: 700; letter-spacing: 0.4px; white-space: nowrap; }
@@ -158,7 +148,7 @@
         .title-icon { width: 42px; height: 42px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .title-icon img { width: 100%; height: 100%; image-rendering: pixelated; }
 
-        /* Info & Search (unchanged) */
+        /* Info & Search */
         .info-btn-wrapper { position: relative; }
         .info-btn { display: flex; align-items: center; gap: 7px; background: #1c1c22; border: 1px solid #2c2c34; color: #c9c9d1; padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; }
         .info-btn:hover { background: #26262e; }
@@ -181,15 +171,10 @@
 
         /* Overall column headers */
         .overall-headers {
-            display: flex;
-            align-items: center;
-            margin: 10px 20px 0 20px;
-            padding: 0 20px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #6b6b7a;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            display: flex; align-items: center;
+            margin: 10px 20px 0 20px; padding: 0 20px;
+            font-size: 12px; font-weight: 600; color: #6b6b7a;
+            text-transform: uppercase; letter-spacing: 0.5px;
         }
         .overall-headers .header-position { width: 150px; padding-left: 20px; }
         .overall-headers .header-player { flex: 1; padding-left: 20px; }
@@ -214,7 +199,22 @@
         .mini-tier-circle { width: 36px; height: 36px; border-radius: 50%; background: #131318; display: flex; align-items: center; justify-content: center; border: 2px solid #454b54; overflow: hidden; }
         .mini-tier-circle img { width: 24px; height: 24px; }
         .mini-tier-label { font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 4px; background: #1a1a22; border: 1px solid #454b54; color: #8b8b96; letter-spacing: 0.3px; text-align: center; width: 40px; }
-        .global-mini-tip { position: fixed; background: #0e0e12; border: 1px solid #2c2c34; border-radius: 9px; padding: 8px 16px; font-size: 18px; font-weight: 700; white-space: nowrap; display: none; z-index: 1000; pointer-events: none; transform: translate(-50%, -100%); text-align: center; line-height: 1.4; }
+        .global-mini-tip {
+            position: fixed; background: #0e0e12; border: 1px solid #2c2c34;
+            border-radius: 9px; padding: 8px 16px; font-size: 18px; font-weight: 700;
+            white-space: nowrap; display: none; z-index: 1000; pointer-events: none;
+            transform: translate(-50%, -100%); text-align: center; line-height: 1.4;
+            white-space: normal;
+        }
+        .global-mini-tip .tip-tier {
+            font-size: 18px; font-weight: 800; display: block;
+        }
+        .global-mini-tip .tip-peak {
+            font-size: 14px; font-weight: 700; color: #fff; display: block; margin-top: 2px;
+        }
+        .global-mini-tip .tip-points {
+            font-size: 13px; font-weight: 600; color: #8b8b96; margin-top: 4px;
+        }
 
         /* Tier columns */
         .tier-columns { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin: 8px 20px; }
@@ -272,7 +272,17 @@
         .tier-icon-circle { width: 54px; height: 54px; border-radius: 50%; background: #191920; display: flex; align-items: center; justify-content: center; border: 3px solid #454b54; overflow: hidden; }
         .tier-icon-circle img { width: 30px; height: 30px; }
         .tier-icon-label { font-size: 12px; font-weight: 800; letter-spacing: 0.4px; }
-        .tier-elo-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #0e0e12; border: 1px solid #2c2c34; border-radius: 9px; padding: 5px 12px; font-size: 18px; font-weight: 700; white-space: nowrap; display: none; }
+        .tier-elo-tip {
+            position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+            background: #0e0e12; border: 1px solid #2c2c34; border-radius: 9px;
+            padding: 5px 12px; font-size: 18px; font-weight: 700;
+            white-space: nowrap; display: none; z-index: 10;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.5);
+            pointer-events: none; text-align: center; line-height: 1.4;
+        }
+        .tier-elo-tip .tip-tier { font-size: 18px; font-weight: 800; display: block; }
+        .tier-elo-tip .tip-peak { font-size: 14px; font-weight: 700; color: #fff; display: block; margin-top: 2px; }
+        .tier-elo-tip .tip-points { font-size: 13px; font-weight: 600; color: #8b8b96; margin-top: 4px; }
         .tier-icon-wrap:hover .tier-elo-tip { display: block; }
     </style>
 </head>
@@ -288,16 +298,7 @@
                     <img src="https://github.com/Toggelt/nova-tiers/blob/main/assets/Grass_Block_JE7_BE6%20(1).png?raw=true" alt="Java" id="versionIcon">
                     <span id="versionText">Java</span>
                 </button>
-                <div class="version-options" id="versionOptions">
-                    <div class="version-option" data-version="java">
-                        <img src="https://github.com/Toggelt/nova-tiers/blob/main/assets/Grass_Block_JE7_BE6%20(1).png?raw=true" alt="Java">
-                        <span>Java</span>
-                    </div>
-                    <div class="version-option" data-version="bedrock">
-                        <img src="https://github.com/Toggelt/nova-tiers/blob/main/assets/Bedrock_JE2_BE2.png?raw=true" alt="Bedrock">
-                        <span>Bedrock</span>
-                    </div>
-                </div>
+                <div class="version-options" id="versionOptions"></div>
             </div>
             <div class="login-wrapper">
                 <button class="login-btn" id="loginBtn">Log in</button>
@@ -388,6 +389,28 @@
 
         function shortTierLabel(tierNum, plus) { return `T${tierNum}${plus ? '+' : ''}`; }
         function fullTierLabel(tierNum, plus) { return `Tier ${tierNum}${plus ? '+' : ''}`; }
+        function peakTierLabel(tierNum, plus) { return `Peak T${tierNum}${plus ? '+' : ''}`; }
+
+        function isPeakBetter(currentTier, currentPlus, peakTier, peakPlus) {
+            if (peakTier === null || peakTier === undefined || currentTier === null || currentTier === undefined) return false;
+            const currentKey = currentPlus ? `${currentTier}+` : `${currentTier}`;
+            const peakKey = peakPlus ? `${peakTier}+` : `${peakTier}`;
+            if (!(currentKey in TIER_ORDER) || !(peakKey in TIER_ORDER)) return false;
+            return TIER_ORDER[peakKey] < TIER_ORDER[currentKey];
+        }
+
+        function generateTierTooltipHTML(mode, currentTier, currentPlus, peakTier, peakPlus) {
+            const currentKey = currentPlus ? `${currentTier}+` : `${currentTier}`;
+            const currentColor = TIER_COLORS[currentKey] || "#fff";
+            const points = TIER_POINTS[currentKey] || 0;
+            let html = '';
+            html += `<div class="tip-tier" style="color:${currentColor}">${fullTierLabel(currentTier, currentPlus)}</div>`;
+            if (peakTier !== null && peakTier !== undefined && isPeakBetter(currentTier, currentPlus, peakTier, peakPlus)) {
+                html += `<div class="tip-peak">(${peakTierLabel(peakTier, peakPlus)})</div>`;
+            }
+            html += `<div class="tip-points">(${points} points)</div>`;
+            return html;
+        }
 
         function recomputePlus() {
             SUB_BOARDS.forEach(mode => {
@@ -461,14 +484,30 @@
         const overallHeaders = document.getElementById("overallHeaders");
 
         // Version dropdown
+        const versionOptionsContainer = document.getElementById("versionOptions");
         const versionBtn = document.getElementById("versionBtn");
         const versionIcon = document.getElementById("versionIcon");
         const versionTextEl = document.getElementById("versionText");
-        const versionOptions = document.getElementById("versionOptions");
         const versionDropdown = document.getElementById("versionDropdown");
 
         const javaIcon = "https://github.com/Toggelt/nova-tiers/blob/main/assets/Grass_Block_JE7_BE6%20(1).png?raw=true";
         const bedrockIcon = "https://github.com/Toggelt/nova-tiers/blob/main/assets/Bedrock_JE2_BE2.png?raw=true";
+
+        function updateVersionDropdownOptions(current) {
+            versionOptionsContainer.innerHTML = '';
+            const other = current === 'java' ? 'bedrock' : 'java';
+            const icon = other === 'java' ? javaIcon : bedrockIcon;
+            const label = other === 'java' ? 'Java' : 'Bedrock';
+            const opt = document.createElement('div');
+            opt.className = 'version-option';
+            opt.dataset.version = other;
+            opt.innerHTML = `<img src="${icon}" alt="${label}"><span>${label}</span>`;
+            opt.addEventListener('click', () => {
+                changeVersion(other);
+                versionOptionsContainer.classList.remove('active');
+            });
+            versionOptionsContainer.appendChild(opt);
+        }
 
         function setVersionUI(version) {
             if (version === 'java') {
@@ -478,10 +517,11 @@
                 versionIcon.src = bedrockIcon;
                 versionTextEl.textContent = 'Bedrock';
             }
+            updateVersionDropdownOptions(version);
         }
 
         function toggleVersionDropdown() {
-            versionOptions.classList.toggle('active');
+            versionOptionsContainer.classList.toggle('active');
         }
 
         versionBtn.addEventListener('click', (e) => {
@@ -491,31 +531,21 @@
 
         document.addEventListener('click', (e) => {
             if (!versionDropdown.contains(e.target)) {
-                versionOptions.classList.remove('active');
+                versionOptionsContainer.classList.remove('active');
             }
-        });
-
-        versionOptions.querySelectorAll('.version-option').forEach(opt => {
-            opt.addEventListener('click', () => {
-                const newVersion = opt.dataset.version;
-                if (newVersion === currentVersion) {
-                    versionOptions.classList.remove('active');
-                    return;
-                }
-                changeVersion(newVersion);
-                versionOptions.classList.remove('active');
-            });
         });
 
         function changeVersion(version) {
             if (version === currentVersion) return;
             currentVersion = version;
             setVersionUI(version);
+            // Update URL – preserve the /novatiers/ prefix
             const pathParts = window.location.pathname.split('/').filter(Boolean);
-            if (pathParts.length >= 1 && (pathParts[0] === 'java' || pathParts[0] === 'bedrock')) {
-                pathParts[0] = version;
+            if (pathParts.length >= 2 && pathParts[0] === 'novatiers' && (pathParts[1] === 'java' || pathParts[1] === 'bedrock')) {
+                pathParts[1] = version;
             } else {
-                pathParts.unshift(version);
+                // Fallback: build a new path
+                pathParts.splice(0, pathParts.length, 'novatiers', version, 'overall');
             }
             const newPath = '/' + pathParts.join('/');
             history.pushState(null, '', newPath);
@@ -542,33 +572,37 @@
         function parseRoute() {
             const path = window.location.pathname;
             const parts = path.split('/').filter(Boolean);
-            if (parts.length === 0) {
-                history.replaceState(null, '', '/java/overall');
+            if (parts.length === 0 || parts[0] !== 'novatiers') {
+                history.replaceState(null, '', '/novatiers/java/overall');
+                return { version: 'java', board: 'Overall', profile: null };
+            }
+            if (parts.length === 1) { // /novatiers
+                history.replaceState(null, '', '/novatiers/java/overall');
                 return { version: 'java', board: 'Overall', profile: null };
             }
             let version = 'java';
-            if (parts[0] === 'bedrock') version = 'bedrock';
-            else if (parts[0] !== 'java') {
-                history.replaceState(null, '', '/java/overall');
+            if (parts[1] === 'bedrock') version = 'bedrock';
+            else if (parts[1] !== 'java') {
+                history.replaceState(null, '', '/novatiers/java/overall');
                 return { version: 'java', board: 'Overall', profile: null };
             }
             let board = 'Overall';
             let profile = null;
-            if (parts.length >= 2) {
-                if (parts[1] === 'player' && parts.length >= 3) {
-                    profile = parts[2];
-                } else if (LEADERBOARDS[parts[1]]) {
-                    board = parts[1];
+            if (parts.length >= 3) {
+                if (parts[2] === 'player' && parts.length >= 4) {
+                    profile = parts[3];
+                } else if (LEADERBOARDS[parts[2]]) {
+                    board = parts[2];
                 } else {
-                    history.replaceState(null, '', `/${version}/overall`);
+                    history.replaceState(null, '', `/novatiers/${version}/overall`);
                 }
             }
             return { version, board, profile };
         }
 
         function navigateTo(board, profileName) {
-            let newPath = `/${currentVersion}/${board}`;
-            if (profileName) newPath = `/${currentVersion}/player/${profileName}`;
+            let newPath = `/novatiers/${currentVersion}/${board}`;
+            if (profileName) newPath = `/novatiers/${currentVersion}/player/${profileName}`;
             if (window.location.pathname !== newPath) {
                 history.pushState(null, '', newPath);
             }
@@ -596,7 +630,7 @@
                     if (player) openProfile(player);
                     else {
                         navigateTo(board, null);
-                        history.replaceState(null, '', `/${currentVersion}/${board}`);
+                        history.replaceState(null, '', `/novatiers/${currentVersion}/${board}`);
                     }
                 });
             } else {
@@ -639,8 +673,10 @@
             SUB_BOARDS.forEach(key => {
                 const tier = player[`${key}_tier`];
                 const plus = player[`_computed_plus_${key}`];
+                const peakTier = player[`${key}_peak_tier`] ?? null;
+                const peakPlus = player[`${key}_peak_plus`] ?? false;
                 const board = LEADERBOARDS[key];
-                entries.push({ tier, plus, board });
+                entries.push({ tier, plus, board, peakTier, peakPlus, mode: key });
             });
             entries.sort((a, b) => {
                 const keyA = a.tier != null ? (a.plus ? `${a.tier}+` : `${a.tier}`) : "none";
@@ -649,15 +685,18 @@
             });
 
             let html = "";
-            entries.forEach(({ tier, plus, board }) => {
+            entries.forEach(({ tier, plus, board, peakTier, peakPlus, mode }) => {
                 if (tier != null && tier >= 1 && tier <= 5) {
                     const tierStr = plus ? `${tier}+` : `${tier}`;
                     const color = TIER_COLORS[tierStr];
-                    const fullLabel = fullTierLabel(tier, plus);
                     const displayLabel = shortTierLabel(tier, plus);
-                    const tipText = `${fullLabel} – (${TIER_POINTS[tierStr]} points)`;
                     html += `
-                        <div class="mini-tier-wrap" data-tip="${tipText}">
+                        <div class="mini-tier-wrap"
+                             data-mode="${mode}"
+                             data-current-tier="${tier}"
+                             data-current-plus="${plus ? '1' : '0'}"
+                             data-peak-tier="${peakTier ?? ''}"
+                             data-peak-plus="${peakPlus ? '1' : '0'}">
                             <div class="mini-tier-circle" style="border-color:${color}">
                                 <img src="${board.icon}" alt="${board.label}">
                             </div>
@@ -665,7 +704,7 @@
                         </div>`;
                 } else {
                     html += `
-                        <div class="mini-tier-wrap no-tier" data-tip="No Tier">
+                        <div class="mini-tier-wrap no-tier" data-mode="${mode}" data-current-tier="" data-current-plus="" data-peak-tier="" data-peak-plus="">
                             <div class="mini-tier-circle">
                                 <img src="${board.icon}" alt="${board.label}">
                             </div>
@@ -677,19 +716,26 @@
         }
 
         const globalMiniTip = document.getElementById("globalMiniTip");
+
         list.addEventListener("mouseover", (e) => {
             const wrap = e.target.closest(".mini-tier-wrap");
-            if (wrap) {
-                const tip = wrap.getAttribute("data-tip");
-                if (!tip) return;
-                const parts = tip.split(' – ');
-                globalMiniTip.innerHTML = `<div class="tip-tier">${parts[0]}</div>${parts[1] ? `<div class="tip-points">${parts[1]}</div>` : ''}`;
-                globalMiniTip.style.display = "block";
-                const rect = wrap.getBoundingClientRect();
-                globalMiniTip.style.left = (rect.left + rect.width / 2) + "px";
-                globalMiniTip.style.top = (rect.top - 8) + "px";
+            if (!wrap) return;
+            const mode = wrap.dataset.mode;
+            const currentTier = parseInt(wrap.dataset.currentTier);
+            const currentPlus = wrap.dataset.currentPlus === '1';
+            const peakTier = wrap.dataset.peakTier ? parseInt(wrap.dataset.peakTier) : null;
+            const peakPlus = wrap.dataset.peakPlus === '1';
+            if (isNaN(currentTier)) {
+                globalMiniTip.innerHTML = `<div class="tip-tier">No Tier</div>`;
+            } else {
+                globalMiniTip.innerHTML = generateTierTooltipHTML(mode, currentTier, currentPlus, peakTier, peakPlus);
             }
+            globalMiniTip.style.display = "block";
+            const rect = wrap.getBoundingClientRect();
+            globalMiniTip.style.left = (rect.left + rect.width / 2) + "px";
+            globalMiniTip.style.top = (rect.top - 8) + "px";
         });
+
         list.addEventListener("mouseout", (e) => {
             if (!e.target.closest(".mini-tier-wrap")?.contains(e.relatedTarget))
                 globalMiniTip.style.display = "none";
@@ -861,6 +907,50 @@
         function avatarUrl(name, size) { return `https://mc-heads.net/avatar/${encodeURIComponent(name)}/${size}`; }
 
         // Profile modal
+        function renderProfileTiers(player) {
+            const entries = [];
+            SUB_BOARDS.forEach(key => {
+                const tier = player[`${key}_tier`];
+                const plus = player[`_computed_plus_${key}`];
+                const peakTier = player[`${key}_peak_tier`] ?? null;
+                const peakPlus = player[`${key}_peak_plus`] ?? false;
+                const board = LEADERBOARDS[key];
+                entries.push({ tier, plus, board, peakTier, peakPlus, mode: key });
+            });
+            entries.sort((a, b) => {
+                const keyA = a.tier != null ? (a.plus ? `${a.tier}+` : `${a.tier}`) : "none";
+                const keyB = b.tier != null ? (b.plus ? `${b.tier}+` : `${b.tier}`) : "none";
+                return TIER_ORDER[keyA] - TIER_ORDER[keyB];
+            });
+
+            let html = "";
+            entries.forEach(({ tier, plus, board, peakTier, peakPlus, mode }) => {
+                if (tier != null && tier >= 1 && tier <= 5) {
+                    const tierStr = plus ? `${tier}+` : `${tier}`;
+                    const color = TIER_COLORS[tierStr];
+                    const tooltipHTML = generateTierTooltipHTML(mode, tier, plus, peakTier, peakPlus);
+                    html += `
+                        <div class="tier-icon-wrap" data-mode="${mode}" data-current-tier="${tier}" data-current-plus="${plus ? '1' : '0'}" data-peak-tier="${peakTier ?? ''}" data-peak-plus="${peakPlus ? '1' : '0'}">
+                            <div class="tier-icon-circle" style="border-color:${color}">
+                                <img src="${board.icon}" alt="${board.label}" style="width:30px;height:30px;">
+                            </div>
+                            <div class="tier-icon-label" style="color:${color}">${shortTierLabel(tier, plus)}</div>
+                            <div class="tier-elo-tip">${tooltipHTML}</div>
+                        </div>`;
+                } else {
+                    html += `
+                        <div class="tier-icon-wrap" style="opacity:0.6" data-mode="${mode}" data-current-tier="" data-current-plus="" data-peak-tier="" data-peak-plus="">
+                            <div class="tier-icon-circle" style="border-color:#454b54">
+                                <img src="${board.icon}" alt="${board.label}" style="width:30px;height:30px;">
+                            </div>
+                            <div class="tier-icon-label" style="color:#8b8b96">No Tier</div>
+                            <div class="tier-elo-tip"><div class="tip-tier">No Tier</div></div>
+                        </div>`;
+                }
+            });
+            document.getElementById("tiersRow").innerHTML = html;
+        }
+
         function openProfile(player) {
             const modalOverlay = document.getElementById("modalOverlay");
             document.getElementById("modalAvatar").innerHTML = `<img src="${avatarUrl(player.name, 110)}" alt="${player.name}" onerror="this.parentElement.innerHTML='?'">`;
@@ -890,46 +980,7 @@
             posCard.innerHTML = `
                 <div class="rank-flag"><span class="rank-num">${rank}.</span></div>
                 <div class="pos-info"><span class="pos-overall">Overall</span><span class="pos-points">(${totalPoints} Points)</span></div>`;
-            // Render tiers
-            const entries = [];
-            SUB_BOARDS.forEach(key => {
-                const tier = player[`${key}_tier`];
-                const plus = player[`_computed_plus_${key}`];
-                entries.push({ tier, plus, board: LEADERBOARDS[key] });
-            });
-            entries.sort((a, b) => {
-                const keyA = a.tier != null ? (a.plus ? `${a.tier}+` : `${a.tier}`) : "none";
-                const keyB = b.tier != null ? (b.plus ? `${b.tier}+` : `${b.tier}`) : "none";
-                return TIER_ORDER[keyA] - TIER_ORDER[keyB];
-            });
-            let html = "";
-            entries.forEach(({ tier, plus, board }) => {
-                if (tier != null && tier >= 1 && tier <= 5) {
-                    const tierStr = plus ? `${tier}+` : `${tier}`;
-                    const color = TIER_COLORS[tierStr];
-                    html += `
-                        <div class="tier-icon-wrap">
-                            <div class="tier-icon-circle" style="border-color:${color}">
-                                <img src="${board.icon}" alt="${board.label}" style="width:30px;height:30px;">
-                            </div>
-                            <div class="tier-icon-label" style="color:${color}">${shortTierLabel(tier, plus)}</div>
-                            <div class="tier-elo-tip">
-                                <div class="tip-tier">${fullTierLabel(tier, plus)}</div>
-                                <div class="tip-points">(${TIER_POINTS[tierStr]} points)</div>
-                            </div>
-                        </div>`;
-                } else {
-                    html += `
-                        <div class="tier-icon-wrap" style="opacity:0.6">
-                            <div class="tier-icon-circle" style="border-color:#454b54">
-                                <img src="${board.icon}" alt="${board.label}" style="width:30px;height:30px;">
-                            </div>
-                            <div class="tier-icon-label" style="color:#8b8b96">No Tier</div>
-                            <div class="tier-elo-tip"><div class="tip-tier">No Tier</div></div>
-                        </div>`;
-                }
-            });
-            document.getElementById("tiersRow").innerHTML = html;
+            renderProfileTiers(player);
             modalOverlay.classList.add("active");
         }
 
@@ -1065,13 +1116,18 @@
 
         function mapPlayer(dbRow) {
             return {
-                id: dbRow.id, name: dbRow.name,
+                id: dbRow.id,
+                name: dbRow.name,
                 KanalServer_tier: dbRow.kanal_tier ?? null,
                 KanalServer_plus: dbRow.kanal_plus ?? false,
                 KanalServer_pos: dbRow.kanal_pos ?? 0,
+                KanalServer_peak_tier: dbRow.kanal_peak_tier ?? null,
+                KanalServer_peak_plus: dbRow.kanal_peak_plus ?? false,
                 LowblockMace_tier: dbRow.lowblockmace_tier ?? null,
                 LowblockMace_plus: dbRow.lowblockmace_plus ?? false,
-                LowblockMace_pos: dbRow.lowblockmace_pos ?? 0
+                LowblockMace_pos: dbRow.lowblockmace_pos ?? 0,
+                LowblockMace_peak_tier: dbRow.lowblockmace_peak_tier ?? null,
+                LowblockMace_peak_plus: dbRow.lowblockmace_peak_plus ?? false
             };
         }
 
@@ -1114,7 +1170,7 @@
                     if (player) openProfile(player);
                     else {
                         navigateTo(currentBoard, null);
-                        history.replaceState(null, '', `/${currentVersion}/${currentBoard}`);
+                        history.replaceState(null, '', `/novatiers/${currentVersion}/${currentBoard}`);
                     }
                 });
             } else {
