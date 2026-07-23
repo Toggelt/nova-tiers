@@ -9,10 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Merriweather+Sans:wght@700;800&display=swap" rel="stylesheet">
     <style>
-        /* Minecraft font from GitHub */
+        /* Minecraft font – now uses raw.githubusercontent.com */
         @font-face {
             font-family: 'Minecraft';
-            src: url('https://github.com/Toggelt/nova-tiers/blob/main/assets/Minecraft.ttf?raw=true') format('truetype');
+            src: url('https://raw.githubusercontent.com/Toggelt/nova-tiers/main/assets/Minecraft.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
@@ -539,12 +539,11 @@
             if (version === currentVersion) return;
             currentVersion = version;
             setVersionUI(version);
-            // Update URL
             const pathParts = window.location.pathname.split('/').filter(Boolean);
-            if (pathParts.length >= 2 && pathParts[0] === 'novatiers' && (pathParts[1] === 'java' || pathParts[1] === 'bedrock')) {
+            if (pathParts.length >= 2 && pathParts[0] === 'nova-tiers' && (pathParts[1] === 'java' || pathParts[1] === 'bedrock')) {
                 pathParts[1] = version;
             } else {
-                pathParts.splice(0, pathParts.length, 'novatiers', version, 'overall');
+                pathParts.splice(0, pathParts.length, 'nova-tiers', version, 'overall');
             }
             const newPath = '/' + pathParts.join('/');
             history.pushState(null, '', newPath);
@@ -571,18 +570,18 @@
         function parseRoute() {
             const path = window.location.pathname;
             const parts = path.split('/').filter(Boolean);
-            if (parts.length === 0 || parts[0] !== 'novatiers') {
-                history.replaceState(null, '', '/novatiers/java/overall');
+            if (parts.length === 0 || parts[0] !== 'nova-tiers') {
+                history.replaceState(null, '', '/nova-tiers/java/overall');
                 return { version: 'java', board: 'Overall', profile: null };
             }
-            if (parts.length === 1) { // /novatiers
-                history.replaceState(null, '', '/novatiers/java/overall');
+            if (parts.length === 1) {
+                history.replaceState(null, '', '/nova-tiers/java/overall');
                 return { version: 'java', board: 'Overall', profile: null };
             }
             let version = 'java';
             if (parts[1] === 'bedrock') version = 'bedrock';
             else if (parts[1] !== 'java') {
-                history.replaceState(null, '', '/novatiers/java/overall');
+                history.replaceState(null, '', '/nova-tiers/java/overall');
                 return { version: 'java', board: 'Overall', profile: null };
             }
             let board = 'Overall';
@@ -593,15 +592,15 @@
                 } else if (LEADERBOARDS[parts[2]]) {
                     board = parts[2];
                 } else {
-                    history.replaceState(null, '', `/novatiers/${version}/overall`);
+                    history.replaceState(null, '', `/nova-tiers/${version}/overall`);
                 }
             }
             return { version, board, profile };
         }
 
         function navigateTo(board, profileName) {
-            let newPath = `/novatiers/${currentVersion}/${board}`;
-            if (profileName) newPath = `/novatiers/${currentVersion}/player/${profileName}`;
+            let newPath = `/nova-tiers/${currentVersion}/${board}`;
+            if (profileName) newPath = `/nova-tiers/${currentVersion}/player/${profileName}`;
             if (window.location.pathname !== newPath) {
                 history.pushState(null, '', newPath);
             }
@@ -629,7 +628,7 @@
                     if (player) openProfile(player);
                     else {
                         navigateTo(board, null);
-                        history.replaceState(null, '', `/novatiers/${currentVersion}/${board}`);
+                        history.replaceState(null, '', `/nova-tiers/${currentVersion}/${board}`);
                     }
                 });
             } else {
@@ -1169,7 +1168,7 @@
                     if (player) openProfile(player);
                     else {
                         navigateTo(currentBoard, null);
-                        history.replaceState(null, '', `/novatiers/${currentVersion}/${currentBoard}`);
+                        history.replaceState(null, '', `/nova-tiers/${currentVersion}/${currentBoard}`);
                     }
                 });
             } else {
