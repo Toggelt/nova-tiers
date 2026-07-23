@@ -539,12 +539,11 @@
             if (version === currentVersion) return;
             currentVersion = version;
             setVersionUI(version);
-            // Update URL – preserve the /novatiers/ prefix
+            // Update URL
             const pathParts = window.location.pathname.split('/').filter(Boolean);
             if (pathParts.length >= 2 && pathParts[0] === 'novatiers' && (pathParts[1] === 'java' || pathParts[1] === 'bedrock')) {
                 pathParts[1] = version;
             } else {
-                // Fallback: build a new path
                 pathParts.splice(0, pathParts.length, 'novatiers', version, 'overall');
             }
             const newPath = '/' + pathParts.join('/');
